@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "elgyms",
+  "version": "${version}",
+  "name": "Elgyms",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Ben/untitled"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "org.pokesplash.elgyms.Elgyms"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
