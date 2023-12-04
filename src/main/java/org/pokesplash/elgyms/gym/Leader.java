@@ -1,9 +1,9 @@
 package org.pokesplash.elgyms.gym;
 
-import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -13,12 +13,14 @@ public class Leader {
 	private UUID uuid; // UUID of the leader.
 	private String name; // IGN of the leader.
 	private Record record; // Wins / Losses of the leader.
+	private long startDate; // The start date of the leader.
 	private ArrayList<JsonObject> team; // Leaders team.
 
 	public Leader() {
 		uuid = UUID.randomUUID();
 		name = "minecraftIGN";
 		record = new Record();
+		startDate = new Date().getTime();
 		team = new ArrayList<>();
 	}
 
@@ -48,5 +50,9 @@ public class Leader {
 
 	public void setTeam(ArrayList<JsonObject> team) {
 		this.team = team;
+	}
+
+	public long getStartDate() {
+		return startDate;
 	}
 }

@@ -2,21 +2,25 @@ package org.pokesplash.elgyms.provider;
 
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.UUID;
 
 public abstract class GymProvider {
 	private static String PATH = Elgyms.BASE_PATH + "gyms/";
-	private static HashMap<UUID, GymConfig> gyms = new HashMap<>();
+	private static HashMap<String, GymConfig> gyms = new HashMap<>();
+	private static ChampionConfig champion = new ChampionConfig();
 
 	/**
 	 * Method to fetch all gyms.
 	 */
 	public static void init() {
+
+		champion.init(); // Initialize the champion config.
+
 		try {
 			File dir = Utils.checkForDirectory(PATH);
 
@@ -25,8 +29,7 @@ public abstract class GymProvider {
 			// If no files, return.
 			if (list.length == 0) {
 				GymConfig gymConfig = new GymConfig();
-				Utils.writeFileAsync(PATH,
-						"example.json", Utils.newGson().toJson(gymConfig));
+				gymConfig.write();
 				gyms.put(gymConfig.getId(), gymConfig);
 				return;
 			}
@@ -45,5 +48,13 @@ public abstract class GymProvider {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static HashMap<String, GymConfig> getGyms() {
+		return gyms;
+	}
+
+	public static ChampionConfig getChampion() {
+		return champion;
 	}
 }

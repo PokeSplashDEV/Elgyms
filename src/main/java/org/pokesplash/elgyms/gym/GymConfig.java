@@ -1,15 +1,18 @@
 package org.pokesplash.elgyms.gym;
 
+import com.google.gson.Gson;
+import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.type.Type;
+import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Config for a gym.
  */
 public class GymConfig {
-	private UUID id; // Unqiue ID of the gym.
+	private String id; // Unqiue ID of the gym.
 	private String name; // The name of the gym.
 	private ArrayList<Type> types; // The Pokemon types of the gym.
 	private int weight; // Weight relative to the other gyms.
@@ -21,8 +24,20 @@ public class GymConfig {
 	private GymRewards rewards; // Rewards for the gym.
 	private ArrayList<Leader> leaders; // Leaders of the gym.
 
+	public void write() {
+		Gson gson = Utils.newGson();
+		String data = gson.toJson(this);
+		String fileName = id + ".json";
+		CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(Elgyms.BASE_PATH + "gyms/",
+				fileName, data);
+
+		if (!futureWrite.join()) {
+			Elgyms.LOGGER.fatal("Could not write " + fileName + " for " + Elgyms.MOD_ID + ".");
+		}
+	}
+
 	public GymConfig() {
-		id = UUID.randomUUID();
+		id = "gym1";
 		name = "Gym 1";
 		types = new ArrayList<>();
 		types.add(Type.BUG);
@@ -38,7 +53,7 @@ public class GymConfig {
 		leaders.add(new Leader());
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -48,6 +63,7 @@ public class GymConfig {
 
 	public void setName(String name) {
 		this.name = name;
+		write();
 	}
 
 	public ArrayList<Type> getTypes() {
@@ -56,6 +72,7 @@ public class GymConfig {
 
 	public void setTypes(ArrayList<Type> types) {
 		this.types = types;
+		write();
 	}
 
 	public int getWeight() {
@@ -64,6 +81,7 @@ public class GymConfig {
 
 	public void setWeight(int weight) {
 		this.weight = weight;
+		write();
 	}
 
 	public String getCategoryName() {
@@ -72,6 +90,7 @@ public class GymConfig {
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+		write();
 	}
 
 	public double getCooldown() {
@@ -80,6 +99,7 @@ public class GymConfig {
 
 	public void setCooldown(double cooldown) {
 		this.cooldown = cooldown;
+		write();
 	}
 
 	public int getWildcardAmount() {
@@ -88,6 +108,7 @@ public class GymConfig {
 
 	public void setWildcardAmount(int wildcardAmount) {
 		this.wildcardAmount = wildcardAmount;
+		write();
 	}
 
 	public Positions getPositions() {
@@ -96,6 +117,7 @@ public class GymConfig {
 
 	public void setPositions(Positions positions) {
 		this.positions = positions;
+		write();
 	}
 
 	public Requirements getRequirements() {
@@ -104,6 +126,7 @@ public class GymConfig {
 
 	public void setRequirements(Requirements requirements) {
 		this.requirements = requirements;
+		write();
 	}
 
 	public GymRewards getRewards() {
@@ -112,6 +135,7 @@ public class GymConfig {
 
 	public void setRewards(GymRewards rewards) {
 		this.rewards = rewards;
+		write();
 	}
 
 	public ArrayList<Leader> getLeaders() {
@@ -120,5 +144,6 @@ public class GymConfig {
 
 	public void setLeaders(ArrayList<Leader> leaders) {
 		this.leaders = leaders;
+		write();
 	}
 }

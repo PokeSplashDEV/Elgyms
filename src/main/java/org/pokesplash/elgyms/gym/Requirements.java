@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Requirements {
-	private ArrayList<UUID> requiredGymIDs; // IDs of the gyms required before this can be challenged.
+	private ArrayList<String> requiredGymIDs; // IDs of the gyms required before this can be challenged.
 	private int pokemonLevel; // Level Pokemon should be.
 	private boolean raiseToCap; // Should Pokemon be set to the level of the gym.
 	private int teamSize; // Amount of Pokemon on a team.
@@ -13,7 +13,7 @@ public class Requirements {
 	private Restriction challengerRestrictions; // Restrictions for the challenger.
 	private Restriction leaderRestrictions; // Restrictions for the leader.
 
-	public Requirements(UUID uuid) {
+	public Requirements(String uuid) {
 		requiredGymIDs = new ArrayList<>();
 		requiredGymIDs.add(uuid);
 
@@ -26,7 +26,7 @@ public class Requirements {
 		leaderRestrictions = new Restriction();
 	}
 
-	public ArrayList<UUID> getRequiredGymIDs() {
+	public ArrayList<String> getRequiredGymIDs() {
 		return requiredGymIDs;
 	}
 
