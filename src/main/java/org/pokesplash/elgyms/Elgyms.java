@@ -7,11 +7,12 @@ import org.apache.logging.log4j.Logger;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.Config;
 import org.pokesplash.elgyms.config.Lang;
+import org.pokesplash.elgyms.provider.GymProvider;
 
 public class Elgyms implements ModInitializer {
 	public static final String MOD_ID = "Elgyms";
 	public static final String BASE_PATH = "/config/" + MOD_ID + "/";
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final Config config = new Config();
 	public static final Lang lang = new Lang();
 
@@ -25,6 +26,7 @@ public class Elgyms implements ModInitializer {
 	}
 
 	public static void load() {
+		GymProvider.init();
 		config.init();
 		lang.init();
 	}

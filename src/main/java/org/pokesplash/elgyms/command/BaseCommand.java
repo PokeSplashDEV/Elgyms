@@ -48,6 +48,7 @@ public class BaseCommand {
 	}
 
 	public int run(CommandContext<ServerCommandSource> context) {
+
 		System.out.println("Base command run");
 		return 1;
 	}

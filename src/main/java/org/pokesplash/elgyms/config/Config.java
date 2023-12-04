@@ -4,13 +4,23 @@ import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.util.Utils;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class Config {
-	private boolean isExample;
+	private boolean forceStartBattle;
+	private boolean teleportBack;
+	private boolean enableBroadcasts;
+	private ArrayList<CategoryConfig> categories;
+
+
 
 	public Config() {
-		isExample = true;
+		forceStartBattle = true;
+		teleportBack = true;
+		enableBroadcasts = true;
+		categories = new ArrayList<>();
+		categories.add(new CategoryConfig());
 	}
 
 	public void init() {
@@ -18,7 +28,10 @@ public class Config {
 				"config.json", el -> {
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
-					isExample = cfg.isExample();
+					forceStartBattle = cfg.isForceStartBattle();
+					teleportBack = cfg.isTeleportBack();
+					enableBroadcasts = cfg.isEnableBroadcasts();
+					categories = cfg.getCategories();
 				});
 
 		if (!futureRead.join()) {
@@ -38,7 +51,19 @@ public class Config {
 		Elgyms.LOGGER.info(Elgyms.MOD_ID + " config file read successfully");
 	}
 
-	public boolean isExample() {
-		return isExample;
+	public boolean isForceStartBattle() {
+		return forceStartBattle;
+	}
+
+	public boolean isTeleportBack() {
+		return teleportBack;
+	}
+
+	public boolean isEnableBroadcasts() {
+		return enableBroadcasts;
+	}
+
+	public ArrayList<CategoryConfig> getCategories() {
+		return categories;
 	}
 }
