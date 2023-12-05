@@ -3,51 +3,46 @@ package org.pokesplash.elgyms.gym;
 import org.pokesplash.elgyms.type.Clause;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Holds all restrictions for either a leader or challenger.
  */
 public class Restriction {
-	private ArrayList<Clause> clauses; // Smogon clauses
-	private ArrayList<BannedPokemon> bannedPokemon; // Pokemon to be banned
-	private ArrayList<String> bannedItems; // Items to be banned
-	private ArrayList<String> bannedMoves; // Moves to be banned
-	private ArrayList<String> bannedAbilities; // Abilities to be banned
+	private HashSet<BannedPokemon> bannedPokemon; // Pokemon to be banned
+	private HashSet<String> bannedItems; // Items to be banned
+	private HashSet<String> bannedMoves; // Moves to be banned
+	private HashSet<String> bannedAbilities; // Abilities to be banned
 
 	public Restriction() {
-		clauses = new ArrayList<>();
-		clauses.add(Clause.SPECIES);
 
-		bannedPokemon = new ArrayList<>();
+
+		bannedPokemon = new HashSet<>();
 		bannedPokemon.add(new BannedPokemon());
 
-		bannedItems = new ArrayList<>();
+		bannedItems = new HashSet<>();
 		bannedItems.add("cobblemon:kings_rock");
 
-		bannedMoves = new ArrayList<>();
+		bannedMoves = new HashSet<>();
 		bannedMoves.add("endeavor");
 
-		bannedAbilities = new ArrayList<>();
+		bannedAbilities = new HashSet<>();
 		bannedAbilities.add("magicguard");
 	}
 
-	public ArrayList<Clause> getClauses() {
-		return clauses;
-	}
-
-	public ArrayList<BannedPokemon> getBannedPokemon() {
+	public HashSet<BannedPokemon> getBannedPokemon() {
 		return bannedPokemon;
 	}
 
-	public ArrayList<String> getBannedItems() {
+	public HashSet<String> getBannedItems() {
 		return bannedItems;
 	}
 
-	public ArrayList<String> getBannedMoves() {
+	public HashSet<String> getBannedMoves() {
 		return bannedMoves;
 	}
 
-	public ArrayList<String> getBannedAbilities() {
+	public HashSet<String> getBannedAbilities() {
 		return bannedAbilities;
 	}
 }

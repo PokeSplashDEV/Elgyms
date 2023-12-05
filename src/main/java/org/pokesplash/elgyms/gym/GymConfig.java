@@ -6,6 +6,7 @@ import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -22,7 +23,7 @@ public class GymConfig {
 	private Positions positions; // Positions of leader, challenger and spectator.
 	private Requirements requirements; // Requirements for the gym.
 	private GymRewards rewards; // Rewards for the gym.
-	private ArrayList<Leader> leaders; // Leaders of the gym.
+	private HashSet<Leader> leaders; // Leaders of the gym.
 
 	public void write() {
 		Gson gson = Utils.newGson();
@@ -49,7 +50,7 @@ public class GymConfig {
 		positions = new Positions();
 		requirements = new Requirements(id);
 		rewards = new GymRewards();
-		leaders = new ArrayList<>();
+		leaders = new HashSet<>();
 		leaders.add(new Leader());
 	}
 
@@ -138,11 +139,11 @@ public class GymConfig {
 		write();
 	}
 
-	public ArrayList<Leader> getLeaders() {
+	public HashSet<Leader> getLeaders() {
 		return leaders;
 	}
 
-	public void setLeaders(ArrayList<Leader> leaders) {
+	public void setLeaders(HashSet<Leader> leaders) {
 		this.leaders = leaders;
 		write();
 	}

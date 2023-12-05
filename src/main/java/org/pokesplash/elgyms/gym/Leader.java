@@ -24,6 +24,14 @@ public class Leader {
 		team = new ArrayList<>();
 	}
 
+	public Leader(UUID uuid, String name) {
+		this.uuid = uuid;
+		this.name = name;
+		record = new Record();
+		startDate = new Date().getTime();
+		team = new ArrayList<>();
+	}
+
 	public UUID getUuid() {
 		return uuid;
 	}

@@ -1,21 +1,29 @@
 package org.pokesplash.elgyms.gym;
 
+import it.unimi.dsi.fastutil.Hash;
+import org.pokesplash.elgyms.type.Clause;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class Requirements {
-	private ArrayList<String> requiredGymIDs; // IDs of the gyms required before this can be challenged.
+	private HashSet<String> requiredGymIDs; // IDs of the gyms required before this can be challenged.
 	private int pokemonLevel; // Level Pokemon should be.
 	private boolean raiseToCap; // Should Pokemon be set to the level of the gym.
 	private int teamSize; // Amount of Pokemon on a team.
 	private boolean teamPreview; // Should team preview be shown.
+	private HashSet<Clause> clauses; // Smogon clauses
 	private boolean leadersInheritPlayerRestrictions; // Should leaders inherit challenger restrictions.
 	private Restriction challengerRestrictions; // Restrictions for the challenger.
 	private Restriction leaderRestrictions; // Restrictions for the leader.
 
 	public Requirements(String uuid) {
-		requiredGymIDs = new ArrayList<>();
+		requiredGymIDs = new HashSet<>();
 		requiredGymIDs.add(uuid);
+
+		clauses = new HashSet<>();
+		clauses.add(Clause.SPECIES);
 
 		pokemonLevel = 100;
 		raiseToCap = true;
@@ -26,7 +34,7 @@ public class Requirements {
 		leaderRestrictions = new Restriction();
 	}
 
-	public ArrayList<String> getRequiredGymIDs() {
+	public HashSet<String> getRequiredGymIDs() {
 		return requiredGymIDs;
 	}
 
@@ -56,5 +64,9 @@ public class Requirements {
 
 	public Restriction getLeaderRestrictions() {
 		return leaderRestrictions;
+	}
+
+	public HashSet<Clause> getClauses() {
+		return clauses;
 	}
 }
