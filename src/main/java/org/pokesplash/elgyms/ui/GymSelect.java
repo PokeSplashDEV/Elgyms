@@ -36,7 +36,7 @@ public class GymSelect {
 			base.append("§7)");
 			lore.add(base.toString());
 			lore.add(
-					BadgeProvider.getBadges(player.getUuid()).getBadgeIDs().contains(gym.getBadge().getId()) ?
+					BadgeProvider.getBadges(player).getBadgeIDs().contains(gym.getBadge().getId()) ?
 					Elgyms.lang.getCompleted() : Elgyms.lang.getIncompleted());
 
 			gymButtons.add(GooeyButton.builder()

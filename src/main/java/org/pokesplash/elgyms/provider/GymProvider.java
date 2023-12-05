@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public abstract class GymProvider {
 	private static String PATH = Elgyms.BASE_PATH + "gyms/";
@@ -78,5 +76,17 @@ public abstract class GymProvider {
 
 	public static void addGym(GymConfig gymConfig) {
 		gyms.put(gymConfig.getId(), gymConfig);
+	}
+
+	public static void  updateName(UUID uuid, String name) {
+		for (GymConfig gymConfig : gyms.values()) {
+			for (Leader leader : gymConfig.getLeaders()) {
+				if (leader.getUuid().equals(uuid) &&
+						!leader.getName().equalsIgnoreCase(name)) {
+					leader.setName(name);
+					gymConfig.write(); // TODO test
+				}
+			}
+		}
 	}
 }

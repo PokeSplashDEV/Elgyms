@@ -2,6 +2,7 @@ package org.pokesplash.elgyms;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pokesplash.elgyms.champion.ChampionConfig;
@@ -34,7 +35,7 @@ public class Elgyms implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register(CommandHandler::registerCommands);
-
+		ServerPlayConnectionEvents.JOIN.register(new PlayerJoinEvent());
 		load();
 	}
 

@@ -26,7 +26,7 @@ public class CategorySelect {
 					.display(Utils.parseItemId(category.getDisplayItem()))
 					.hideFlags(FlagType.All)
 					.onClick(e -> {
-						UIManager.openUIForcefully(e.getPlayer(), new GymSelect().getPage(category));
+						UIManager.openUIForcefully(e.getPlayer(), new GymSelect().getPage(category, e.getPlayer()));
 					})
 					.build());
 		}

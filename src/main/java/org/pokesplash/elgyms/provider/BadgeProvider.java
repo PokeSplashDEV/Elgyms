@@ -1,10 +1,12 @@
 package org.pokesplash.elgyms.provider;
 
 import com.google.gson.Gson;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
@@ -45,11 +47,23 @@ public abstract class BadgeProvider {
 		}
 	}
 
-	public static PlayerBadges getBadges(UUID player) {
-		return badges.get(player);
+	public static PlayerBadges getBadges(ServerPlayerEntity player) {
+		if (!badges.containsKey(player.getUuid())) {
+			badges.put(player.getUuid(), new PlayerBadges(player.getUuid(), player.getDisplayName().getString()));
+		}
+		return badges.get(player.getUuid());
 	}
 
 	public static void addBadge(PlayerBadges playerBadges) {
 		badges.put(playerBadges.getUuid(), playerBadges);
+	}
+
+	public static void  updateName(UUID uuid, String name) {
+		for (PlayerBadges playerBadges : badges.values()) {
+			if (playerBadges.getUuid().equals(uuid) &&
+			!playerBadges.getName().equalsIgnoreCase(name)) {
+				playerBadges.setName(name);
+			}
+		}
 	}
 }
