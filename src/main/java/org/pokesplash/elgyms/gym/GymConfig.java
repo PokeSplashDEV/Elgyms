@@ -2,6 +2,7 @@ package org.pokesplash.elgyms.gym;
 
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
@@ -15,10 +16,12 @@ import java.util.concurrent.CompletableFuture;
 public class GymConfig {
 	private String id; // Unqiue ID of the gym.
 	private String name; // The name of the gym.
+	private String displayItem; // The item to display in the menu;
 	private ArrayList<Type> types; // The Pokemon types of the gym.
 	private int weight; // Weight relative to the other gyms.
 	private String categoryName; // Category the gym is in.
 	private double cooldown; // Cooldown in minutes.
+	private Badge badge; // The badge of the gym.
 	private int wildcardAmount; // Amount of Pokemon that do not share a type are allowed.
 	private Positions positions; // Positions of leader, challenger and spectator.
 	private Requirements requirements; // Requirements for the gym.
@@ -34,17 +37,21 @@ public class GymConfig {
 
 		if (!futureWrite.join()) {
 			Elgyms.LOGGER.fatal("Could not write " + fileName + " for " + Elgyms.MOD_ID + ".");
+		} else {
+			GymProvider.addGym(this);
 		}
 	}
 
 	public GymConfig() {
 		id = "gym1";
 		name = "Gym 1";
+		displayItem = "cobblemon:azure_ball";
 		types = new ArrayList<>();
 		types.add(Type.BUG);
 		types.add(Type.DARK);
 		weight = 1;
 		categoryName = "Normal";
+		badge = new Badge();
 		cooldown = 60;
 		wildcardAmount = 1;
 		positions = new Positions();
@@ -52,6 +59,7 @@ public class GymConfig {
 		rewards = new GymRewards();
 		leaders = new HashSet<>();
 		leaders.add(new Leader());
+		write();
 	}
 
 	public String getId() {
@@ -60,6 +68,15 @@ public class GymConfig {
 
 	public String getName() {
 		return name;
+	}
+
+	public Badge getBadge() {
+		return badge;
+	}
+
+	public void setBadge(Badge badge) {
+		this.badge = badge;
+		write();
 	}
 
 	public void setName(String name) {
@@ -146,5 +163,13 @@ public class GymConfig {
 	public void setLeaders(HashSet<Leader> leaders) {
 		this.leaders = leaders;
 		write();
+	}
+
+	public String getDisplayItem() {
+		return displayItem;
+	}
+
+	public void setDisplayItem(String displayItem) {
+		this.displayItem = displayItem;
 	}
 }

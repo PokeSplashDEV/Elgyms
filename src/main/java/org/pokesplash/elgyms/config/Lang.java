@@ -2,25 +2,41 @@ package org.pokesplash.elgyms.config;
 
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class Lang {
 	private String title;
-	private String fillerMaterial;
+	private String backButton;
+	private HashMap<Type, String> types;
 
 	public Lang() {
-		title = Elgyms.MOD_ID;
-		fillerMaterial = "minecraft:white_stained_glass_pane";
+		title = "§3Gyms";
+		backButton = "§3Back";
+
+		types = new HashMap<>();
+		for (Type type : Type.values()) {
+			types.put(type, Utils.capitaliseFirst(type.name()));
+		}
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public String getFillerMaterial() {
-		return fillerMaterial;
+	public String getBackButton() {
+		return backButton;
+	}
+
+	public String getType(Type type) {
+		return types.get(type);
+	}
+
+	public HashMap<Type, String> getTypes() {
+		return types;
 	}
 
 	/**
@@ -32,7 +48,8 @@ public class Lang {
 					Gson gson = Utils.newGson();
 					Lang lang = gson.fromJson(el, Lang.class);
 					title = lang.getTitle();
-					fillerMaterial = lang.getFillerMaterial();
+					backButton = lang.getBackButton();
+					types = lang.getTypes();
 				});
 
 		if (!futureRead.join()) {

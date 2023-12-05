@@ -4,9 +4,13 @@ import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public abstract class GymProvider {
@@ -54,7 +58,25 @@ public abstract class GymProvider {
 		return gyms;
 	}
 
+	public static ArrayList<GymConfig> getGymsByCategory(String categoryName) {
+
+		ArrayList<GymConfig> filteredGyms = new ArrayList<>();
+		for (GymConfig gymConfig : gyms.values()) {
+			if (gymConfig.getCategoryName().equalsIgnoreCase(categoryName)) {
+				filteredGyms.add(gymConfig);
+			}
+		}
+
+		Collections.sort(filteredGyms, Comparator.comparingInt(GymConfig::getWeight));
+
+		return filteredGyms;
+	}
+
 	public static ChampionConfig getChampion() {
 		return champion;
+	}
+
+	public static void addGym(GymConfig gymConfig) {
+		gyms.put(gymConfig.getId(), gymConfig);
 	}
 }

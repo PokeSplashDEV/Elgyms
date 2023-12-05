@@ -14,6 +14,8 @@ public class Requirements {
 	private int teamSize; // Amount of Pokemon on a team.
 	private boolean teamPreview; // Should team preview be shown.
 	private HashSet<Clause> clauses; // Smogon clauses
+	private int maxModdedPokemon; // The maximum amount of modded Pokemon
+	private int maxFullIVs; // The maximum amount of full IVs modded pokemon can have.
 	private boolean leadersInheritPlayerRestrictions; // Should leaders inherit challenger restrictions.
 	private Restriction challengerRestrictions; // Restrictions for the challenger.
 	private Restriction leaderRestrictions; // Restrictions for the leader.
@@ -25,6 +27,8 @@ public class Requirements {
 		clauses = new HashSet<>();
 		clauses.add(Clause.SPECIES);
 
+		maxModdedPokemon = 3;
+		maxFullIVs = 4;
 		pokemonLevel = 100;
 		raiseToCap = true;
 		teamSize = 6;
@@ -68,5 +72,57 @@ public class Requirements {
 
 	public HashSet<Clause> getClauses() {
 		return clauses;
+	}
+
+	public void setRequiredGymIDs(HashSet<String> requiredGymIDs) {
+		this.requiredGymIDs = requiredGymIDs;
+	}
+
+	public void setPokemonLevel(int pokemonLevel) {
+		this.pokemonLevel = pokemonLevel;
+	}
+
+	public void setRaiseToCap(boolean raiseToCap) {
+		this.raiseToCap = raiseToCap;
+	}
+
+	public void setTeamSize(int teamSize) {
+		this.teamSize = teamSize;
+	}
+
+	public void setTeamPreview(boolean teamPreview) {
+		this.teamPreview = teamPreview;
+	}
+
+	public void setClauses(HashSet<Clause> clauses) {
+		this.clauses = clauses;
+	}
+
+	public int getMaxModdedPokemon() {
+		return maxModdedPokemon;
+	}
+
+	public void setMaxModdedPokemon(int maxModdedPokemon) {
+		this.maxModdedPokemon = maxModdedPokemon;
+	}
+
+	public int getMaxFullIVs() {
+		return maxFullIVs;
+	}
+
+	public void setMaxFullIVs(int maxFullIVs) {
+		this.maxFullIVs = maxFullIVs;
+	}
+
+	public void setLeadersInheritPlayerRestrictions(boolean leadersInheritPlayerRestrictions) {
+		this.leadersInheritPlayerRestrictions = leadersInheritPlayerRestrictions;
+	}
+
+	public void setChallengerRestrictions(Restriction challengerRestrictions) {
+		this.challengerRestrictions = challengerRestrictions;
+	}
+
+	public void setLeaderRestrictions(Restriction leaderRestrictions) {
+		this.leaderRestrictions = leaderRestrictions;
 	}
 }
