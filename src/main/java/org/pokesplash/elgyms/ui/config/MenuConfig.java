@@ -2,22 +2,50 @@ package org.pokesplash.elgyms.ui.config;
 
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
-import org.pokesplash.elgyms.config.Lang;
+import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class MenuConfig {
+	private String title;
+	private String backButton;
+	private String completed;
+	private String incompleted;
+	private String requirements;
 	private int categoryRows;
 	private String fillerMaterial;
 	private int backButtonPosition;
 	private String backButtonMaterial;
+	private String challengeButtonTitle;
+	private String challengeButtonMaterial;
+	private String rulesTitle;
+	private int rulesButtonIndex;
+	private String rulesButtonMaterial;
+	private HashMap<Type, String> types;
 
 	public MenuConfig() {
 		categoryRows = 3;
 		fillerMaterial = "minecraft:white_stained_glass_pane";
 		backButtonPosition = 0;
 		backButtonMaterial = "minecraft:barrier";
+		challengeButtonMaterial = "minecraft:lime_stained_glass_pane";
+		rulesTitle = "§6Rules";
+		rulesButtonIndex = 12;
+		rulesButtonMaterial = "minecraft:book";
+		title = "§3Gyms";
+		backButton = "§3Back";
+		completed = "§eYou have beaten this gym.";
+		incompleted = "§cIncomplete";
+		challengeButtonTitle = "§6Challenge";
+		requirements = "§cBadges Required: {badges}";
+
+		types = new HashMap<>();
+		for (Type type : Type.values()) {
+			types.put(type, Utils.capitaliseFirst(type.name()));
+		}
 	}
 
 	/**
@@ -32,6 +60,17 @@ public class MenuConfig {
 					fillerMaterial = cfg.getFillerMaterial();
 					backButtonPosition = cfg.getBackButtonPosition();
 					backButtonMaterial = cfg.getBackButtonMaterial();
+					challengeButtonMaterial = cfg.getChallengeButtonMaterial();
+					rulesButtonMaterial = cfg.getRulesButtonMaterial();
+					title = cfg.getTitle();
+					backButton = cfg.getBackButton();
+					types = cfg.getTypes();
+					completed = cfg.getCompleted();
+					incompleted = cfg.getIncompleted();
+					challengeButtonTitle = cfg.getChallengeButtonTitle();
+					requirements = cfg.getRequirements();
+					rulesTitle = cfg.getRulesTitle();
+					rulesButtonIndex = cfg.getRulesButtonIndex();
 				});
 
 		if (!futureRead.join()) {
@@ -64,5 +103,53 @@ public class MenuConfig {
 
 	public String getBackButtonMaterial() {
 		return backButtonMaterial;
+	}
+
+	public String getChallengeButtonTitle() {
+		return challengeButtonTitle;
+	}
+
+	public String getRulesButtonMaterial() {
+		return rulesButtonMaterial;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getBackButton() {
+		return backButton;
+	}
+
+	public String getCompleted() {
+		return completed;
+	}
+
+	public String getIncompleted() {
+		return incompleted;
+	}
+
+	public String getRequirements() {
+		return requirements;
+	}
+
+	public String getChallengeButtonMaterial() {
+		return challengeButtonMaterial;
+	}
+
+	public HashMap<Type, String> getTypes() {
+		return types;
+	}
+
+	public String getType(Type type) {
+		return types.get(type);
+	}
+
+	public int getRulesButtonIndex() {
+		return rulesButtonIndex;
+	}
+
+	public String getRulesTitle() {
+		return rulesTitle;
 	}
 }

@@ -1,6 +1,7 @@
 package org.pokesplash.elgyms.config;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Different Categories of gyms.

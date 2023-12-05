@@ -21,6 +21,8 @@ public abstract class GymProvider {
 	 */
 	public static void init() {
 
+		gyms = new HashMap<>();
+
 		champion.init(); // Initialize the champion config.
 
 		try {
@@ -30,9 +32,6 @@ public abstract class GymProvider {
 
 			// If no files, return.
 			if (list.length == 0) {
-				GymConfig gymConfig = new GymConfig();
-				gymConfig.write();
-				gyms.put(gymConfig.getId(), gymConfig);
 				return;
 			}
 
@@ -84,7 +83,7 @@ public abstract class GymProvider {
 				if (leader.getUuid().equals(uuid) &&
 						!leader.getName().equalsIgnoreCase(name)) {
 					leader.setName(name);
-					gymConfig.write(); // TODO test
+					gymConfig.write();
 				}
 			}
 		}

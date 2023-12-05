@@ -1,14 +1,12 @@
 package org.pokesplash.elgyms.gym;
 
-import it.unimi.dsi.fastutil.Hash;
 import org.pokesplash.elgyms.type.Clause;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
 public class Requirements {
-	private HashSet<String> requiredGymIDs; // IDs of the gyms required before this can be challenged.
+	private HashSet<UUID> requiredBadgeIDs; // IDs of the badges required before this can be challenged.
 	private int pokemonLevel; // Level Pokemon should be.
 	private boolean raiseToCap; // Should Pokemon be set to the level of the gym.
 	private int teamSize; // Amount of Pokemon on a team.
@@ -20,9 +18,8 @@ public class Requirements {
 	private Restriction challengerRestrictions; // Restrictions for the challenger.
 	private Restriction leaderRestrictions; // Restrictions for the leader.
 
-	public Requirements(String uuid) {
-		requiredGymIDs = new HashSet<>();
-		requiredGymIDs.add(uuid);
+	public Requirements() {
+		requiredBadgeIDs = new HashSet<>();
 
 		clauses = new HashSet<>();
 		clauses.add(Clause.SPECIES);
@@ -38,8 +35,8 @@ public class Requirements {
 		leaderRestrictions = new Restriction();
 	}
 
-	public HashSet<String> getRequiredGymIDs() {
-		return requiredGymIDs;
+	public HashSet<UUID> getRequiredBadgeIDs() {
+		return requiredBadgeIDs;
 	}
 
 	public int getPokemonLevel() {
@@ -74,8 +71,8 @@ public class Requirements {
 		return clauses;
 	}
 
-	public void setRequiredGymIDs(HashSet<String> requiredGymIDs) {
-		this.requiredGymIDs = requiredGymIDs;
+	public void setRequiredBadgeIDs(HashSet<UUID> requiredBadgeIDs) {
+		this.requiredBadgeIDs = requiredBadgeIDs;
 	}
 
 	public void setPokemonLevel(int pokemonLevel) {

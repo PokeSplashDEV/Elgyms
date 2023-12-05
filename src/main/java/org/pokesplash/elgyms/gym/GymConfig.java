@@ -55,7 +55,7 @@ public class GymConfig {
 		cooldown = 60;
 		wildcardAmount = 1;
 		positions = new Positions();
-		requirements = new Requirements(id);
+		requirements = new Requirements();
 		rewards = new GymRewards();
 		leaders = new HashSet<>();
 		leaders.add(new Leader());

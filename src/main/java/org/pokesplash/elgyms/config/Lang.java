@@ -9,47 +9,12 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class Lang {
-	private String title;
-	private String backButton;
-	private String completed;
-	private String incompleted;
-	private HashMap<Type, String> types;
+
 
 	public Lang() {
-		title = "§3Gyms";
-		backButton = "§3Back";
-		completed = "§eCompleted";
-		incompleted = "§cIncomplete";
 
-		types = new HashMap<>();
-		for (Type type : Type.values()) {
-			types.put(type, Utils.capitaliseFirst(type.name()));
-		}
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public String getBackButton() {
-		return backButton;
-	}
-
-	public String getType(Type type) {
-		return types.get(type);
-	}
-
-	public String getCompleted() {
-		return completed;
-	}
-
-	public String getIncompleted() {
-		return incompleted;
-	}
-
-	public HashMap<Type, String> getTypes() {
-		return types;
-	}
 
 	/**
 	 * Method to initialize the config.
@@ -59,11 +24,7 @@ public class Lang {
 				el -> {
 					Gson gson = Utils.newGson();
 					Lang lang = gson.fromJson(el, Lang.class);
-					title = lang.getTitle();
-					backButton = lang.getBackButton();
-					types = lang.getTypes();
-					completed = lang.getCompleted();
-					incompleted = lang.getIncompleted();
+
 				});
 
 		if (!futureRead.join()) {

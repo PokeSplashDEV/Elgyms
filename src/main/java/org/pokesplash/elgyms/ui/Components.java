@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public abstract class Components {
 	public static Button backButton(Consumer<ButtonAction> callback) {
 		return GooeyButton.builder()
-				.title(Elgyms.lang.getBackButton())
+				.title(Elgyms.menu.getBackButton())
 				.display(Utils.parseItemId(Elgyms.menu.getBackButtonMaterial()))
 				.hideFlags(FlagType.All)
 				.onClick(callback)

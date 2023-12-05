@@ -8,5 +8,6 @@ public enum Clause {
 	MOODY,
 	ENDLESS_BATTLE,
 	SWAGGER,
-	ITEM
+	ITEM,
+	LEGENDARY
 }

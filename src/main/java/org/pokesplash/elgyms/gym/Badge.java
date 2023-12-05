@@ -7,6 +7,7 @@ import java.util.UUID;
  */
 public class Badge {
 	private UUID id;
+	private String name;
 	private String material;
 
 	public Badge() {
@@ -24,5 +25,13 @@ public class Badge {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

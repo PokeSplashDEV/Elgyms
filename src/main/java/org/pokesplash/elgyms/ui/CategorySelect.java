@@ -33,7 +33,7 @@ public class CategorySelect {
 
 		return GooeyPage.builder()
 				.template(template.build())
-				.title(Elgyms.lang.getTitle())
+				.title(Elgyms.menu.getTitle())
 				.build();
 	}
 }

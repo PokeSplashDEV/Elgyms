@@ -21,6 +21,7 @@ import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 public class GymSelect {
 	public Page getPage(CategoryConfig category, ServerPlayerEntity player) {
@@ -31,21 +32,42 @@ public class GymSelect {
 			Collection<String> lore = new ArrayList<>();
 			StringBuilder base = new StringBuilder("§7( ");
 			for (Type type : gym.getTypes()) {
-				base.append(Elgyms.lang.getType(type)).append(" ");
+				base.append(Elgyms.menu.getType(type) == null ? type : Elgyms.menu.getType(type)).append(" ");
 			}
 			base.append("§7)");
 			lore.add(base.toString());
-			lore.add(
-					BadgeProvider.getBadges(player).getBadgeIDs().contains(gym.getBadge().getId()) ?
-					Elgyms.lang.getCompleted() : Elgyms.lang.getIncompleted());
 
+			boolean hasBeaten = BadgeProvider.getBadges(player).getBadgeIDs(category).contains(gym.getBadge());
+
+			boolean hasRequirements = false;
+
+			if (hasBeaten) {
+				lore.add(Elgyms.menu.getCompleted());
+			} else {
+				for (UUID id : gym.getRequirements().getRequiredBadgeIDs()) {
+					if (BadgeProvider.getBadges(player).containsBadge(id)) {
+						hasRequirements = true;
+						break;
+					}
+				}
+
+				if (hasRequirements) {
+					lore.add(Elgyms.menu.getIncompleted());
+				} else {
+					lore.add(Elgyms.menu.getRequirements());
+				}
+			}
+
+			boolean finalHasRequirements = hasRequirements;
 			gymButtons.add(GooeyButton.builder()
 					.title(gym.getName())
 					.display(Utils.parseItemId(gym.getDisplayItem()))
 					.lore(lore)
 					.hideFlags(FlagType.All)
 					.onClick(e -> {
-						// TODO open gym menu
+						if (!hasBeaten && finalHasRequirements) {
+							UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, category));
+						}
 					})
 					.build());
 		}
