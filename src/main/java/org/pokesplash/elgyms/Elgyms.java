@@ -10,11 +10,13 @@ import org.pokesplash.elgyms.champion.ChampionHistoryItem;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.Config;
 import org.pokesplash.elgyms.config.Lang;
+import org.pokesplash.elgyms.event.PlayerJoinEvent;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.ui.config.MenuConfig;
 
+import javax.sql.ConnectionEvent;
 import java.util.UUID;
 
 public class Elgyms implements ModInitializer {
@@ -32,6 +34,7 @@ public class Elgyms implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register(CommandHandler::registerCommands);
+
 		load();
 	}
 

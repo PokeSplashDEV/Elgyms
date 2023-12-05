@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.event.obj;
+package org.pokesplash.elgyms.api.event.obj;
 
 import java.util.function.Consumer;
 

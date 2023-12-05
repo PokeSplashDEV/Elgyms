@@ -11,11 +11,15 @@ import java.util.concurrent.CompletableFuture;
 public class Lang {
 	private String title;
 	private String backButton;
+	private String completed;
+	private String incompleted;
 	private HashMap<Type, String> types;
 
 	public Lang() {
 		title = "§3Gyms";
 		backButton = "§3Back";
+		completed = "§eCompleted";
+		incompleted = "§cIncomplete";
 
 		types = new HashMap<>();
 		for (Type type : Type.values()) {
@@ -35,6 +39,14 @@ public class Lang {
 		return types.get(type);
 	}
 
+	public String getCompleted() {
+		return completed;
+	}
+
+	public String getIncompleted() {
+		return incompleted;
+	}
+
 	public HashMap<Type, String> getTypes() {
 		return types;
 	}
@@ -50,6 +62,8 @@ public class Lang {
 					title = lang.getTitle();
 					backButton = lang.getBackButton();
 					types = lang.getTypes();
+					completed = lang.getCompleted();
+					incompleted = lang.getIncompleted();
 				});
 
 		if (!futureRead.join()) {

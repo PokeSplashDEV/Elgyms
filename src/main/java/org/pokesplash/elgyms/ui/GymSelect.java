@@ -10,9 +10,11 @@ import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class GymSelect {
-	public Page getPage(CategoryConfig category) {
+	public Page getPage(CategoryConfig category, ServerPlayerEntity player) {
 
 		ArrayList<Button> gymButtons = new ArrayList<>();
 		for (GymConfig gym : GymProvider.getGymsByCategory(category.getName())) {
@@ -33,6 +35,9 @@ public class GymSelect {
 			}
 			base.append("§7)");
 			lore.add(base.toString());
+			lore.add(
+					BadgeProvider.getBadges(player.getUuid()).getBadgeIDs().contains(gym.getBadge().getId()) ?
+					Elgyms.lang.getCompleted() : Elgyms.lang.getIncompleted());
 
 			gymButtons.add(GooeyButton.builder()
 					.title(gym.getName())

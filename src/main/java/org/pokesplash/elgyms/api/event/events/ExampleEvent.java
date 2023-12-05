@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.event.events;
+package org.pokesplash.elgyms.api.event.events;
 
 public class ExampleEvent {
 	private String message;
