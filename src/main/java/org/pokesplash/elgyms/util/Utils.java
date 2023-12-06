@@ -4,7 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.gym.Badge;
+import org.pokesplash.elgyms.gym.GymConfig;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -281,14 +288,53 @@ public abstract class Utils {
 		return message.substring(0, 1).toUpperCase() + message.substring(1).toLowerCase();
 	}
 
+	public static String createListString(ArrayList<String> strings, String seperator) {
+		StringBuilder output = new StringBuilder();
+		for (int i = 0; i < strings.size(); i++) {
+			if (i == strings.size() - 1) {
+				output.append(strings.get(i));
+			} else {
+				output.append(strings.get(i)).append(seperator);
+			}
+		}
+		return output.toString();
+	}
+
 	/**
 	 * Replaces placeholders
 	 * @return Amended string.
 	 */
-	public static String formatPlaceholders(String message, double param1, String param2) {
-		return message
-				.replaceAll("\\{param1\\}", String.valueOf(param1))
-				.replaceAll("\\{param2\\}", param2);
+	public static String formatPlaceholders(String message, ArrayList<Badge> badges, Badge badge,
+	                                        ServerPlayerEntity player, CategoryConfig category, GymConfig gym) {
+
+		String output = message;
+
+		if (badges != null) {
+			ArrayList<String> strings = new ArrayList<>();
+			for (Badge badge1 : badges) {
+				strings.add(badge1.getName());
+			}
+			output = output.replaceAll("\\{badges\\}", createListString(strings, "§f, "));
+		}
+
+		if (badges != null) {
+			output = output.replaceAll("\\{badge\\}", badge.getName());
+		}
+
+		if (player != null) {
+			output = output.replaceAll("\\{player\\}", player.getName().getString());
+			output = output.replaceAll("\\{uuid\\}", player.getUuid().toString());
+		}
+
+		if (category != null) {
+			output = output.replaceAll("\\{category\\}", category.getName());
+		}
+
+		if (gym != null) {
+			output = output.replaceAll("\\{gym\\}", gym.getName());
+		}
+
+		return output;
 	}
 
 	/**
@@ -301,5 +347,18 @@ public abstract class Utils {
 		tag.putString("id", id);
 		tag.putInt("Count", 1);
 		return ItemStack.fromNbt(tag);
+	}
+
+	/**
+	 * Broadcasts a message to every player on the server.
+	 * @param message The message to broadcast.
+	 */
+	public static void broadcastMessage(String message) {
+		MinecraftServer server = Elgyms.server;
+		ArrayList<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+
+		for (ServerPlayerEntity pl : players) {
+			pl.sendMessage(Text.literal(message));
+		}
 	}
 }

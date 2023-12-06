@@ -21,6 +21,8 @@ public class MenuConfig {
 	private String backButtonMaterial;
 	private String challengeButtonTitle;
 	private String challengeButtonMaterial;
+	private String closedTitle;
+	private String closedButtonMaterial;
 	private String rulesTitle;
 	private int rulesButtonIndex;
 	private String rulesButtonMaterial;
@@ -32,6 +34,8 @@ public class MenuConfig {
 		backButtonPosition = 0;
 		backButtonMaterial = "minecraft:barrier";
 		challengeButtonMaterial = "minecraft:lime_stained_glass_pane";
+		closedTitle = "§cThis gym is currently closed.";
+		closedButtonMaterial = "minecraft:red_stained_glass_pane";
 		rulesTitle = "§6Rules";
 		rulesButtonIndex = 12;
 		rulesButtonMaterial = "minecraft:book";
@@ -71,6 +75,8 @@ public class MenuConfig {
 					requirements = cfg.getRequirements();
 					rulesTitle = cfg.getRulesTitle();
 					rulesButtonIndex = cfg.getRulesButtonIndex();
+					closedTitle = cfg.getClosedTitle();
+					closedButtonMaterial = cfg.getClosedButtonMaterial();
 				});
 
 		if (!futureRead.join()) {
@@ -151,5 +157,13 @@ public class MenuConfig {
 
 	public String getRulesTitle() {
 		return rulesTitle;
+	}
+
+	public String getClosedButtonMaterial() {
+		return closedButtonMaterial;
+	}
+
+	public String getClosedTitle() {
+		return closedTitle;
 	}
 }

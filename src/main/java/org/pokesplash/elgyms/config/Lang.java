@@ -9,10 +9,14 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class Lang {
-
+	private String prefix;
+	private String openGymMessage;
+	private String closeGymMessage;
 
 	public Lang() {
-
+		prefix = "§b[§3Gyms§b]";
+		openGymMessage = "§bThe {gym} has been opened.";
+		closeGymMessage = "§3The {gym} has been closed.";
 	}
 
 
@@ -24,7 +28,9 @@ public class Lang {
 				el -> {
 					Gson gson = Utils.newGson();
 					Lang lang = gson.fromJson(el, Lang.class);
-
+					prefix = lang.getPrefix();
+					openGymMessage = lang.getOpenGymMessage();
+					closeGymMessage = lang.getCloseGymMessage();
 				});
 
 		if (!futureRead.join()) {
@@ -41,5 +47,17 @@ public class Lang {
 			return;
 		}
 		Elgyms.LOGGER.info(Elgyms.MOD_ID + " lang file read successfully.");
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public String getOpenGymMessage() {
+		return openGymMessage;
+	}
+
+	public String getCloseGymMessage() {
+		return closeGymMessage;
 	}
 }

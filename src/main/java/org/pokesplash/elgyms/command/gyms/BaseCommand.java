@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command;
+package org.pokesplash.elgyms.command.gyms;
 
 import ca.landonjw.gooeylibs2.api.UIManager;
 import com.mojang.brigadier.CommandDispatcher;
@@ -8,10 +8,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
-
-import javax.swing.*;
 
 public class BaseCommand {
 	public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -48,7 +47,7 @@ public class BaseCommand {
 						})
 				.redirect(registeredCommand).executes(this::run));
 
-		registeredCommand.addChild(new ReloadCommand().build());
+		registeredCommand.addChild(new Reload().build());
 
 	}
 

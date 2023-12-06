@@ -10,6 +10,7 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
@@ -24,6 +25,12 @@ public class GymInfo {
 				})
 				.build();
 
+		Button closed = GooeyButton.builder()
+				.title(Elgyms.menu.getClosedTitle())
+				.display(Utils.parseItemId(Elgyms.menu.getClosedButtonMaterial()))
+				.hideFlags(FlagType.All)
+				.build();
+
 		Button rules = GooeyButton.builder()
 				.title(Elgyms.menu.getRulesTitle())
 				.display(Utils.parseItemId(Elgyms.menu.getRulesButtonMaterial()))
@@ -33,7 +40,7 @@ public class GymInfo {
 
 		ChestTemplate template = ChestTemplate.builder(3)
 				.fill(Components.filler())
-				.set(10, challenge)
+				.set(10, GymProvider.getOpenGyms().contains(gym) ? challenge : closed)
 				.set(13, rules)
 				.set(16, Components.backButton(e -> {
 					UIManager.openUIForcefully(e.getPlayer(), new GymSelect().getPage(categoryConfig, e.getPlayer()));
