@@ -68,24 +68,11 @@ public abstract class GymProvider {
 
 		return filteredGyms;
 	}
-
 	public static ChampionConfig getChampion() {
 		return champion;
 	}
 
 	public static void addGym(GymConfig gymConfig) {
 		gyms.put(gymConfig.getId(), gymConfig);
-	}
-
-	public static void  updateName(UUID uuid, String name) {
-		for (GymConfig gymConfig : gyms.values()) {
-			for (Leader leader : gymConfig.getLeaders()) {
-				if (leader.getUuid().equals(uuid) &&
-						!leader.getName().equalsIgnoreCase(name)) {
-					leader.setName(name);
-					gymConfig.write();
-				}
-			}
-		}
 	}
 }

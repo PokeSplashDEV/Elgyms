@@ -11,14 +11,12 @@ import java.util.UUID;
  */
 public class Leader {
 	private UUID uuid; // UUID of the leader.
-	private String name; // IGN of the leader.
 	private Record record; // Wins / Losses of the leader.
 	private long startDate; // The start date of the leader.
 	private ArrayList<JsonObject> team; // Leaders team.
 
 	public Leader() {
 		uuid = UUID.randomUUID();
-		name = "minecraftIGN";
 		record = new Record();
 		startDate = new Date().getTime();
 		team = new ArrayList<>();
@@ -26,7 +24,6 @@ public class Leader {
 
 	public Leader(UUID uuid, String name) {
 		this.uuid = uuid;
-		this.name = name;
 		record = new Record();
 		startDate = new Date().getTime();
 		team = new ArrayList<>();
@@ -34,14 +31,6 @@ public class Leader {
 
 	public UUID getUuid() {
 		return uuid;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Record getRecord() {

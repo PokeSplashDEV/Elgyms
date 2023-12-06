@@ -18,7 +18,6 @@ public class ChampionHistoryItem {
 
 	public ChampionHistoryItem(Leader leader) {
 		this.uuid = leader.getUuid();
-		this.name = leader.getName();
 		this.record = leader.getRecord();
 		this.startDate = leader.getStartDate();
 		this.endDate = new Date().getTime();

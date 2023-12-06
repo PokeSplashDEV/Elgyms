@@ -59,7 +59,6 @@ public class GymConfig {
 		rewards = new GymRewards();
 		leaders = new HashSet<>();
 		leaders.add(new Leader());
-		write();
 	}
 
 	public String getId() {
