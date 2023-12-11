@@ -19,6 +19,7 @@ import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.ui.config.MenuConfig;
+import org.pokesplash.elgyms.util.Utils;
 
 import javax.sql.ConnectionEvent;
 import java.util.UUID;

@@ -175,6 +175,25 @@ public abstract class Utils {
 		}
 	}
 
+	public static boolean deleteFile(String filePath, String filename) {
+		try {
+			Path path = Paths.get(new File("").getAbsolutePath() + filePath, filename);
+			File file = path.toFile();
+
+			if (!file.exists()) {
+				return true;
+			}
+
+			file.delete();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
 	/**
 	 * Method to check if a directory exists. If it doesn't, create it.
 	 * @param path The directory to check.

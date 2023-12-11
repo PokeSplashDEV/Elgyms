@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms;
+package org.pokesplash.elgyms.command.gyms.user;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,12 +22,13 @@ public class Challenge {
 		return CommandManager.literal("challenge")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".reload");
+						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
+								".user.challenge");
 					} else {
 						return true;
 					}
 				})
-				.executes(this::run)
+				.executes(this::usage)
 				.then(CommandManager.argument("gym", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
 							for (GymConfig gymConfig : GymProvider.getGyms().values()) {

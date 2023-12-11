@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms;
+package org.pokesplash.elgyms.command.gyms.admin;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -14,7 +14,8 @@ public class Reload {
 		return CommandManager.literal("reload")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".reload");
+						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
+								".admin.reload");
 					} else {
 						return true;
 					}

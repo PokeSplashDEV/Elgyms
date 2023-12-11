@@ -3,6 +3,7 @@ package org.pokesplash.elgyms.provider;
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.champion.ChampionConfig;
+import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.gym.Queue;
@@ -129,5 +130,12 @@ public abstract class GymProvider {
 
 	public static GymConfig getGymById(String id) {
 		return gyms.get(id);
+	}
+
+	public static boolean deleteGym(GymConfig gym) {
+		gyms.remove(gym.getId());
+		queues.remove(gym);
+		openGyms.remove(gym);
+		return Utils.deleteFile(PATH, gym.getId() + ".json");
 	}
 }

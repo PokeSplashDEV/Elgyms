@@ -1,6 +1,8 @@
 package org.pokesplash.elgyms.gym;
 
 import com.google.gson.Gson;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.type.Type;
@@ -8,6 +10,7 @@ import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -61,6 +64,22 @@ public class GymConfig {
 		leaders.add(new Leader());
 	}
 
+	public GymConfig(String name, String categoryName) {
+		id = nameToId(name);
+		this.name = name;
+		displayItem = "cobblemon:poke_ball";
+		types = new ArrayList<>();
+		weight = 1;
+		this.categoryName = categoryName;
+		badge = new Badge();
+		cooldown = 60;
+		wildcardAmount = 1;
+		positions = new Positions();
+		requirements = new Requirements();
+		rewards = new GymRewards();
+		leaders = new HashSet<>();
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -79,8 +98,11 @@ public class GymConfig {
 	}
 
 	public void setName(String name) {
+		GymProvider.deleteGym(this);
 		this.name = name;
+		this.id = nameToId(name);
 		write();
+		GymProvider.addGym(this);
 	}
 
 	public ArrayList<Type> getTypes() {
@@ -159,9 +181,26 @@ public class GymConfig {
 		return leaders;
 	}
 
-	public void setLeaders(HashSet<Leader> leaders) {
-		this.leaders = leaders;
+
+	public void addLeader(Leader leader) {
+		leaders.add(leader);
 		write();
+	}
+
+	public boolean containsLeader(UUID uuid) {
+		for (Leader leader : leaders) {
+			if (leader.getUuid().equals(uuid)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void removeLeader(UUID uuid) {
+		for (Leader leader : leaders) {
+			if (leader.getUuid().equals(uuid)) leaders.remove(leader);
+			write();
+		}
 	}
 
 	public String getDisplayItem() {
@@ -170,5 +209,10 @@ public class GymConfig {
 
 	public void setDisplayItem(String displayItem) {
 		this.displayItem = displayItem;
+		write();
+	}
+
+	public static String nameToId(String name) {
+		return Utils.formatMessage(name, false).replaceAll(" ", "").toLowerCase();
 	}
 }

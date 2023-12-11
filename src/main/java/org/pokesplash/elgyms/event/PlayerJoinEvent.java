@@ -20,8 +20,8 @@ public class PlayerJoinEvent implements ServerPlayConnectionEvents.Join {
 
 		BadgeProvider.updateName(handler.getPlayer().getUuid(), handler.getPlayer().getDisplayName().getString());
 
-		// Opens all of the players gyms.
-		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(handler.getPlayer().getUuid();
+		// Opens all the players gyms.
+		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(handler.getPlayer().getUuid());
 		leaderGyms.removeAll(GymProvider.getOpenGyms());
 		for (GymConfig gymConfig : leaderGyms) {
 			GymProvider.openGym(gymConfig);

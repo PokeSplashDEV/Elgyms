@@ -9,6 +9,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.command.CommandHandler;
+import org.pokesplash.elgyms.command.gyms.admin.*;
+import org.pokesplash.elgyms.command.gyms.user.Challenge;
 import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 
@@ -48,6 +50,11 @@ public class BaseCommand {
 				.redirect(registeredCommand).executes(this::run));
 
 		registeredCommand.addChild(new Reload().build());
+		registeredCommand.addChild(new Challenge().build());
+		registeredCommand.addChild(new CreateGym().build());
+		registeredCommand.addChild(new DeleteGym().build());
+		registeredCommand.addChild(new EditGym().build());
+		registeredCommand.addChild(new Leader().build());
 
 	}
 

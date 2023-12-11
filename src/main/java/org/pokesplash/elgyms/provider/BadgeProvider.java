@@ -47,11 +47,22 @@ public abstract class BadgeProvider {
 		}
 	}
 
+	public static HashMap<UUID, PlayerBadges> getBadges() {
+		return badges;
+	}
+
 	public static PlayerBadges getBadges(ServerPlayerEntity player) {
 		if (!badges.containsKey(player.getUuid())) {
 			badges.put(player.getUuid(), new PlayerBadges(player.getUuid(), player.getDisplayName().getString()));
 		}
 		return badges.get(player.getUuid());
+	}
+
+	public static PlayerBadges getBadges(String player) {
+		for (PlayerBadges playerBadges : badges.values()) {
+			if (playerBadges.getName().equalsIgnoreCase(player)) return playerBadges;
+		}
+		return null;
 	}
 
 	public static void addBadge(PlayerBadges playerBadges) {
