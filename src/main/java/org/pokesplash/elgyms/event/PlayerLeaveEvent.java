@@ -21,6 +21,7 @@ public class PlayerLeaveEvent implements ServerPlayConnectionEvents.Disconnect {
 			queue.removeFromQueue(handler.getPlayer().getUuid());
 		}
 
+		// TODO gyms arent being closed.
 		// Opens all of the players gyms.
 		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(handler.getPlayer().getUuid());
 		for (GymConfig gymConfig : leaderGyms) {

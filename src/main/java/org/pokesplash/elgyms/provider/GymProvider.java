@@ -107,6 +107,16 @@ public abstract class GymProvider {
 		return null;
 	}
 
+	public static GymConfig getGymFromPlayer(UUID player) {
+		for (GymConfig gym : queues.keySet()) {
+			Queue queue = queues.get(gym);
+			if (queue.isInQueue(player)) {
+				return gym;
+			}
+		}
+		return null;
+	}
+
 	public static HashSet<GymConfig> getOpenGyms() {
 		return openGyms;
 	}
@@ -173,6 +183,32 @@ public abstract class GymProvider {
 					)
 				));
 			}
+		}
+	}
+
+	public static void rejectChallenge(UUID challenger, ServerPlayerEntity leader) {
+		Queue queue = getQueueFromPlayer(challenger);
+		GymConfig gym = getGymFromPlayer(challenger);
+
+		if (queue == null) {
+			return;
+		}
+
+		queue.removeFromQueue(challenger);
+
+		ServerPlayerEntity challengerPlayer = Elgyms.server.getPlayerManager().getPlayer(challenger);
+
+		// Send messages to both challenger and leader.
+		if (challengerPlayer != null) {
+			challengerPlayer.sendMessage(Text.literal(
+					Utils.formatPlaceholders(Elgyms.lang.getRejectChallengePlayer(), null, null,
+							challengerPlayer, null, gym)
+			));
+
+			leader.sendMessage(Text.literal(
+					Utils.formatPlaceholders(Elgyms.lang.getRejectChallengeLeader(), null, null,
+							challengerPlayer, null, gym)
+			));
 		}
 	}
 }
