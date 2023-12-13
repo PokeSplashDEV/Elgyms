@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.gym;
 
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -45,8 +46,15 @@ public class Leader {
 		return team;
 	}
 
-	public void setTeam(ArrayList<JsonObject> team) {
-		this.team = team;
+	public void setTeam(ArrayList<Pokemon> team) {
+
+		ArrayList<JsonObject> jsonObjects = new ArrayList<>();
+
+		for (Pokemon pokemon : team) {
+			jsonObjects.add(pokemon.saveToJSON(new JsonObject()));
+		}
+
+		this.team = jsonObjects;
 	}
 
 	public long getStartDate() {

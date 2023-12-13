@@ -2,10 +2,8 @@ package org.pokesplash.elgyms.config;
 
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
-import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class Lang {

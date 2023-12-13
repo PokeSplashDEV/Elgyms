@@ -3,14 +3,12 @@ package org.pokesplash.elgyms.badge;
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
-import org.pokesplash.elgyms.gym.*;
+import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.provider.BadgeProvider;
-import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 

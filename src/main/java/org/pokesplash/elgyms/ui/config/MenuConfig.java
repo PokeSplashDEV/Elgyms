@@ -5,7 +5,6 @@ import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.type.Type;
 import org.pokesplash.elgyms.util.Utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 

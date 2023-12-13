@@ -1,8 +1,6 @@
 package org.pokesplash.elgyms.gym;
 
 import com.google.gson.Gson;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.type.Type;
@@ -25,7 +23,6 @@ public class GymConfig {
 	private String categoryName; // Category the gym is in.
 	private double cooldown; // Cooldown in minutes.
 	private Badge badge; // The badge of the gym.
-	private int wildcardAmount; // Amount of Pokemon that do not share a type are allowed.
 	private Positions positions; // Positions of leader, challenger and spectator.
 	private Requirements requirements; // Requirements for the gym.
 	private GymRewards rewards; // Rewards for the gym.
@@ -56,7 +53,6 @@ public class GymConfig {
 		categoryName = "Normal";
 		badge = new Badge();
 		cooldown = 60;
-		wildcardAmount = 1;
 		positions = new Positions();
 		requirements = new Requirements();
 		rewards = new GymRewards();
@@ -73,7 +69,6 @@ public class GymConfig {
 		this.categoryName = categoryName;
 		badge = new Badge();
 		cooldown = 60;
-		wildcardAmount = 1;
 		positions = new Positions();
 		requirements = new Requirements();
 		rewards = new GymRewards();
@@ -141,15 +136,6 @@ public class GymConfig {
 		write();
 	}
 
-	public int getWildcardAmount() {
-		return wildcardAmount;
-	}
-
-	public void setWildcardAmount(int wildcardAmount) {
-		this.wildcardAmount = wildcardAmount;
-		write();
-	}
-
 	public Positions getPositions() {
 		return positions;
 	}
@@ -185,6 +171,20 @@ public class GymConfig {
 	public void addLeader(Leader leader) {
 		leaders.add(leader);
 		write();
+	}
+
+	public Leader getLeader(UUID uuid) {
+		for (Leader leader : leaders) {
+			if (leader.getUuid().equals(uuid)) {
+				return leader;
+			}
+		}
+		return null;
+	}
+
+	public void updateLeader(Leader leader) {
+		removeLeader(leader.getUuid());
+		addLeader(leader);
 	}
 
 	public boolean containsLeader(UUID uuid) {

@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
-import org.pokesplash.elgyms.champion.ChampionConfig;
-import org.pokesplash.elgyms.gym.GymConfig;
-import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 
 public abstract class BadgeProvider {
 	private static String PATH = Elgyms.BASE_PATH + "badges/";

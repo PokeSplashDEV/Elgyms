@@ -5,20 +5,15 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
-import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
-
-import java.util.stream.Stream;
 
 public class Leader {
 	public LiteralCommandNode<ServerCommandSource> build() {
@@ -51,8 +46,25 @@ public class Leader {
 											return builder.buildFuture();
 										})
 										.executes(this::add))))
+				.then(CommandManager.literal("remove")
+						.executes(this::usage)
+						.then(CommandManager.argument("gym", StringArgumentType.string())
+								.suggests((ctx, builder) -> {
+									for (GymConfig gym : GymProvider.getGyms().values()) {
+										builder.suggest(gym.getId());
+									}
+									return builder.buildFuture();
+								})
+								.executes(this::usage)
+								.then(CommandManager.argument("player", StringArgumentType.string())
+										.suggests((ctx, builder) -> {
+											for (PlayerBadges badges : BadgeProvider.getBadges().values()) {
+												builder.suggest(badges.getName());
+											}
 
-
+											return builder.buildFuture();
+										})
+										.executes(this::remove))))
 				.build();
 	}
 
@@ -92,6 +104,47 @@ public class Leader {
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
 				"§aAdded " + player.getName() + " to " + gym.getName(), context.getSource().isExecutedByPlayer()
+		)));
+
+		return 1;
+	}
+
+	public int remove(CommandContext<ServerCommandSource> context) {
+
+		String gymString = StringArgumentType.getString(context, "gym");
+
+		GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
+
+		if (gym == null) {
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+			)));
+			return 1;
+		}
+
+		String playerString = StringArgumentType.getString(context, "player");
+		PlayerBadges player = BadgeProvider.getBadges(playerString);
+
+		if (player == null) {
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§cPlayer " + playerString + " could not be found.", context.getSource().isExecutedByPlayer()
+			)));
+			return 1;
+		}
+
+		if (!gym.containsLeader(player.getUuid())) {
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§c" + player.getName() + " is not a leader of this gym.",
+					context.getSource().isExecutedByPlayer()
+			)));
+			return 1;
+		}
+
+		gym.removeLeader(player.getUuid());
+		gym.write();
+
+		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+				"§aRemoved " + player.getName() + " from " + gym.getName(), context.getSource().isExecutedByPlayer()
 		)));
 
 		return 1;

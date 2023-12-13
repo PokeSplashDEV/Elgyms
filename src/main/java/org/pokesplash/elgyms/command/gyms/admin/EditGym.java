@@ -10,7 +10,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
-import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;

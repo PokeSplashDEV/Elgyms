@@ -55,6 +55,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new DeleteGym().build());
 		registeredCommand.addChild(new EditGym().build());
 		registeredCommand.addChild(new Leader().build());
+		registeredCommand.addChild(new SetTeam().build());
 
 	}
 

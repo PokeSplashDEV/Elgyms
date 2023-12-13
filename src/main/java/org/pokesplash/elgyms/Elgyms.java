@@ -7,22 +7,15 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.champion.ChampionHistory;
-import org.pokesplash.elgyms.champion.ChampionHistoryItem;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.Config;
 import org.pokesplash.elgyms.config.Lang;
 import org.pokesplash.elgyms.event.PlayerJoinEvent;
 import org.pokesplash.elgyms.event.PlayerLeaveEvent;
-import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.ui.config.MenuConfig;
-import org.pokesplash.elgyms.util.Utils;
-
-import javax.sql.ConnectionEvent;
-import java.util.UUID;
 
 public class Elgyms implements ModInitializer {
 	public static final String MOD_ID = "Elgyms";

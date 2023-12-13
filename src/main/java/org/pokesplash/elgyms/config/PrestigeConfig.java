@@ -1,7 +1,5 @@
 package org.pokesplash.elgyms.config;
 
-import java.util.ArrayList;
-
 /**
  * Config for prestige.
  */

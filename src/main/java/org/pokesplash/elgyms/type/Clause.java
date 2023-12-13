@@ -9,5 +9,6 @@ public enum Clause {
 	ENDLESS_BATTLE,
 	SWAGGER,
 	ITEM,
-	LEGENDARY
+	LEGENDARY,
+	ULTRABEAST
 }

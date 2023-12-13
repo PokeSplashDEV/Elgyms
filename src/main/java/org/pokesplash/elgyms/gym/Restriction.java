@@ -1,8 +1,5 @@
 package org.pokesplash.elgyms.gym;
 
-import org.pokesplash.elgyms.type.Clause;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**

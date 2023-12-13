@@ -3,11 +3,9 @@ package org.pokesplash.elgyms.provider;
 import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.champion.ChampionConfig;
-import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.gym.Queue;
-import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
