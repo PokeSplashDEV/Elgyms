@@ -43,10 +43,15 @@ public class GymSelect {
 			if (hasBeaten) {
 				lore.add(Elgyms.menu.getCompleted());
 			} else {
-				for (UUID id : gym.getRequirements().getRequiredBadgeIDs()) {
-					if (BadgeProvider.getBadges(player).containsBadge(id)) {
-						hasRequirements = true;
-						break;
+
+				if (gym.getRequirements().getRequiredBadgeIDs().isEmpty()) {
+					hasRequirements = true;
+				} else {
+					for (UUID id : gym.getRequirements().getRequiredBadgeIDs()) {
+						if (BadgeProvider.getBadges(player).containsBadge(id)) {
+							hasRequirements = true;
+							break;
+						}
 					}
 				}
 
