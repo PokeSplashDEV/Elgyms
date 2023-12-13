@@ -1,6 +1,8 @@
 package org.pokesplash.elgyms.provider;
 
 import com.google.gson.Gson;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
@@ -135,5 +137,42 @@ public abstract class GymProvider {
 		queues.remove(gym);
 		openGyms.remove(gym);
 		return Utils.deleteFile(PATH, gym.getId() + ".json");
+	}
+
+	public static void challengeGym(ServerPlayerEntity player, GymConfig gymConfig) {
+		Queue queue = queues.get(gymConfig);
+
+		if (queue.isInQueue(player.getUuid())) {
+			player.sendMessage(Text.literal("§6You are already in this queue."));
+			return;
+		}
+
+		if (getQueueFromPlayer(player.getUuid()) != null) {
+			player.sendMessage(Text.literal("§6You are already in another queue."));
+			return;
+		}
+
+
+		queue.addToQueue(player.getUuid());
+		queues.put(gymConfig, queue);
+
+		// Sends message to the challenger.
+		player.sendMessage(Text.literal(
+				Utils.formatPlaceholders(Elgyms.lang.getChallengeMessageChallenger(),
+		null, gymConfig.getBadge(), player, null, gymConfig)
+		));
+
+		// Send an announcements to the leaders.
+		for (Leader leader : gymConfig.getLeaders()) {
+			ServerPlayerEntity onlineLeader = Elgyms.server.getPlayerManager().getPlayer(leader.getUuid());
+
+			if (onlineLeader != null) {
+				onlineLeader.sendMessage(Text.literal(
+					Utils.formatPlaceholders(
+							Elgyms.lang.getChallengeMessageLeader(), null, gymConfig.getBadge(), player, null, gymConfig
+					)
+				));
+			}
+		}
 	}
 }

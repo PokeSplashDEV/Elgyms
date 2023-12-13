@@ -10,11 +10,15 @@ public class Lang {
 	private String prefix;
 	private String openGymMessage;
 	private String closeGymMessage;
+	private String challengeMessageChallenger;
+	private String challengeMessageLeader;
 
 	public Lang() {
 		prefix = "§b[§3Gyms§b]";
 		openGymMessage = "§bThe {gym} has been opened.";
 		closeGymMessage = "§3The {gym} has been closed.";
+		challengeMessageChallenger = "§3You have challenged the {gym} gym.";
+		challengeMessageLeader = "§3{player} has challenged the {gym} gym.";
 	}
 
 
@@ -29,6 +33,8 @@ public class Lang {
 					prefix = lang.getPrefix();
 					openGymMessage = lang.getOpenGymMessage();
 					closeGymMessage = lang.getCloseGymMessage();
+					challengeMessageChallenger = lang.getChallengeMessageChallenger();
+					challengeMessageLeader = lang.getChallengeMessageLeader();
 				});
 
 		if (!futureRead.join()) {
@@ -57,5 +63,13 @@ public class Lang {
 
 	public String getCloseGymMessage() {
 		return closeGymMessage;
+	}
+
+	public String getChallengeMessageLeader() {
+		return challengeMessageLeader;
+	}
+
+	public String getChallengeMessageChallenger() {
+		return challengeMessageChallenger;
 	}
 }

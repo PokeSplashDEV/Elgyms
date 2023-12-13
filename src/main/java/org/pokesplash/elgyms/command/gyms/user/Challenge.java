@@ -1,5 +1,8 @@
 package org.pokesplash.elgyms.command.gyms.user;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -12,9 +15,11 @@ import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
+import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Challenge {
@@ -80,11 +85,28 @@ public class Challenge {
 
 		if (!hasRequirements) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou do not have the requirements to challenge this gym."));
+					"§cYou do not have the correct badges to challenge this gym."));
 			return 1;
 		}
 
-		// TODO challenge the gym.
+		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(context.getSource().getPlayer());
+
+		ArrayList<Pokemon> pokemons = new ArrayList<>();
+
+		for (int x=0; x < 6; x++) {
+			if (party.get(x) != null) {
+				pokemons.add(party.get(x));
+			}
+		}
+
+		try {
+			ElgymsUtils.checkChallengerRequirements(pokemons, gym);
+
+			GymProvider.challengeGym(context.getSource().getPlayer(), gym);
+		} catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
+			return 1;
+		}
 
 		return 1;
 	}

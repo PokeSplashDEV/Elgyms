@@ -96,6 +96,29 @@ public abstract class ElgymsUtils {
 		return true;
 	}
 
+	public static boolean checkChallengerRequirements(ArrayList<Pokemon> pokemon, GymConfig gym) throws Exception {
+
+		// Checks for level requirements.
+		if (!gym.getRequirements().isRaiseToCap()) {
+			for (Pokemon mon : pokemon) {
+				if (mon.getLevel() > gym.getRequirements().getPokemonLevel()) {
+					throw new Exception("All Pokemon must be under the level cap: Lvl " + gym.getRequirements().getPokemonLevel());
+				}
+			}
+		}
+
+		// Makes sure team limit isn't exceeded.
+		matchesPokemonSize(pokemon, gym);
+
+		// Checks clauses aren't broken
+		checkClauses(pokemon, gym);
+
+		// Checks for banned aspects in challenger restrictions.
+		checkBannedAspects(pokemon, gym.getRequirements().getChallengerRestrictions());
+
+		return true;
+	}
+
 	private static boolean matchesPokemonSize(ArrayList<Pokemon> pokemons, GymConfig gym) throws Exception {
 		if (pokemons.size() > gym.getRequirements().getTeamSize()) {
 			throw new Exception("Only " + gym.getRequirements().getTeamSize() + " Pokemon are allowed in this gym.");

@@ -7,12 +7,18 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.pokemon.Pokemon;
+import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
+
+import java.util.ArrayList;
 
 public class GymInfo {
 	public Page getPage(GymConfig gym, CategoryConfig categoryConfig) {
@@ -21,7 +27,23 @@ public class GymInfo {
 				.display(Utils.parseItemId(Elgyms.menu.getChallengeButtonMaterial()))
 				.hideFlags(FlagType.All)
 				.onClick(e -> {
-					// TODO challenge the gym.
+					PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(e.getPlayer());
+
+					ArrayList<Pokemon> pokemons = new ArrayList<>();
+
+					for (int x=0; x < 6; x++) {
+						if (party.get(x) != null) {
+							pokemons.add(party.get(x));
+						}
+					}
+
+					try {
+						ElgymsUtils.checkChallengerRequirements(pokemons, gym);
+
+						GymProvider.challengeGym(e.getPlayer(), gym);
+					} catch (Exception ex) {
+						e.getPlayer().sendMessage(Text.literal("§c" + ex.getMessage()));
+					}
 				})
 				.build();
 
