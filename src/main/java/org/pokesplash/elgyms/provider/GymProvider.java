@@ -129,9 +129,11 @@ public abstract class GymProvider {
 		openGyms.remove(gym);
 	}
 
-	public static boolean hasOnlineLeader(GymConfig gym) {
+
+	public static boolean hasOtherOnlineLeaders(GymConfig gym, ServerPlayerEntity player) {
 		for (Leader leader : gym.getLeaders()) {
-			if (Elgyms.server.getPlayerManager().getPlayer(leader.getUuid()) != null) {
+			if (Elgyms.server.getPlayerManager().getPlayer(leader.getUuid()) != null &&
+			!leader.getUuid().equals(player.getUuid())) {
 				return true;
 			}
 		}
@@ -153,12 +155,12 @@ public abstract class GymProvider {
 		Queue queue = queues.get(gymConfig);
 
 		if (queue.isInQueue(player.getUuid())) {
-			player.sendMessage(Text.literal("§6You are already in this queue."));
+			player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§6You are already in this queue."));
 			return;
 		}
 
 		if (getQueueFromPlayer(player.getUuid()) != null) {
-			player.sendMessage(Text.literal("§6You are already in another queue."));
+			player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§6You are already in another queue."));
 			return;
 		}
 
@@ -168,7 +170,7 @@ public abstract class GymProvider {
 
 		// Sends message to the challenger.
 		player.sendMessage(Text.literal(
-				Utils.formatPlaceholders(Elgyms.lang.getChallengeMessageChallenger(),
+				Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getChallengeMessageChallenger(),
 		null, gymConfig.getBadge(), player, null, gymConfig)
 		));
 
@@ -179,6 +181,7 @@ public abstract class GymProvider {
 			if (onlineLeader != null) {
 				onlineLeader.sendMessage(Text.literal(
 					Utils.formatPlaceholders(
+							Elgyms.lang.getPrefix() +
 							Elgyms.lang.getChallengeMessageLeader(), null, gymConfig.getBadge(), player, null, gymConfig
 					)
 				));
@@ -206,12 +209,13 @@ public abstract class GymProvider {
 		// Send messages to both challenger and leader.
 		if (challengerPlayer != null) {
 			challengerPlayer.sendMessage(Text.literal(
-					Utils.formatPlaceholders(Elgyms.lang.getRejectChallengePlayer(), null, null,
+					Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getRejectChallengePlayer(), null,
+							null,
 							challengerPlayer, null, gym)
 			));
 
 			leader.sendMessage(Text.literal(
-					Utils.formatPlaceholders(Elgyms.lang.getRejectChallengeLeader(), null, null,
+					Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getRejectChallengeLeader(), null, null,
 							challengerPlayer, null, gym)
 			));
 		}

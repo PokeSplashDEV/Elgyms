@@ -26,7 +26,8 @@ public class PlayerJoinEvent implements ServerPlayConnectionEvents.Join {
 		for (GymConfig gymConfig : leaderGyms) {
 			GymProvider.openGym(gymConfig);
 			Utils.broadcastMessage(Utils.formatPlaceholders(
-					Elgyms.lang.getOpenGymMessage(), null, null, handler.getPlayer(),
+					Elgyms.lang.getPrefix() +
+							Elgyms.lang.getOpenGymMessage(), null, null, handler.getPlayer(),
 					null, gymConfig
 			));
 		}

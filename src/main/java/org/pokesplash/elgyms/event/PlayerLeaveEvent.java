@@ -22,12 +22,13 @@ public class PlayerLeaveEvent implements ServerPlayConnectionEvents.Disconnect {
 		}
 
 		// TODO gyms arent being closed.
-		// Opens all of the players gyms.
+		// Closes all of the players gyms.
 		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(handler.getPlayer().getUuid());
 		for (GymConfig gymConfig : leaderGyms) {
-			if (!GymProvider.hasOnlineLeader(gymConfig)) {
+			if (!GymProvider.hasOtherOnlineLeaders(gymConfig, handler.getPlayer())) {
 				GymProvider.closeGym(gymConfig);
 				Utils.broadcastMessage(Utils.formatPlaceholders(
+						Elgyms.lang.getPrefix() +
 						Elgyms.lang.getCloseGymMessage(), null, null, handler.getPlayer(),
 						null, gymConfig
 				));
