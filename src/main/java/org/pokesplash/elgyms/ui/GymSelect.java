@@ -70,7 +70,7 @@ public class GymSelect {
 					.hideFlags(FlagType.All)
 					.onClick(e -> {
 						if (!hasBeaten && finalHasRequirements) {
-							UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, category));
+							UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, category, e.getPlayer()));
 						}
 					})
 					.build());

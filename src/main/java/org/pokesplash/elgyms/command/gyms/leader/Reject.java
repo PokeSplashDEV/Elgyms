@@ -89,7 +89,7 @@ public class Reject {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym accept <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- gym reject <gym>", context.getSource().isExecutedByPlayer()
 				))
 		);
 

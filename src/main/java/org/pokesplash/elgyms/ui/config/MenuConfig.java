@@ -20,6 +20,8 @@ public class MenuConfig {
 	private String backButtonMaterial;
 	private String challengeButtonTitle;
 	private String challengeButtonMaterial;
+	private String cancelChallengeButtonTitle;
+	private String cancelChallengeButtonMaterial;
 	private String closedTitle;
 	private String closedButtonMaterial;
 	private String rulesTitle;
@@ -43,6 +45,9 @@ public class MenuConfig {
 		completed = "§eYou have beaten this gym.";
 		incompleted = "§cIncomplete";
 		challengeButtonTitle = "§6Challenge";
+		cancelChallengeButtonTitle = "§6Cancel";
+		cancelChallengeButtonMaterial = "minecraft:orange_stained_glass_pane";
+
 		requirements = "§cBadges Required: {badges}";
 
 		types = new HashMap<>();
@@ -76,6 +81,8 @@ public class MenuConfig {
 					rulesButtonIndex = cfg.getRulesButtonIndex();
 					closedTitle = cfg.getClosedTitle();
 					closedButtonMaterial = cfg.getClosedButtonMaterial();
+					cancelChallengeButtonTitle = cfg.getCancelChallengeButtonTitle();
+					cancelChallengeButtonMaterial = cfg.getCancelChallengeButtonMaterial();
 				});
 
 		if (!futureRead.join()) {
@@ -164,5 +171,13 @@ public class MenuConfig {
 
 	public String getClosedTitle() {
 		return closedTitle;
+	}
+
+	public String getCancelChallengeButtonTitle() {
+		return cancelChallengeButtonTitle;
+	}
+
+	public String getCancelChallengeButtonMaterial() {
+		return cancelChallengeButtonMaterial;
 	}
 }

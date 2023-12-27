@@ -186,17 +186,22 @@ public abstract class GymProvider {
 		}
 	}
 
-	public static void rejectChallenge(UUID challenger, ServerPlayerEntity leader) {
+	public static void cancelChallenge(UUID challenger) {
 		Queue queue = getQueueFromPlayer(challenger);
-		GymConfig gym = getGymFromPlayer(challenger);
 
 		if (queue == null) {
 			return;
 		}
 
 		queue.removeFromQueue(challenger);
+	}
+
+	public static void rejectChallenge(UUID challenger, ServerPlayerEntity leader) {
+		cancelChallenge(challenger);
 
 		ServerPlayerEntity challengerPlayer = Elgyms.server.getPlayerManager().getPlayer(challenger);
+
+		GymConfig gym = getGymFromPlayer(challenger);
 
 		// Send messages to both challenger and leader.
 		if (challengerPlayer != null) {
