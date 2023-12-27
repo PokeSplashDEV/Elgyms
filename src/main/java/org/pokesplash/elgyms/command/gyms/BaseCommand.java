@@ -11,6 +11,8 @@ import net.minecraft.text.Text;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.command.gyms.admin.*;
 import org.pokesplash.elgyms.command.gyms.leader.Accept;
+import org.pokesplash.elgyms.command.gyms.leader.Close;
+import org.pokesplash.elgyms.command.gyms.leader.Open;
 import org.pokesplash.elgyms.command.gyms.leader.Reject;
 import org.pokesplash.elgyms.command.gyms.user.Challenge;
 import org.pokesplash.elgyms.ui.CategorySelect;
@@ -60,6 +62,8 @@ public class BaseCommand {
 		registeredCommand.addChild(new SetTeam().build());
 		registeredCommand.addChild(new Accept().build());
 		registeredCommand.addChild(new Reject().build());
+		registeredCommand.addChild(new Open().build());
+		registeredCommand.addChild(new Close().build());
 
 	}
 

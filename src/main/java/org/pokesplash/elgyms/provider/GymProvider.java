@@ -121,12 +121,42 @@ public abstract class GymProvider {
 		return openGyms;
 	}
 
-	public static void openGym(GymConfig gym) {
+	public static void openGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.add(gym);
+		Utils.broadcastMessage(Utils.formatPlaceholders(
+				Elgyms.lang.getPrefix() +
+						Elgyms.lang.getOpenGymMessage(), null, null, player,
+				null, gym
+		));
 	}
 
-	public static void closeGym(GymConfig gym) {
+	public static void openAllGyms(ServerPlayerEntity player) {
+		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(player.getUuid());
+		leaderGyms.removeAll(GymProvider.getOpenGyms());
+		for (GymConfig gymConfig : leaderGyms) {
+			GymProvider.openGym(gymConfig, player);
+
+		}
+	}
+
+	public static void closeGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.remove(gym);
+		Utils.broadcastMessage(Utils.formatPlaceholders(
+				Elgyms.lang.getPrefix() +
+						Elgyms.lang.getCloseGymMessage(), null, null, player,
+				null, gym
+		));
+	}
+
+	public static void closeAllGyms(ServerPlayerEntity player) {
+		// Closes all the players gyms.
+		ArrayList<GymConfig> leaderGyms = GymProvider.getGymsByLeader(player.getUuid());
+		for (GymConfig gymConfig : leaderGyms) {
+			if (!GymProvider.hasOtherOnlineLeaders(gymConfig, player)) {
+				GymProvider.closeGym(gymConfig, player);
+
+			}
+		}
 	}
 
 
