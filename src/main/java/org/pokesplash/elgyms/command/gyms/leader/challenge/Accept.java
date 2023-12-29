@@ -1,5 +1,8 @@
-package org.pokesplash.elgyms.command.gyms.leader;
+package org.pokesplash.elgyms.command.gyms.leader.challenge;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -7,22 +10,26 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Queue;
+import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
+import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
-public class Reject {
+public class Accept {
 	public LiteralCommandNode<ServerCommandSource> build() {
-		return CommandManager.literal("reject")
+		return CommandManager.literal("accept")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.reject");
+								".leader.accept");
 					} else {
 						return true;
 					}
@@ -79,7 +86,8 @@ public class Reject {
 			return 1;
 		}
 
-		GymProvider.rejectChallenge(challengerUuid, context.getSource().getPlayer());
+		// TODO start battle.
+		context.getSource().sendMessage(Text.literal("battle started!"));
 
 		return 1;
 	}
@@ -89,7 +97,7 @@ public class Reject {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym reject <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- gym accept <gym>", context.getSource().isExecutedByPlayer()
 				))
 		);
 

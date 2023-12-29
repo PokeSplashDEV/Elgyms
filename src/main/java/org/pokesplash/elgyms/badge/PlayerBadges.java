@@ -115,4 +115,6 @@ public class PlayerBadges {
 		prestige.put(categoryConfig.getName(), isPrestiged);
 		write();
 	}
+
+
 }

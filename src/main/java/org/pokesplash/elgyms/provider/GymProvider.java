@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.provider;
 
+import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
 import com.google.gson.Gson;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -111,6 +112,15 @@ public abstract class GymProvider {
 		for (GymConfig gym : queues.keySet()) {
 			Queue queue = queues.get(gym);
 			if (queue.isInQueue(player)) {
+				return gym;
+			}
+		}
+		return null;
+	}
+
+	public static GymConfig getGymFromBadge(UUID badgeId) {
+		for (GymConfig gym : queues.keySet()) {
+			if (gym.getBadge().getId().equals(badgeId)) {
 				return gym;
 			}
 		}

@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms.leader;
+package org.pokesplash.elgyms.command.gyms.leader.challenge;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,17 +9,20 @@ import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.Queue;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
-public class Close {
+import java.util.UUID;
+
+public class Reject {
 	public LiteralCommandNode<ServerCommandSource> build() {
-		return CommandManager.literal("close")
+		return CommandManager.literal("reject")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.close");
+								".leader.reject");
 					} else {
 						return true;
 					}
@@ -32,7 +35,6 @@ public class Close {
 									builder.suggest(gymConfig.getId());
 								}
 							}
-							builder.suggest("all");
 							return builder.buildFuture();
 						})
 						.executes(this::run))
@@ -46,11 +48,6 @@ public class Close {
 		}
 
 		String gymId = StringArgumentType.getString(context, "gym");
-
-		if (gymId.equalsIgnoreCase("all")) {
-			GymProvider.closeAllGyms(context.getSource().getPlayer());
-			return 1;
-		}
 
 		GymConfig gym = GymProvider.getGymById(gymId);
 
@@ -66,7 +63,23 @@ public class Close {
 			return 1;
 		}
 
-		GymProvider.closeGym(gym, context.getSource().getPlayer());
+		Queue queue = GymProvider.getQueueFromGym(gym);
+
+		if (queue.getQueue().isEmpty()) {
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cThis gym has no challengers."));
+			return 1;
+		}
+
+		UUID challengerUuid = queue.getQueue().get(0);
+
+		if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cChallenger is no longer online."));
+			return 1;
+		}
+
+		GymProvider.rejectChallenge(challengerUuid, context.getSource().getPlayer());
 
 		return 1;
 	}
@@ -76,7 +89,7 @@ public class Close {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym close <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- gym reject <gym>", context.getSource().isExecutedByPlayer()
 				))
 		);
 

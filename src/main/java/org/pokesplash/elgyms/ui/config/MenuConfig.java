@@ -28,6 +28,7 @@ public class MenuConfig {
 	private int rulesButtonIndex;
 	private String rulesButtonMaterial;
 	private HashMap<Type, String> types;
+	private String badgeTitle;
 
 	public MenuConfig() {
 		categoryRows = 3;
@@ -47,8 +48,8 @@ public class MenuConfig {
 		challengeButtonTitle = "§6Challenge";
 		cancelChallengeButtonTitle = "§6Cancel";
 		cancelChallengeButtonMaterial = "minecraft:orange_stained_glass_pane";
-
 		requirements = "§cBadges Required: {badges}";
+		badgeTitle = "§3Badges";
 
 		types = new HashMap<>();
 		for (Type type : Type.values()) {
@@ -83,6 +84,7 @@ public class MenuConfig {
 					closedButtonMaterial = cfg.getClosedButtonMaterial();
 					cancelChallengeButtonTitle = cfg.getCancelChallengeButtonTitle();
 					cancelChallengeButtonMaterial = cfg.getCancelChallengeButtonMaterial();
+					badgeTitle = cfg.getBadgeTitle();
 				});
 
 		if (!futureRead.join()) {
@@ -179,5 +181,9 @@ public class MenuConfig {
 
 	public String getCancelChallengeButtonMaterial() {
 		return cancelChallengeButtonMaterial;
+	}
+
+	public String getBadgeTitle() {
+		return badgeTitle;
 	}
 }

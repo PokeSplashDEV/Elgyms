@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms.leader;
+package org.pokesplash.elgyms.command.gyms.leader.gym;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,20 +9,17 @@ import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
-import org.pokesplash.elgyms.gym.Queue;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
-import java.util.UUID;
-
-public class Open {
+public class Close {
 	public LiteralCommandNode<ServerCommandSource> build() {
-		return CommandManager.literal("open")
+		return CommandManager.literal("close")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.open");
+								".leader.close");
 					} else {
 						return true;
 					}
@@ -51,7 +48,7 @@ public class Open {
 		String gymId = StringArgumentType.getString(context, "gym");
 
 		if (gymId.equalsIgnoreCase("all")) {
-			GymProvider.openAllGyms(context.getSource().getPlayer());
+			GymProvider.closeAllGyms(context.getSource().getPlayer());
 			return 1;
 		}
 
@@ -69,7 +66,7 @@ public class Open {
 			return 1;
 		}
 
-		GymProvider.openGym(gym, context.getSource().getPlayer());
+		GymProvider.closeGym(gym, context.getSource().getPlayer());
 
 		return 1;
 	}
@@ -79,7 +76,7 @@ public class Open {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym open <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- gym close <gym>", context.getSource().isExecutedByPlayer()
 				))
 		);
 

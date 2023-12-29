@@ -66,4 +66,13 @@ public class Config {
 	public ArrayList<CategoryConfig> getCategories() {
 		return categories;
 	}
+
+	public CategoryConfig getCategoryByName(String name) {
+		for (CategoryConfig categoryConfig : categories) {
+			if (categoryConfig.getName().equalsIgnoreCase(name)) {
+				return categoryConfig;
+			}
+		}
+		return null;
+	}
 }

@@ -11,6 +11,7 @@ public class Badge {
 	private String material;
 
 	public Badge() {
+		name = "Cobble Badge";
 		material = "cobblemon:leftovers";
 		id = UUID.randomUUID();
 	}

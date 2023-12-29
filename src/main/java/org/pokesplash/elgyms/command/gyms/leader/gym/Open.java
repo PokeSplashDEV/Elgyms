@@ -1,8 +1,5 @@
-package org.pokesplash.elgyms.command.gyms.leader;
+package org.pokesplash.elgyms.command.gyms.leader.gym;
 
-import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
-import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -10,26 +7,22 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
-import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Queue;
-import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
-import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
-public class Accept {
+public class Open {
 	public LiteralCommandNode<ServerCommandSource> build() {
-		return CommandManager.literal("accept")
+		return CommandManager.literal("open")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.accept");
+								".leader.open");
 					} else {
 						return true;
 					}
@@ -42,6 +35,7 @@ public class Accept {
 									builder.suggest(gymConfig.getId());
 								}
 							}
+							builder.suggest("all");
 							return builder.buildFuture();
 						})
 						.executes(this::run))
@@ -55,6 +49,11 @@ public class Accept {
 		}
 
 		String gymId = StringArgumentType.getString(context, "gym");
+
+		if (gymId.equalsIgnoreCase("all")) {
+			GymProvider.openAllGyms(context.getSource().getPlayer());
+			return 1;
+		}
 
 		GymConfig gym = GymProvider.getGymById(gymId);
 
@@ -70,24 +69,7 @@ public class Accept {
 			return 1;
 		}
 
-		Queue queue = GymProvider.getQueueFromGym(gym);
-
-		if (queue.getQueue().isEmpty()) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThis gym has no challengers."));
-			return 1;
-		}
-
-		UUID challengerUuid = queue.getQueue().get(0);
-
-		if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cChallenger is no longer online."));
-			return 1;
-		}
-
-		// TODO start battle.
-		context.getSource().sendMessage(Text.literal("battle started!"));
+		GymProvider.openGym(gym, context.getSource().getPlayer());
 
 		return 1;
 	}
@@ -97,7 +79,7 @@ public class Accept {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym accept <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- gym open <gym>", context.getSource().isExecutedByPlayer()
 				))
 		);
 
