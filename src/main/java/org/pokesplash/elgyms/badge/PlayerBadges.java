@@ -61,10 +61,12 @@ public class PlayerBadges {
 
 	public void setCooldown(GymConfig gym, long cooldown) {
 		this.cooldown.put(gym.getBadge().getId(), cooldown);
+		write();
 	}
 
 	public void removeCooldown(GymConfig gymConfig) {
 		cooldown.remove(gymConfig.getBadge().getId());
+		write();
 	}
 
 	public void setName(String name) {
