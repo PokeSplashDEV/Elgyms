@@ -15,6 +15,7 @@ public class Lang {
 	private String rejectChallengePlayer;
 	private String rejectChallengeLeader;
 	private String cancelChallenge;
+	private String cooldownMessage;
 
 	public Lang() {
 		prefix = "§b[§3Gyms§b]";
@@ -25,6 +26,7 @@ public class Lang {
 		rejectChallengePlayer = "§cYou were rejected for the {gym} challenge.";
 		rejectChallengeLeader = "§3You removed {player} from the queue.";
 		cancelChallenge = "§3You have been removed from the {gym} queue.";
+		cooldownMessage = "§cYou still have a {cooldown} cooldown";
 	}
 
 
@@ -44,6 +46,7 @@ public class Lang {
 					rejectChallengePlayer = lang.getRejectChallengePlayer();
 					rejectChallengeLeader = lang.getRejectChallengeLeader();
 					cancelChallenge = lang.getCancelChallenge();
+					cooldownMessage = lang.getCooldownMessage();
 				});
 
 		if (!futureRead.join()) {
@@ -92,5 +95,9 @@ public class Lang {
 
 	public String getCancelChallenge() {
 		return cancelChallenge;
+	}
+
+	public String getCooldownMessage() {
+		return cooldownMessage;
 	}
 }

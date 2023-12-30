@@ -11,6 +11,8 @@ import net.minecraft.text.Text;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.command.gyms.admin.*;
 import org.pokesplash.elgyms.command.gyms.leader.challenge.Accept;
+import org.pokesplash.elgyms.command.gyms.leader.cooldown.GiveCooldown;
+import org.pokesplash.elgyms.command.gyms.leader.cooldown.RemoveCooldown;
 import org.pokesplash.elgyms.command.gyms.leader.gym.Close;
 import org.pokesplash.elgyms.command.gyms.leader.gym.Open;
 import org.pokesplash.elgyms.command.gyms.leader.challenge.Reject;
@@ -65,6 +67,8 @@ public class BaseCommand {
 		registeredCommand.addChild(new Reject().build());
 		registeredCommand.addChild(new Open().build());
 		registeredCommand.addChild(new Close().build());
+		registeredCommand.addChild(new GiveCooldown().build());
+		registeredCommand.addChild(new RemoveCooldown().build());
 
 	}
 

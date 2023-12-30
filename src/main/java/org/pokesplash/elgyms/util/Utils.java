@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -324,7 +325,8 @@ public abstract class Utils {
 	 * @return Amended string.
 	 */
 	public static String formatPlaceholders(String message, ArrayList<Badge> badges, Badge badge,
-	                                        ServerPlayerEntity player, CategoryConfig category, GymConfig gym) {
+	                                        ServerPlayerEntity player, CategoryConfig category,
+	                                        GymConfig gym, Long cooldown) {
 
 		String output = message;
 
@@ -351,6 +353,10 @@ public abstract class Utils {
 
 		if (gym != null) {
 			output = output.replaceAll("\\{gym\\}", gym.getName());
+		}
+
+		if (cooldown != null) {
+			output = output.replaceAll("\\{cooldown}", parseLongDate(cooldown - new Date().getTime()).trim());
 		}
 
 		return output;

@@ -29,6 +29,8 @@ public class MenuConfig {
 	private String rulesButtonMaterial;
 	private HashMap<Type, String> types;
 	private String badgeTitle;
+	private String cooldownTitle;
+	private String cooldownMaterial;
 
 	public MenuConfig() {
 		categoryRows = 3;
@@ -50,6 +52,8 @@ public class MenuConfig {
 		cancelChallengeButtonMaterial = "minecraft:orange_stained_glass_pane";
 		requirements = "§cBadges Required: {badges}";
 		badgeTitle = "§3Badges";
+		cooldownTitle = "§cYou have a {cooldown} cooldown";
+		cooldownMaterial = "minecraft:red_stained_glass_pane";
 
 		types = new HashMap<>();
 		for (Type type : Type.values()) {
@@ -85,6 +89,8 @@ public class MenuConfig {
 					cancelChallengeButtonTitle = cfg.getCancelChallengeButtonTitle();
 					cancelChallengeButtonMaterial = cfg.getCancelChallengeButtonMaterial();
 					badgeTitle = cfg.getBadgeTitle();
+					cooldownTitle = cfg.getCooldownTitle();
+					cooldownMaterial = cfg.getCooldownMaterial();
 				});
 
 		if (!futureRead.join()) {
@@ -185,5 +191,13 @@ public class MenuConfig {
 
 	public String getBadgeTitle() {
 		return badgeTitle;
+	}
+
+	public String getCooldownTitle() {
+		return cooldownTitle;
+	}
+
+	public String getCooldownMaterial() {
+		return cooldownMaterial;
 	}
 }

@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.Badge;
+import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +22,7 @@ public class PlayerBadges {
 	private String name; // The name of the player.
 	private HashMap<String, ArrayList<Badge>> badgeIDs; // The IDs of the badges the player owns, sorted by category
 	private HashMap<String, Boolean> prestige; // List of categories and if the player has prestiged.
+	private HashMap<UUID, Long> cooldown; // Cooldowns per gym.
 
 	public void write() {
 		Gson gson = Utils.newGson();
@@ -41,6 +44,7 @@ public class PlayerBadges {
 		badgeIDs = new HashMap<>();
 		prestige = new HashMap<>();
 		write();
+		cooldown = new HashMap<>();
 	}
 
 	public UUID getUuid() {
@@ -49,6 +53,18 @@ public class PlayerBadges {
 
 	public String getName() {
 		return name;
+	}
+
+	public Long getCooldown(GymConfig gym) {
+		return cooldown.get(gym.getBadge().getId());
+	}
+
+	public void setCooldown(GymConfig gym, long cooldown) {
+		this.cooldown.put(gym.getBadge().getId(), cooldown);
+	}
+
+	public void removeCooldown(GymConfig gymConfig) {
+		cooldown.remove(gymConfig.getBadge().getId());
 	}
 
 	public void setName(String name) {

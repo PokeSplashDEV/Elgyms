@@ -58,7 +58,9 @@ public class GymSelect {
 				if (hasRequirements) {
 					lore.add(Elgyms.menu.getIncompleted());
 				} else {
-					lore.add(Elgyms.menu.getRequirements());
+					lore.add(Utils.formatPlaceholders(Elgyms.menu.getRequirements(),
+							null, gym.getBadge(), player, category, gym,
+							BadgeProvider.getBadges(player).getCooldown(gym)));
 				}
 			}
 
