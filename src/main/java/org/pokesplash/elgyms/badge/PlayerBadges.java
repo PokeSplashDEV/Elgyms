@@ -43,8 +43,8 @@ public class PlayerBadges {
 		this.name = name;
 		badgeIDs = new HashMap<>();
 		prestige = new HashMap<>();
-		write();
 		cooldown = new HashMap<>();
+		write();
 	}
 
 	public UUID getUuid() {

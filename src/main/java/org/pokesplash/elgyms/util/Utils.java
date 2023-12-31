@@ -2,7 +2,9 @@ package org.pokesplash.elgyms.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -372,6 +374,19 @@ public abstract class Utils {
 		tag.putString("id", id);
 		tag.putInt("Count", 1);
 		return ItemStack.fromNbt(tag);
+	}
+
+	/**
+	 * Parses item ID string to an item stack
+	 * @param player The player to get the skull for.
+	 * @return ItemStack
+	 */
+	public static ItemStack getPlayerHead(ServerPlayerEntity player) {
+		ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+		NbtCompound tag = new NbtCompound();
+		tag.putString("SkullOwner", player.getName().getString());
+		item.setNbt(tag);
+		return item;
 	}
 
 	/**

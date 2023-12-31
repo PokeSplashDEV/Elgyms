@@ -1,5 +1,7 @@
 package org.pokesplash.elgyms.gym;
 
+import org.pokesplash.elgyms.Elgyms;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -11,6 +13,11 @@ public class Queue {
 	}
 
 	public ArrayList<UUID> getQueue() {
+		for (UUID challenger : queue) {
+			if (Elgyms.server.getPlayerManager().getPlayer(challenger) == null) {
+				queue.remove(challenger);
+			}
+		}
 		return queue;
 	}
 

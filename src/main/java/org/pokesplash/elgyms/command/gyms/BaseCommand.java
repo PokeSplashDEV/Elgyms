@@ -17,6 +17,7 @@ import org.pokesplash.elgyms.command.gyms.leader.gym.Close;
 import org.pokesplash.elgyms.command.gyms.leader.gym.Open;
 import org.pokesplash.elgyms.command.gyms.leader.challenge.Reject;
 import org.pokesplash.elgyms.command.gyms.leader.badge.OtherBadge;
+import org.pokesplash.elgyms.command.gyms.leader.gym.Queue;
 import org.pokesplash.elgyms.command.gyms.user.Challenge;
 import org.pokesplash.elgyms.ui.CategorySelect;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
@@ -69,6 +70,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new Close().build());
 		registeredCommand.addChild(new GiveCooldown().build());
 		registeredCommand.addChild(new RemoveCooldown().build());
+		registeredCommand.addChild(new Queue().build());
 
 	}
 
