@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
@@ -80,14 +81,19 @@ public class Accept {
 
 		UUID challengerUuid = queue.getQueue().get(0);
 
-		if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
+		ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
+
+		if (challenger == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
 					"§cChallenger is no longer online."));
 			return 1;
 		}
 
-		// TODO start battle.
-		context.getSource().sendMessage(Text.literal("battle started!"));
+		try {
+			GymProvider.beginBattle(challenger, context.getSource().getPlayer(), gym);
+		} catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
+		}
 
 		return 1;
 	}

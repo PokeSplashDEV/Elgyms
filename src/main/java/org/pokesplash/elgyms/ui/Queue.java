@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.ui;
 
+import ca.landonjw.gooeylibs2.api.UIManager;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.FlagType;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
@@ -12,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.config.CategoryConfig;
@@ -26,8 +28,6 @@ import java.util.UUID;
 public class Queue {
 	public Page getPage(ServerPlayerEntity leader) {
 
-		ItemStack head = Utils.getPlayerHead(leader);
-
 		ArrayList<ServerPlayerEntity> leaderQueues = new ArrayList<>();
 		for ( GymConfig gym : GymProvider.getGymsByLeader(leader.getUuid())) {
 			for (UUID challenger : GymProvider.getQueueFromGym(gym).getQueue()) {
@@ -37,13 +37,19 @@ public class Queue {
 
 		ArrayList<Button> buttons = new ArrayList<>();
 		for (ServerPlayerEntity challenger : leaderQueues) {
+			GymConfig gym = GymProvider.getGymFromPlayer(challenger.getUuid());
 			buttons.add(
 					GooeyButton.builder()
 							.title(challenger.getName().getString())
 							.display(Utils.getPlayerHead(challenger))
 							.hideFlags(FlagType.All)
 							.onClick(e -> {
-								// TODO start battle.
+								UIManager.closeUI(leader);
+								try {
+									GymProvider.beginBattle(challenger, e.getPlayer(), gym);
+								} catch (Exception ex) {
+									e.getPlayer().sendMessage(Text.literal("§c" + ex.getMessage()));
+								}
 							})
 							.build()
 			);

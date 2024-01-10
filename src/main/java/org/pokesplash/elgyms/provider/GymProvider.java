@@ -1,7 +1,13 @@
 package org.pokesplash.elgyms.provider;
 
-import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.battles.*;
+import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
@@ -10,6 +16,7 @@ import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.gym.Queue;
+import org.pokesplash.elgyms.type.Clause;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
@@ -270,5 +277,80 @@ public abstract class GymProvider {
 							challengerPlayer, null, gym, null)
 			));
 		}
+	}
+
+	public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym)
+			throws Exception {
+
+		try {
+			// Remove player from queue
+			getQueueFromGym(gym).removeFromQueue(challenger.getUuid());
+
+			// Rules
+			HashSet<String> rules = new HashSet<>();
+			rules.add(BattleRules.OBTAINABLE);
+			rules.add(BattleRules.HP_PERCENTAGE_MOD);
+
+			if (gym.getRequirements().getClauses().contains(Clause.SLEEP)) {
+				rules.add(BattleRules.SLEEP_CLAUSE);
+			}
+
+			if (gym.getRequirements().getClauses().contains(Clause.ENDLESS_BATTLE)) {
+				rules.add(BattleRules.ENDLESS_BATTLE_CLAUSE);
+			}
+
+			// Create the battle format.
+			BattleFormat battleFormat = new BattleFormat("elgyms", BattleTypes.INSTANCE.getSINGLES(), rules, 9);
+
+			// Convert party Pokemon to Battle Pokemon.
+			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(challenger);
+			ArrayList<Pokemon> challengerParty = new ArrayList<>();
+			for (int x=0; x < 6; x++) {
+				Pokemon partyPokemon = party.get(x);
+
+				if (partyPokemon != null) {
+					challengerParty.add(partyPokemon);
+				}
+			}
+			ArrayList<BattlePokemon> challengerPokemon = convertTeam(challengerParty);
+
+			// Get the Leader Pokemon.
+			ArrayList<JsonObject> leaderJsonPokemon = gym.getLeader(leader.getUuid()).getTeam();
+
+			if (leaderJsonPokemon == null) {
+				leader.sendMessage(Text.literal("§cYou do not have a team."));
+				return;
+			}
+
+			ArrayList<Pokemon> leaderPokemonObjects = new ArrayList<>();
+			for (JsonObject object : leaderJsonPokemon) {
+				leaderPokemonObjects.add(new Pokemon().loadFromJSON(object).initialize());
+			}
+			ArrayList<BattlePokemon> leaderPokemon = convertTeam(leaderPokemonObjects);
+
+			// Start the battle
+			BattleRegistry.INSTANCE.startBattle(battleFormat,
+					new BattleSide(new PlayerBattleActor(challenger.getUuid(), challengerPokemon)),
+					new BattleSide(new PlayerBattleActor(leader.getUuid(), leaderPokemon)),
+					false
+					);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
+
+
+
+	}
+
+	private static ArrayList<BattlePokemon> convertTeam(ArrayList<Pokemon> pokemons) {
+		ArrayList<BattlePokemon> battlePokemons = new ArrayList<>();
+		for (Pokemon pokemon : pokemons) {
+			BattlePokemon battlePokemon = new BattlePokemon(pokemon, pokemon, (p) -> null);
+			battlePokemons.add(battlePokemon);
+		}
+
+		return battlePokemons;
 	}
 }
