@@ -11,6 +11,7 @@ import org.pokesplash.elgyms.champion.ChampionHistory;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.Config;
 import org.pokesplash.elgyms.config.Lang;
+import org.pokesplash.elgyms.event.BattleEndedEvent;
 import org.pokesplash.elgyms.event.PlayerJoinEvent;
 import org.pokesplash.elgyms.event.PlayerLeaveEvent;
 import org.pokesplash.elgyms.provider.BadgeProvider;
@@ -36,6 +37,7 @@ public class Elgyms implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register(new PlayerJoinEvent());
 		ServerPlayConnectionEvents.DISCONNECT.register(new PlayerLeaveEvent());
 		ServerWorldEvents.LOAD.register((t, e) -> server = t);
+		new BattleEndedEvent().registerEvent();
 		load();
 	}
 

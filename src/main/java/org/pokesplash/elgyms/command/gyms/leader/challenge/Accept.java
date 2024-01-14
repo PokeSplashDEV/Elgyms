@@ -89,11 +89,7 @@ public class Accept {
 			return 1;
 		}
 
-		try {
-			GymProvider.beginBattle(challenger, context.getSource().getPlayer(), gym);
-		} catch (Exception e) {
-			context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
-		}
+		GymProvider.beginBattle(challenger, context.getSource().getPlayer(), gym);
 
 		return 1;
 	}

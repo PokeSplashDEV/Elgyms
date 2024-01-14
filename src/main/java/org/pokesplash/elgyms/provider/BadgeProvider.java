@@ -63,6 +63,13 @@ public abstract class BadgeProvider {
 		return null;
 	}
 
+	public static PlayerBadges getBadges(UUID player) {
+		for (PlayerBadges playerBadges : badges.values()) {
+			if (playerBadges.getUuid().equals(player)) return playerBadges;
+		}
+		return null;
+	}
+
 	public static void addBadge(PlayerBadges playerBadges) {
 		badges.put(playerBadges.getUuid(), playerBadges);
 	}
