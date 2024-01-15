@@ -15,11 +15,13 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
+import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.exception.GymException;
-import org.pokesplash.elgyms.gym.BannedPokemon;
-import org.pokesplash.elgyms.gym.GymConfig;
-import org.pokesplash.elgyms.gym.Requirements;
-import org.pokesplash.elgyms.gym.Restriction;
+import org.pokesplash.elgyms.gym.*;
 import org.pokesplash.elgyms.type.Clause;
 import org.pokesplash.elgyms.type.Type;
 
@@ -408,4 +410,37 @@ public abstract class ElgymsUtils {
 
 		return winnerIds;
 	}
+
+	public static Position getPosition(ServerPlayerEntity player) {
+		Position position = new Position();
+		position.setX(player.getX());
+		position.setY(player.getY());
+		position.setZ(player.getZ());
+		position.setYaw(player.getYaw());
+		position.setPitch(player.getPitch());
+		position.setWorld(player.getWorld().getRegistryKey().getValue());
+		return position;
+	}
+
+	public static void teleportToPosition(ServerPlayerEntity player, Position position) {
+		Iterator<RegistryKey<World>> worlds = Elgyms.server.getWorldRegistryKeys().iterator();
+
+		ServerWorld world = null;
+
+		while (worlds.hasNext()) {
+			RegistryKey<World> next = worlds.next();
+			if (next.getValue().equals(position.getWorld())) {
+				world = Elgyms.server.getWorld(next);
+				break;
+			}
+
+		}
+
+		if (world != null) {
+			player.teleport(world, position.getX(), position.getY(), position.getZ(),
+					position.getYaw(), position.getPitch());
+		}
+	}
+
+
 }

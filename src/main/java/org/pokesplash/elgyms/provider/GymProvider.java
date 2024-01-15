@@ -321,36 +321,9 @@ public abstract class GymProvider {
 		Position leaderPosition = gym.getPositions().getLeader();
 		Position challengerPosition = gym.getPositions().getChallenger();
 
-		// Gets all of the server worlds.
-		Iterator<RegistryKey<World>> worlds = Elgyms.server.getWorldRegistryKeys().iterator();
-
-		// Sets the worlds for leaders and challengers.
-		ServerWorld leaderWorld = null;
-		ServerWorld challengerWorld = null;
-
-		// Iterates over the worlds until it finds the one it needs for leader and challenger.
-		while (worlds.hasNext()) {
-			RegistryKey<World> next = worlds.next();
-			if (next.getValue().equals(leaderPosition.getWorld())) {
-				leaderWorld = Elgyms.server.getWorld(next);
-			}
-
-			if (next.getValue().equals(challengerPosition.getWorld())) {
-				challengerWorld = Elgyms.server.getWorld(next);
-			}
-		}
-
-		// Teleports the leader to the gyms position
-		if (leaderWorld != null) {
-			leader.teleport(leaderWorld, leaderPosition.getX(), leaderPosition.getY(), leaderPosition.getZ(),
-					leaderPosition.getYaw(), leaderPosition.getPitch());
-		}
-
-		// Teleports the challenger to the gyms position
-		if (challengerWorld != null) {
-			challenger.teleport(challengerWorld, leaderPosition.getX(), leaderPosition.getY(), leaderPosition.getZ(),
-					leaderPosition.getYaw(), leaderPosition.getPitch());
-		}
+		// Teleport the players to their positions.
+		ElgymsUtils.teleportToPosition(leader, leaderPosition);
+		ElgymsUtils.teleportToPosition(challenger, challengerPosition);
 
 		try {
 			// Gives the leader their Pokemon.
@@ -360,31 +333,34 @@ public abstract class GymProvider {
 			getQueueFromGym(gym).removeFromQueue(challenger.getUuid());
 
 			// Start the battle
-			BattleStartResult result = BattleBuilder.INSTANCE.pvp1v1(challenger, leader);
+			if (Elgyms.config.isForceStartBattle()) {
+				BattleStartResult result = BattleBuilder.INSTANCE.pvp1v1(challenger, leader);
 
-			// Checks the battle started.
-			boolean success = result instanceof SuccessfulBattleStart;
+				// Checks the battle started.
+				boolean success = result instanceof SuccessfulBattleStart;
 
-			// if the battle started, track the battle ID.
-			if (success) {
-				UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
+				// if the battle started, track the battle ID.
+				if (success) {
+					UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
 
-				PlayerBadges badges = BadgeProvider.getBadges(challenger);
+					PlayerBadges badges = BadgeProvider.getBadges(challenger);
 
-				CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+					CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
 
-				activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(),
-						challenger.getName().getString(), gym, badges.isPrestiged(category)));
-			} else {
-				// Otherwise throw an error.
-				BattleStartError error = (BattleStartError) result;
+					activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(),
+							challenger.getName().getString(), gym, badges.isPrestiged(category),
+							ElgymsUtils.getPosition(leader), ElgymsUtils.getPosition(challenger)));
+				} else {
+					// Otherwise throw an error.
+					BattleStartError error = (BattleStartError) result;
 
-				World leaderEntityWorld = leader.getEntityWorld();
+					World leaderEntityWorld = leader.getEntityWorld();
 
-				Entity leaderEntity = Elgyms.server.getWorld(leaderEntityWorld.getRegistryKey()).getEntity(leader.getUuid());
+					Entity leaderEntity = Elgyms.server.getWorld(leaderEntityWorld.getRegistryKey()).getEntity(leader.getUuid());
 
-				if (leaderEntity != null) {
-					throw new Exception(error.getMessageFor(leaderEntity).getString());
+					if (leaderEntity != null) {
+						throw new Exception(error.getMessageFor(leaderEntity).getString());
+					}
 				}
 			}
 

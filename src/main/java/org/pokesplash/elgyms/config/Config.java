@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class Config {
 	private boolean forceStartBattle;
-	private boolean teleportBack;
 	private boolean enableBroadcasts;
 	private ArrayList<CategoryConfig> categories;
 
@@ -17,7 +16,6 @@ public class Config {
 
 	public Config() {
 		forceStartBattle = true;
-		teleportBack = true;
 		enableBroadcasts = true;
 		categories = new ArrayList<>();
 		categories.add(new CategoryConfig());
@@ -29,7 +27,6 @@ public class Config {
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
 					forceStartBattle = cfg.isForceStartBattle();
-					teleportBack = cfg.isTeleportBack();
 					enableBroadcasts = cfg.isEnableBroadcasts();
 					categories = cfg.getCategories();
 				});
@@ -53,10 +50,6 @@ public class Config {
 
 	public boolean isForceStartBattle() {
 		return forceStartBattle;
-	}
-
-	public boolean isTeleportBack() {
-		return teleportBack;
 	}
 
 	public boolean isEnableBroadcasts() {

@@ -131,8 +131,6 @@ public class BattleEndedEvent {
                                 battleData.getChallengerName(), false));
             }
 
-
-
             return Unit.INSTANCE;
         });
     }
