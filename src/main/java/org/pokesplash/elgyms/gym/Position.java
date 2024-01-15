@@ -1,5 +1,9 @@
 package org.pokesplash.elgyms.gym;
 
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
+
 /**
  * Config for positions of a gym leader, challenger or spectator.
  */
@@ -7,8 +11,9 @@ public class Position {
 	private double x;
 	private double y;
 	private double z;
-	private double yaw;
-	private double pitch;
+	private float yaw;
+	private float pitch;
+	private Identifier world;
 
 	public Position() {
 		x = 0;
@@ -16,6 +21,7 @@ public class Position {
 		z = 0;
 		yaw = 0;
 		pitch = 0;
+		world = null;
 	}
 
 	public double getX() {
@@ -30,11 +36,11 @@ public class Position {
 		return z;
 	}
 
-	public double getYaw() {
+	public float getYaw() {
 		return yaw;
 	}
 
-	public double getPitch() {
+	public float getPitch() {
 		return pitch;
 	}
 
@@ -50,11 +56,19 @@ public class Position {
 		this.z = z;
 	}
 
-	public void setYaw(double yaw) {
+	public void setYaw(float yaw) {
 		this.yaw = yaw;
 	}
 
-	public void setPitch(double pitch) {
+	public void setPitch(float pitch) {
 		this.pitch = pitch;
+	}
+
+	public Identifier getWorld() {
+		return world;
+	}
+
+	public void setWorld(Identifier world) {
+		this.world = world;
 	}
 }

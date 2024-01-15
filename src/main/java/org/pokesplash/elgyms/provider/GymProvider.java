@@ -13,7 +13,9 @@ import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import org.pokesplash.elgyms.Elgyms;
@@ -24,6 +26,7 @@ import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Leader;
+import org.pokesplash.elgyms.gym.Position;
 import org.pokesplash.elgyms.gym.Queue;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -314,6 +317,40 @@ public abstract class GymProvider {
 			return;
 		}
 
+		// Gets the gym positions for leaders and challengers.
+		Position leaderPosition = gym.getPositions().getLeader();
+		Position challengerPosition = gym.getPositions().getChallenger();
+
+		// Gets all of the server worlds.
+		Iterator<RegistryKey<World>> worlds = Elgyms.server.getWorldRegistryKeys().iterator();
+
+		// Sets the worlds for leaders and challengers.
+		ServerWorld leaderWorld = null;
+		ServerWorld challengerWorld = null;
+
+		// Iterates over the worlds until it finds the one it needs for leader and challenger.
+		while (worlds.hasNext()) {
+			RegistryKey<World> next = worlds.next();
+			if (next.getValue().equals(leaderPosition.getWorld())) {
+				leaderWorld = Elgyms.server.getWorld(next);
+			}
+
+			if (next.getValue().equals(challengerPosition.getWorld())) {
+				challengerWorld = Elgyms.server.getWorld(next);
+			}
+		}
+
+		// Teleports the leader to the gyms position
+		if (leaderWorld != null) {
+			leader.teleport(leaderWorld, leaderPosition.getX(), leaderPosition.getY(), leaderPosition.getZ(),
+					leaderPosition.getYaw(), leaderPosition.getPitch());
+		}
+
+		// Teleports the challenger to the gyms position
+		if (challengerWorld != null) {
+			challenger.teleport(challengerWorld, leaderPosition.getX(), leaderPosition.getY(), leaderPosition.getZ(),
+					leaderPosition.getYaw(), leaderPosition.getPitch());
+		}
 
 		try {
 			// Gives the leader their Pokemon.
@@ -342,9 +379,9 @@ public abstract class GymProvider {
 				// Otherwise throw an error.
 				BattleStartError error = (BattleStartError) result;
 
-				World leaderWorld = leader.getEntityWorld();
+				World leaderEntityWorld = leader.getEntityWorld();
 
-				Entity leaderEntity = Elgyms.server.getWorld(leaderWorld.getRegistryKey()).getEntity(leader.getUuid());
+				Entity leaderEntity = Elgyms.server.getWorld(leaderEntityWorld.getRegistryKey()).getEntity(leader.getUuid());
 
 				if (leaderEntity != null) {
 					throw new Exception(error.getMessageFor(leaderEntity).getString());

@@ -71,6 +71,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new GiveCooldown().build());
 		registeredCommand.addChild(new RemoveCooldown().build());
 		registeredCommand.addChild(new Queue().build());
+		registeredCommand.addChild(new Position().build());
 
 	}
 
