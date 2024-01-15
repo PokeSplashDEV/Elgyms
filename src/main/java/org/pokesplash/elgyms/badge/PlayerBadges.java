@@ -123,6 +123,11 @@ public class PlayerBadges {
 	}
 
 	public boolean isPrestiged(CategoryConfig categoryConfig) {
+
+		if (categoryConfig == null) {
+			return false;
+		}
+
 		if (!prestige.containsKey(categoryConfig.getName())) {
 			setPrestiged(categoryConfig, false);
 		}

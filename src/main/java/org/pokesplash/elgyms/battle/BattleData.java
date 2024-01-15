@@ -10,12 +10,14 @@ public class BattleData {
     private UUID leaderId;
     private String challengerName;
     private GymConfig gym;
+    private boolean isPrestige;
 
-    public BattleData(UUID battleId, UUID leaderId, String challengerName, GymConfig gym) {
+    public BattleData(UUID battleId, UUID leaderId, String challengerName, GymConfig gym, boolean isPrestige) {
         this.battleId = battleId;
         this.leaderId = leaderId;
         this.challengerName = challengerName;
         this.gym = gym;
+        this.isPrestige = isPrestige;
     }
 
     public UUID getBattleId() {
@@ -32,5 +34,9 @@ public class BattleData {
 
     public String getChallengerName() {
         return challengerName;
+    }
+
+    public boolean isPrestige() {
+        return isPrestige;
     }
 }

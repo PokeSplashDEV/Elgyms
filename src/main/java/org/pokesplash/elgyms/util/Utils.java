@@ -2,11 +2,14 @@ package org.pokesplash.elgyms.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
@@ -394,11 +397,38 @@ public abstract class Utils {
 	 * @param message The message to broadcast.
 	 */
 	public static void broadcastMessage(String message) {
-		MinecraftServer server = Elgyms.server;
-		ArrayList<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+		if (Elgyms.config.isEnableBroadcasts()) {
+			MinecraftServer server = Elgyms.server;
+			ArrayList<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
 
-		for (ServerPlayerEntity pl : players) {
-			pl.sendMessage(Text.literal(message));
+			for (ServerPlayerEntity pl : players) {
+				pl.sendMessage(Text.literal(message));
+			}
+		}
+	}
+
+	/**
+	 * Runs a list of commands as the server
+	 * @param commands The list of commands to run
+	 * @param player Player placeholder
+	 * @param badge Badge placeholder
+	 * @param categoryConfig Category placeholder
+	 * @param gymConfig Gym placeholder
+	 */
+	public static void runCommands(ArrayList<String> commands, ServerPlayerEntity player, Badge badge,
+								   CategoryConfig categoryConfig, GymConfig gymConfig) {
+		// Run commands
+		CommandDispatcher<ServerCommandSource> dispatcher =
+				Elgyms.server.getCommandManager().getDispatcher();
+		for (String command : commands) {
+			try {
+				dispatcher.execute(
+						Utils.formatPlaceholders(command, null, badge, player, categoryConfig,
+								gymConfig, null),
+						Elgyms.server.getCommandSource());
+			} catch (CommandSyntaxException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 	}
 }

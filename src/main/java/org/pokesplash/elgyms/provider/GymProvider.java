@@ -20,6 +20,7 @@ import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.champion.ChampionConfig;
+import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Leader;
@@ -150,13 +151,11 @@ public abstract class GymProvider {
 
 	public static void openGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.add(gym);
-		if (Elgyms.config.isEnableBroadcasts()) {
 			Utils.broadcastMessage(Utils.formatPlaceholders(
 					Elgyms.lang.getPrefix() +
 							Elgyms.lang.getOpenGymMessage(), null, null, player,
 					null, gym, null
 			));
-		}
 	}
 
 	public static void openAllGyms(ServerPlayerEntity player) {
@@ -170,13 +169,11 @@ public abstract class GymProvider {
 
 	public static void closeGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.remove(gym);
-		if (Elgyms.config.isEnableBroadcasts()) {
 			Utils.broadcastMessage(Utils.formatPlaceholders(
 					Elgyms.lang.getPrefix() +
 							Elgyms.lang.getCloseGymMessage(), null, null, player,
 					null, gym, null
 			));
-		}
 	}
 
 	public static void closeAllGyms(ServerPlayerEntity player) {
@@ -334,8 +331,13 @@ public abstract class GymProvider {
 			// if the battle started, track the battle ID.
 			if (success) {
 				UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
+
+				PlayerBadges badges = BadgeProvider.getBadges(challenger);
+
+				CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
 				activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(),
-						challenger.getName().getString(), gym));
+						challenger.getName().getString(), gym, badges.isPrestiged(category)));
 			} else {
 				// Otherwise throw an error.
 				BattleStartError error = (BattleStartError) result;

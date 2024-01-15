@@ -3,15 +3,19 @@ package org.pokesplash.elgyms.event;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import kotlin.Unit;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.config.Reward;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.GymRewards;
 import org.pokesplash.elgyms.log.BattleLog;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
+import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,25 +48,42 @@ public class BattleEndedEvent {
 
             GymConfig gym = battleData.getGym();
 
+            GymRewards rewards = gym.getRewards();
+
+            CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
             // If the leader didn't win. Add badges.
             if (ElgymsUtils.didChallengerWin(winners, battleData.getLeaderId())) {
-
-                CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
 
                 for (UUID winner : winners) {
 
                     PlayerBadges badges = BadgeProvider.getBadges(winner);
 
-                    // TODO fix name here.
+                    // Gets the challenger.
+                    ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(winner);
+
+                    String challengerName = challenger != null ? challenger.getName().getString() : "";
+
                     if (badges == null) {
-                        BadgeProvider.addBadge(new PlayerBadges(winner, ""));
+                        BadgeProvider.addBadge(new PlayerBadges(winner, challengerName));
                     }
 
                     // Adds the badge
                     BadgeProvider.getBadges(winner).addBadge(category, gym.getBadge());
-                }
 
-                // TODO announce challenger beat gym.
+                    // Gets the correct reward.
+                    Reward reward = battleData.isPrestige() ? rewards.getPrestige() : rewards.getFirstTime();
+
+                    // Broadcasts the message
+                    if (reward.isEnableBroadcast()) {
+                        Utils.broadcastMessage(Utils.formatPlaceholders(reward.getBroadcastMessage(), null,
+                                gym.getBadge(), challenger, category, gym, null));
+                    }
+
+
+                    // Run commands
+                    Utils.runCommands(reward.getCommands(), challenger, gym.getBadge(), category, gym);
+                }
 
                 Elgyms.battleLogger.addLog(
                         new BattleLog(gym.getBadge(), battleData.getLeaderId(),
@@ -77,18 +98,33 @@ public class BattleEndedEvent {
 
                     PlayerBadges badges = BadgeProvider.getBadges(loser);
 
+                    // Gets the challenger.
+                    ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(loser);
+
+                    String challengerName = challenger != null ? challenger.getName().getString() : "";
+
                     // TODO fix name here.
                     if (badges == null) {
-                        BadgeProvider.addBadge(new PlayerBadges(loser, ""));
+                        BadgeProvider.addBadge(new PlayerBadges(loser, challengerName));
                     }
 
                     // Adds the badge
                     BadgeProvider.getBadges(loser).setCooldown(gym, new Date().getTime() + duration);
 
+                    // Gets the correct reward.
+                    Reward reward = rewards.getLoss();
+
+                    // Broadcasts the message
+                    if (reward.isEnableBroadcast()) {
+                        Utils.broadcastMessage(Utils.formatPlaceholders(reward.getBroadcastMessage(), null,
+                                gym.getBadge(), challenger, category, gym, null));
+                    }
+
+
+                    // Run commands
+                    Utils.runCommands(reward.getCommands(), challenger, gym.getBadge(), category, gym);
+
                 }
-
-
-                // TODO announce challenger lost in gym.
 
                 Elgyms.battleLogger.addLog(
                         new BattleLog(gym.getBadge(), battleData.getLeaderId(),
