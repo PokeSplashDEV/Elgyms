@@ -150,11 +150,13 @@ public abstract class GymProvider {
 
 	public static void openGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.add(gym);
-		Utils.broadcastMessage(Utils.formatPlaceholders(
-				Elgyms.lang.getPrefix() +
-						Elgyms.lang.getOpenGymMessage(), null, null, player,
-				null, gym, null
-		));
+		if (Elgyms.config.isEnableBroadcasts()) {
+			Utils.broadcastMessage(Utils.formatPlaceholders(
+					Elgyms.lang.getPrefix() +
+							Elgyms.lang.getOpenGymMessage(), null, null, player,
+					null, gym, null
+			));
+		}
 	}
 
 	public static void openAllGyms(ServerPlayerEntity player) {
@@ -168,11 +170,13 @@ public abstract class GymProvider {
 
 	public static void closeGym(GymConfig gym, ServerPlayerEntity player) {
 		openGyms.remove(gym);
-		Utils.broadcastMessage(Utils.formatPlaceholders(
-				Elgyms.lang.getPrefix() +
-						Elgyms.lang.getCloseGymMessage(), null, null, player,
-				null, gym, null
-		));
+		if (Elgyms.config.isEnableBroadcasts()) {
+			Utils.broadcastMessage(Utils.formatPlaceholders(
+					Elgyms.lang.getPrefix() +
+							Elgyms.lang.getCloseGymMessage(), null, null, player,
+					null, gym, null
+			));
+		}
 	}
 
 	public static void closeAllGyms(ServerPlayerEntity player) {

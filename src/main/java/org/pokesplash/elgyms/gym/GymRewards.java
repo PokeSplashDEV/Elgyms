@@ -10,14 +10,12 @@ import java.util.ArrayList;
 public class GymRewards {
 	private Reward firstTime; // First time rewards
 	private Reward prestige; // Rewards for beating it after they prestige.
-	private ArrayList<String> lossCommands; // Commands to run if the challenger loses.
+	private Reward loss; // Loss commands / broadcast
 
 	public GymRewards() {
 		firstTime = new Reward();
 		prestige = new Reward();
-
-		lossCommands = new ArrayList<>();
-		lossCommands.add("say {player} lost to gym {gym}");
+		loss = new Reward();
 	}
 
 	public Reward getFirstTime() {
@@ -28,7 +26,7 @@ public class GymRewards {
 		return prestige;
 	}
 
-	public ArrayList<String> getLossCommands() {
-		return lossCommands;
+	public Reward getLoss() {
+		return loss;
 	}
 }
