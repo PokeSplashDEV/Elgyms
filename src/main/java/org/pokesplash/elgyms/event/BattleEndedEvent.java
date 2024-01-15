@@ -8,6 +8,7 @@ import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.log.BattleLog;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
@@ -31,7 +32,7 @@ public class BattleEndedEvent {
             }
 
 
-            // Ends the battle and returns the team.
+            // Ends the battle, removes the team, returns the data of the battle.
             BattleData battleData = GymProvider.endGymBattle(el.getBattle().getBattleId());
 
             if (battleData == null) {
@@ -61,8 +62,11 @@ public class BattleEndedEvent {
                     BadgeProvider.getBadges(winner).addBadge(category, gym.getBadge());
                 }
 
-
                 // TODO announce challenger beat gym.
+
+                Elgyms.battleLogger.addLog(
+                        new BattleLog(gym.getBadge(), battleData.getLeaderId(),
+                                battleData.getChallengerName(), true));
             } else {
                 // Sets the cooldown timer for the gym.
                 ArrayList<UUID> loserIds = ElgymsUtils.getBattleActorIds(el.getLosers());
@@ -85,6 +89,10 @@ public class BattleEndedEvent {
 
 
                 // TODO announce challenger lost in gym.
+
+                Elgyms.battleLogger.addLog(
+                        new BattleLog(gym.getBadge(), battleData.getLeaderId(),
+                                battleData.getChallengerName(), false));
             }
 
 

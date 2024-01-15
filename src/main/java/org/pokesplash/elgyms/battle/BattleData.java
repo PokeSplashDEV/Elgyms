@@ -8,11 +8,13 @@ public class BattleData {
 
     private UUID battleId;
     private UUID leaderId;
+    private String challengerName;
     private GymConfig gym;
 
-    public BattleData(UUID battleId, UUID leaderId, GymConfig gym) {
+    public BattleData(UUID battleId, UUID leaderId, String challengerName, GymConfig gym) {
         this.battleId = battleId;
         this.leaderId = leaderId;
+        this.challengerName = challengerName;
         this.gym = gym;
     }
 
@@ -26,5 +28,9 @@ public class BattleData {
 
     public GymConfig getGym() {
         return gym;
+    }
+
+    public String getChallengerName() {
+        return challengerName;
     }
 }

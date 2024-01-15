@@ -14,6 +14,7 @@ import org.pokesplash.elgyms.config.Lang;
 import org.pokesplash.elgyms.event.BattleEndedEvent;
 import org.pokesplash.elgyms.event.PlayerJoinEvent;
 import org.pokesplash.elgyms.event.PlayerLeaveEvent;
+import org.pokesplash.elgyms.log.BattleLogger;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.ui.config.MenuConfig;
@@ -26,6 +27,7 @@ public class Elgyms implements ModInitializer {
 	public static final ChampionHistory championHistory = new ChampionHistory();
 	public static final MenuConfig menu = new MenuConfig();
 	public static final Lang lang = new Lang();
+	public static final BattleLogger battleLogger = new BattleLogger();
 	public static MinecraftServer server;
 
 	/**
@@ -48,5 +50,6 @@ public class Elgyms implements ModInitializer {
 		lang.init();
 		menu.init();
 		BadgeProvider.init();
+		battleLogger.init();
 	}
 }

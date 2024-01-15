@@ -330,7 +330,8 @@ public abstract class GymProvider {
 			// if the battle started, track the battle ID.
 			if (success) {
 				UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
-				activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(), gym));
+				activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(),
+						challenger.getName().getString(), gym));
 			} else {
 				// Otherwise throw an error.
 				BattleStartError error = (BattleStartError) result;
