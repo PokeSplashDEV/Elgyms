@@ -31,6 +31,7 @@ public class MenuConfig {
 	private String badgeTitle;
 	private String cooldownTitle;
 	private String cooldownMaterial;
+	private String leaderTitle;
 
 	public MenuConfig() {
 		categoryRows = 3;
@@ -54,6 +55,7 @@ public class MenuConfig {
 		badgeTitle = "§3Badges";
 		cooldownTitle = "§cYou have a {cooldown} cooldown";
 		cooldownMaterial = "minecraft:red_stained_glass_pane";
+		leaderTitle = "§bLeaders";
 
 		types = new HashMap<>();
 		for (Type type : Type.values()) {
@@ -91,6 +93,7 @@ public class MenuConfig {
 					badgeTitle = cfg.getBadgeTitle();
 					cooldownTitle = cfg.getCooldownTitle();
 					cooldownMaterial = cfg.getCooldownMaterial();
+					leaderTitle = cfg.getLeaderTitle();
 				});
 
 		if (!futureRead.join()) {
@@ -199,5 +202,9 @@ public class MenuConfig {
 
 	public String getCooldownMaterial() {
 		return cooldownMaterial;
+	}
+
+	public String getLeaderTitle() {
+		return leaderTitle;
 	}
 }

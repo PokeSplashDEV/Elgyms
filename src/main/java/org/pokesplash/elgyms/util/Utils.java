@@ -392,6 +392,14 @@ public abstract class Utils {
 		return item;
 	}
 
+	public static ItemStack getPlayerHead(String player) {
+		ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+		NbtCompound tag = new NbtCompound();
+		tag.putString("SkullOwner", player);
+		item.setNbt(tag);
+		return item;
+	}
+
 	/**
 	 * Broadcasts a message to every player on the server.
 	 * @param message The message to broadcast.

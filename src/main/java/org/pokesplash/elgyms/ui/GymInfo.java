@@ -50,7 +50,8 @@ public class GymInfo {
 						e.getPlayer().sendMessage(Text.literal("§c" + ex.getMessage()));
 					}
 
-					UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, categoryConfig, challenger));
+					UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, categoryConfig,
+							challenger));
 				})
 				.build();
 
@@ -66,7 +67,8 @@ public class GymInfo {
 							null, gym.getBadge(), e.getPlayer(), categoryConfig, gym, null
 					)));
 
-					UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, categoryConfig, challenger));
+					UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, categoryConfig,
+							challenger));
 				})
 				.build();
 
@@ -91,6 +93,15 @@ public class GymInfo {
 				.lore(ElgymsUtils.getRulesLore(gym))
 				.build();
 
+		Button leaders = GooeyButton.builder()
+				.title(Elgyms.menu.getLeaderTitle())
+				.display(Utils.getPlayerHead(challenger))
+				.hideFlags(FlagType.All)
+				.onClick(e -> {
+					UIManager.openUIForcefully(e.getPlayer(), new GymLeaders().getPage(gym));
+				})
+				.build();
+
 		PlayerBadges badges = BadgeProvider.getBadges(challenger);
 
 		Button dynamic;
@@ -108,7 +119,8 @@ public class GymInfo {
 		ChestTemplate template = ChestTemplate.builder(3)
 				.fill(Components.filler())
 				.set(10, dynamic)
-				.set(13, rules)
+				.set(12, rules)
+				.set(14, leaders)
 				.set(16, Components.backButton(e -> {
 					UIManager.openUIForcefully(e.getPlayer(), new GymSelect().getPage(categoryConfig, e.getPlayer()));
 				}))
