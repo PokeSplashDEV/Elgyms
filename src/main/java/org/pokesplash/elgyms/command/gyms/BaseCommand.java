@@ -18,6 +18,7 @@ import org.pokesplash.elgyms.command.gyms.leader.gym.Open;
 import org.pokesplash.elgyms.command.gyms.leader.challenge.Reject;
 import org.pokesplash.elgyms.command.gyms.leader.badge.OtherBadge;
 import org.pokesplash.elgyms.command.gyms.leader.gym.Queue;
+import org.pokesplash.elgyms.command.gyms.leader.gym.Team;
 import org.pokesplash.elgyms.command.gyms.user.Challenge;
 import org.pokesplash.elgyms.command.gyms.user.Spectate;
 import org.pokesplash.elgyms.ui.CategorySelect;
@@ -74,6 +75,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new Queue().build());
 		registeredCommand.addChild(new Position().build());
 		registeredCommand.addChild(new Spectate().build());
+		registeredCommand.addChild(new Team().build());
 
 	}
 
