@@ -292,7 +292,8 @@ public abstract class GymProvider {
 		}
 	}
 
-	public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym) {
+	public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym,
+								   boolean giveLeaderPokemon) {
 
 		try {
 			// Gets a list of all challenger Pokemon
@@ -326,8 +327,10 @@ public abstract class GymProvider {
 		ElgymsUtils.teleportToPosition(challenger, challengerPosition);
 
 		try {
-			// Gives the leader their Pokemon.
-			giveLeaderPokemon(leader, gym);
+			if (giveLeaderPokemon) {
+				// Gives the leader their Pokemon.
+				giveLeaderPokemon(leader, gym);
+			}
 
 			// Remove player from queue
 			getQueueFromGym(gym).removeFromQueue(challenger.getUuid());
@@ -375,7 +378,7 @@ public abstract class GymProvider {
 		}
 	}
 
-	private static void giveLeaderPokemon(ServerPlayerEntity player, GymConfig gym) throws Exception {
+	public static void giveLeaderPokemon(ServerPlayerEntity player, GymConfig gym) throws Exception {
 		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
 		PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player.getUuid());
 

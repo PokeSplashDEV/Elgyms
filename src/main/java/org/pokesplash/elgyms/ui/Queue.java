@@ -17,10 +17,12 @@ import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.Utils;
+import org.pokesplash.teampreview.TeamPreview;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -46,7 +48,31 @@ public class Queue {
 							.onClick(e -> {
 								UIManager.closeUI(leader);
 								try {
-									GymProvider.beginBattle(challenger, e.getPlayer(), gym);
+									// If its team preview, open the preview window, else just start the battle.
+									if (gym.getRequirements().isTeamPreview()) {
+										try {
+											GymProvider.giveLeaderPokemon(leader, gym);
+											TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(), f -> {
+												try {
+													GymProvider.beginBattle(challenger, leader, gym, false);
+												} catch (Exception ex) {
+													// Sends error to leader. Tells challenger something went wrong.
+													leader.sendMessage(Text.literal("§c" + ex.getMessage()));
+													challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
+
+													if (!(ex instanceof GymException)) {
+														Elgyms.LOGGER.error(ex.getMessage());
+													}
+												}
+											});
+											TeamPreview.openPreview(leader.getUuid());
+											TeamPreview.openPreview(challenger.getUuid());
+										} catch (Exception ex) {
+											ex.printStackTrace();
+										}
+									} else {
+										GymProvider.beginBattle(challenger, leader, gym, true);
+									}
 								} catch (Exception ex) {
 									e.getPlayer().sendMessage(Text.literal("§c" + ex.getMessage()));
 								}

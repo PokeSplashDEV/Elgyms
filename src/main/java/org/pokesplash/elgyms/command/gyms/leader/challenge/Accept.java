@@ -1,8 +1,6 @@
 package org.pokesplash.elgyms.command.gyms.leader.challenge;
 
-import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
-import com.cobblemon.mod.common.pokemon.Pokemon;
+import ca.landonjw.gooeylibs2.api.UIManager;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -11,17 +9,15 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
-import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
+import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Queue;
-import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
-import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
+import org.pokesplash.teampreview.TeamPreview;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class Accept {
@@ -89,7 +85,33 @@ public class Accept {
 			return 1;
 		}
 
-		GymProvider.beginBattle(challenger, context.getSource().getPlayer(), gym);
+		ServerPlayerEntity leader = context.getSource().getPlayer();
+
+		// If its team preview, open the preview window, else just start the battle.
+		if (gym.getRequirements().isTeamPreview()) {
+			try {
+				GymProvider.giveLeaderPokemon(leader, gym);
+				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(), e -> {
+					try {
+						GymProvider.beginBattle(challenger, leader, gym, false);
+					} catch (Exception ex) {
+						// Sends error to leader. Tells challenger something went wrong.
+						leader.sendMessage(Text.literal("§c" + ex.getMessage()));
+						challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
+
+						if (!(ex instanceof GymException)) {
+							Elgyms.LOGGER.error(ex.getMessage());
+						}
+					}
+				});
+				TeamPreview.openPreview(leader.getUuid());
+				TeamPreview.openPreview(challenger.getUuid());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			GymProvider.beginBattle(challenger, leader, gym, true);
+		}
 
 		return 1;
 	}
