@@ -11,6 +11,7 @@ import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.config.Reward;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.GymRewards;
+import org.pokesplash.elgyms.gym.Record;
 import org.pokesplash.elgyms.log.BattleLog;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
@@ -52,8 +53,13 @@ public class BattleEndedEvent {
 
             CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
 
+            Record leaderRecord = gym.getLeader(battleData.getLeaderId()).getRecord();
+
             // If the leader didn't win. Add badges.
             if (ElgymsUtils.didChallengerWin(winners, battleData.getLeaderId())) {
+
+                leaderRecord.setLosses(leaderRecord.getLosses() + 1);
+                gym.write();
 
                 for (UUID winner : winners) {
 
@@ -89,6 +95,10 @@ public class BattleEndedEvent {
                         new BattleLog(gym.getBadge(), battleData.getLeaderId(),
                                 battleData.getChallengerName(), true));
             } else {
+
+                leaderRecord.setWins(leaderRecord.getWins() + 1);
+                gym.write();
+
                 // Sets the cooldown timer for the gym.
                 ArrayList<UUID> loserIds = ElgymsUtils.getBattleActorIds(el.getLosers());
 
