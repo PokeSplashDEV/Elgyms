@@ -102,7 +102,7 @@ public abstract class ElgymsUtils {
 
 	}
 
-	public static void checkChallengerRequirements(ArrayList<Pokemon> pokemon, GymConfig gym) throws GymException {
+	public static void checkChallengerRequirements(List<Pokemon> pokemon, GymConfig gym) throws GymException {
 
 		// Checks for level requirements.
 		if (!gym.getRequirements().isRaiseToCap()) {
@@ -124,7 +124,7 @@ public abstract class ElgymsUtils {
 
 	}
 
-	private static boolean matchesPokemonSize(ArrayList<Pokemon> pokemons, GymConfig gym) throws GymException {
+	private static boolean matchesPokemonSize(List<Pokemon> pokemons, GymConfig gym) throws GymException {
 		if (pokemons.size() > gym.getRequirements().getTeamSize()) {
 			throw new GymException("Only " + gym.getRequirements().getTeamSize() + " Pokemon are allowed in this gym.");
 		}
@@ -149,7 +149,7 @@ public abstract class ElgymsUtils {
 		return matchesType;
 	}
 
-	private static boolean checkClauses(ArrayList<Pokemon> pokemonList, GymConfig gymConfig) throws GymException {
+	private static boolean checkClauses(List<Pokemon> pokemonList, GymConfig gymConfig) throws GymException {
 
 		HashSet<Clause> clauses = gymConfig.getRequirements().getClauses();
 
@@ -333,7 +333,7 @@ public abstract class ElgymsUtils {
 		return true;
 	}
 
-	private static boolean checkBannedAspects(ArrayList<Pokemon> pokemons, Restriction restriction) throws GymException {
+	private static boolean checkBannedAspects(List<Pokemon> pokemons, Restriction restriction) throws GymException {
 		for (Pokemon mon : pokemons) {
 
 			// Checks for banned Pokemon

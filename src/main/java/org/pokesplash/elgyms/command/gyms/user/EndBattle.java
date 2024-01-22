@@ -20,6 +20,7 @@ import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
@@ -63,7 +64,7 @@ public class EndBattle {
 		battle.end();
 
 		// If its a gym battle, try return leader Pokemon.
-		GymProvider.endGymBattle(battle.getBattleId());
+		BattleProvider.endGymBattle(battle.getBattleId());
 
 		ArrayList<ServerPlayerEntity> players = new ArrayList<>(battle.getPlayers());
 

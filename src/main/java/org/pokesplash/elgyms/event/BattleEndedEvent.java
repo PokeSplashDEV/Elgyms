@@ -14,6 +14,7 @@ import org.pokesplash.elgyms.gym.GymRewards;
 import org.pokesplash.elgyms.gym.Record;
 import org.pokesplash.elgyms.log.BattleLog;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -32,13 +33,13 @@ public class BattleEndedEvent {
             }
 
             // If it's not a gym battle, return.
-            if (!GymProvider.isGymBattle(el.getBattle().getBattleId())) {
+            if (!BattleProvider.isGymBattle(el.getBattle().getBattleId())) {
                 return Unit.INSTANCE;
             }
 
 
             // Ends the battle, removes the team, returns the data of the battle.
-            BattleData battleData = GymProvider.endGymBattle(el.getBattle().getBattleId());
+            BattleData battleData = BattleProvider.endGymBattle(el.getBattle().getBattleId());
 
             if (battleData == null) {
                 return Unit.INSTANCE;

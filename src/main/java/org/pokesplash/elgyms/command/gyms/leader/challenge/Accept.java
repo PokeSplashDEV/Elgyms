@@ -13,6 +13,7 @@ import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Queue;
+import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -90,10 +91,10 @@ public class Accept {
 		// If its team preview, open the preview window, else just start the battle.
 		if (gym.getRequirements().isTeamPreview()) {
 			try {
-				GymProvider.giveLeaderPokemon(leader, gym);
+				BattleProvider.giveLeaderPokemon(leader, gym);
 				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(), e -> {
 					try {
-						GymProvider.beginBattle(challenger, leader, gym, false);
+						BattleProvider.beginBattle(challenger, leader, gym, false);
 					} catch (Exception ex) {
 						// Sends error to leader. Tells challenger something went wrong.
 						leader.sendMessage(Text.literal("§c" + ex.getMessage()));
@@ -110,7 +111,7 @@ public class Accept {
 				e.printStackTrace();
 			}
 		} else {
-			GymProvider.beginBattle(challenger, leader, gym, true);
+			BattleProvider.beginBattle(challenger, leader, gym, true);
 		}
 
 		return 1;

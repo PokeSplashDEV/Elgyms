@@ -4,10 +4,9 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.pc.PCStore;
-import com.cobblemon.mod.common.battles.BattleBuilder;
-import com.cobblemon.mod.common.battles.BattleStartError;
-import com.cobblemon.mod.common.battles.BattleStartResult;
-import com.cobblemon.mod.common.battles.SuccessfulBattleStart;
+import com.cobblemon.mod.common.battles.*;
+import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.Gson;
@@ -39,7 +38,6 @@ public abstract class GymProvider {
 	private static HashMap<String, GymConfig> gyms = new HashMap<>();
 	private static HashMap<GymConfig, Queue> queues = new HashMap<>();
 	private static HashSet<GymConfig> openGyms = new HashSet<>();
-	private static HashMap<UUID, BattleData> activeBattles = new HashMap<>(); // Battle Id / Leader UUID
 	private static ChampionConfig champion = new ChampionConfig();
 
 	/**
@@ -289,176 +287,6 @@ public abstract class GymProvider {
 					Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getRejectChallengeLeader(), null, null,
 							challengerPlayer, null, gym, null)
 			));
-		}
-	}
-
-	public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym,
-								   boolean giveLeaderPokemon) {
-
-		try {
-			// Gets a list of all challenger Pokemon
-			ArrayList<Pokemon> challengerPokemon = new ArrayList<>();
-			PlayerPartyStore challengerParty = Cobblemon.INSTANCE.getStorage().getParty(challenger);
-			for (int x=0; x < 6; x++) {
-				Pokemon pokemon = challengerParty.get(x);
-
-				if (pokemon == null) {
-					continue;
-				}
-
-				challengerPokemon.add(pokemon);
-			}
-
-			// Checks challenger Pokemon are valid.
-			ElgymsUtils.checkChallengerRequirements(challengerPokemon, gym);
-		} catch (Exception e) {
-			// Sends the error to the challenger. Tells leader that the challenger team is illegal.
-			challenger.sendMessage(Text.literal("§c" + e.getMessage()));
-			leader.sendMessage(Text.literal("§c" + "The challenger has an illegal team."));
-			return;
-		}
-
-		// Gets the gym positions for leaders and challengers.
-		Position leaderPosition = gym.getPositions().getLeader();
-		Position challengerPosition = gym.getPositions().getChallenger();
-
-		// Teleport the players to their positions.
-		ElgymsUtils.teleportToPosition(leader, leaderPosition);
-		ElgymsUtils.teleportToPosition(challenger, challengerPosition);
-
-		try {
-			if (giveLeaderPokemon) {
-				// Gives the leader their Pokemon.
-				giveLeaderPokemon(leader, gym);
-			}
-
-			// Remove player from queue
-			getQueueFromGym(gym).removeFromQueue(challenger.getUuid());
-
-			// Start the battle
-			if (Elgyms.config.isForceStartBattle()) {
-				BattleStartResult result = BattleBuilder.INSTANCE.pvp1v1(challenger, leader);
-
-				// Checks the battle started.
-				boolean success = result instanceof SuccessfulBattleStart;
-
-				// if the battle started, track the battle ID.
-				if (success) {
-					UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
-
-					PlayerBadges badges = BadgeProvider.getBadges(challenger);
-
-					CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
-
-					activeBattles.put(battleId, new BattleData(battleId, leader.getUuid(),
-							challenger.getName().getString(), gym, badges.isPrestiged(category),
-							ElgymsUtils.getPosition(leader), ElgymsUtils.getPosition(challenger)));
-				} else {
-					// Otherwise throw an error.
-					BattleStartError error = (BattleStartError) result;
-
-					World leaderEntityWorld = leader.getEntityWorld();
-
-					Entity leaderEntity = Elgyms.server.getWorld(leaderEntityWorld.getRegistryKey()).getEntity(leader.getUuid());
-
-					if (leaderEntity != null) {
-						throw new Exception(error.getMessageFor(leaderEntity).getString());
-					}
-				}
-			}
-
-		} catch (Exception e) {
-			// Sends error to leader. Tells challenger something went wrong.
-			leader.sendMessage(Text.literal("§c" + e.getMessage()));
-			challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
-
-			if (!(e instanceof GymException)) {
-				Elgyms.LOGGER.error(e.getMessage());
-			}
-		}
-	}
-
-	public static void giveLeaderPokemon(ServerPlayerEntity player, GymConfig gym) throws Exception {
-		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-		PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player.getUuid());
-
-		ArrayList<JsonObject> leaderTeam = gym.getLeader(pcStore.getUuid()).getTeam();
-
-		// If they don't have a team, throw an error.
-		if (leaderTeam.isEmpty()) {
-			throw new GymException("You have no team.");
-		}
-
-		// Move the leaders Pokemon to their PC.
-		for (int x = 0; x < 6; x++) {
-			Pokemon pokemon = party.get(x);
-
-			if (pokemon == null) {
-				continue;
-			}
-
-			party.remove(new PartyPosition(x));
-
-			pcStore.add(pokemon);
-		}
-
-		// Add the leaders gym Pokemon to their party.
-		for (JsonObject pokemonObject : leaderTeam) {
-			Pokemon leaderPokemon = new Pokemon().loadFromJSON(pokemonObject).initialize();
-
-			party.add(leaderPokemon);
-		}
-	}
-
-	public static boolean isGymBattle(UUID battleId) {
-		return activeBattles.containsKey(battleId);
-	}
-
-	public static BattleData endGymBattle(UUID battleId) {
-
-		// Get the leaders UUID and remove the battle from active battles.
-		BattleData battleData = GymProvider.activeBattles.remove(battleId);
-
-		if (battleData == null) {
-			return null;
-		}
-
-		// get rid of the leaders Pokemon.
-		try {
-			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(battleData.getLeaderId());
-
-			ArrayList<Species> expectedLeaderTeam = new ArrayList<>();
-			// Gets the expected Pokemon Species for the leaders team.
-			for (JsonObject pokemonObject : battleData.getGym().getLeader(battleData.getLeaderId()).getTeam()) {
-				expectedLeaderTeam.add(new Pokemon().loadFromJSON(pokemonObject).initialize().getSpecies());
-			}
-
-			// Checks each pokemon in the leaders party is from their gym team.
-			for (int x=0; x < 6; x++) {
-				Pokemon pokemon = party.get(x);
-
-				if (pokemon == null) {
-					continue;
-				}
-
-				// If the pokemon in their party matches their gym team, remove it.
-				if (expectedLeaderTeam.contains(pokemon.getSpecies())) {
-					party.remove(new PartyPosition(x));
-					expectedLeaderTeam.remove(pokemon.getSpecies());
-				}
-			}
-
-			// logs that not all Pokemon have been returned.
-			if (!expectedLeaderTeam.isEmpty()) {
-				// TODO Log not all Pokemon have been returned.
-			}
-
-			// Returns the leaders UUID.
-			return battleData;
-
-		} catch (Exception e) {
-			Elgyms.LOGGER.error(e.getMessage());
-			return null;
 		}
 	}
 }
