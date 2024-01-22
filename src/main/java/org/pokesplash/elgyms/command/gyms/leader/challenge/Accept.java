@@ -1,6 +1,7 @@
 package org.pokesplash.elgyms.command.gyms.leader.challenge;
 
-import ca.landonjw.gooeylibs2.api.UIManager;
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -19,6 +20,7 @@ import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
 import org.pokesplash.teampreview.TeamPreview;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Accept {
@@ -91,8 +93,10 @@ public class Accept {
 		// If its team preview, open the preview window, else just start the battle.
 		if (gym.getRequirements().isTeamPreview()) {
 			try {
-				BattleProvider.giveLeaderPokemon(leader, gym);
-				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(), e -> {
+				ArrayList<Pokemon> leaderTeam = BattleProvider.getLeaderTeam(leader, gym);
+				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(),
+						leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
+						e -> {
 					try {
 						BattleProvider.beginBattle(challenger, leader, gym, false);
 					} catch (Exception ex) {

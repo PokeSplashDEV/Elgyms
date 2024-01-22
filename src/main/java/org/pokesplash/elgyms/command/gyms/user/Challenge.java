@@ -100,7 +100,7 @@ public class Challenge {
 		}
 
 		try {
-			ElgymsUtils.checkChallengerRequirements(pokemons, gym);
+			ElgymsUtils.checkChallengerRequirements(context.getSource().getPlayer(), pokemons, gym);
 
 			GymProvider.challengeGym(context.getSource().getPlayer(), gym);
 		} catch (Exception e) {

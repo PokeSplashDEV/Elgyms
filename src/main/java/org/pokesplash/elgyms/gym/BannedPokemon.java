@@ -7,7 +7,7 @@ public class BannedPokemon {
 
 	public BannedPokemon() {
 		pokemon = "ninetales";
-		form = "alolan";
+		form = "alola";
 		ability = "snowwarning";
 	}
 

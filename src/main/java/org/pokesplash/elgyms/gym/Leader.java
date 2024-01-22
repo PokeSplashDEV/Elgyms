@@ -23,7 +23,7 @@ public class Leader {
 		team = new ArrayList<>();
 	}
 
-	public Leader(UUID uuid, String name) {
+	public Leader(UUID uuid) {
 		this.uuid = uuid;
 		record = new Record();
 		startDate = new Date().getTime();

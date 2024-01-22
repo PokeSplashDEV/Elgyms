@@ -43,7 +43,7 @@ public class GymInfo {
 					}
 
 					try {
-						ElgymsUtils.checkChallengerRequirements(pokemons, gym);
+						ElgymsUtils.checkChallengerRequirements(challenger, pokemons, gym);
 
 						GymProvider.challengeGym(e.getPlayer(), gym);
 					} catch (Exception ex) {

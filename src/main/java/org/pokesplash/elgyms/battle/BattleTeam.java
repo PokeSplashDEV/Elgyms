@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.provider.BattleProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class BattleTeam {
 
         // If its raise to cap, make the battle pokemon the correct level.
         if (gym.getRequirements().isRaiseToCap()) {
-            battlePokemon = raiseToCap(party, gym.getRequirements().getPokemonLevel());
+            battlePokemon = raiseToCap(BattleProvider.toList(party), gym.getRequirements().getPokemonLevel());
         } else { // Otherwise just convert the team.
             battlePokemon = party.toBattleTeam(true, true, null);
         }
@@ -51,7 +52,10 @@ public class BattleTeam {
     public BattleTeam(ServerPlayerEntity player, List<JsonObject> pokemonObjects) throws GymException {
 
         // Creates battle pokemon from the json objects.
-        List<BattlePokemon> battlePokemon = convertJsonObjects(pokemonObjects);
+        List<BattlePokemon> battlePokemon;
+
+        // If its raise to cap, make the battle pokemon the correct level.
+        battlePokemon = convertToBattlePokemon(convertJsonObjects(pokemonObjects));
 
         battleActor = new PlayerBattleActor(player.getUuid(), battlePokemon);
 
@@ -64,16 +68,11 @@ public class BattleTeam {
      * @param level The level to set the party to.
      * @return A list of battle pokemon with the correct levels.
      */
-    private List<BattlePokemon> raiseToCap(PlayerPartyStore party, int level) {
+    private List<BattlePokemon> raiseToCap(List<Pokemon> party, int level) {
 
         ArrayList<BattlePokemon> battlePokemon = new ArrayList<>();
 
-        for (int x=0; x < 6; x++) {
-            Pokemon pokemon = party.get(x);
-
-            if (pokemon == null) {
-                continue;
-            }
+        for (Pokemon pokemon : party) {
 
             Pokemon newPokemon = pokemon.clone(false, true);
 
@@ -86,17 +85,30 @@ public class BattleTeam {
     }
 
     /**
-     * Converts Pokemon JsonObjects to BattlePokemon
+     * Converts Pokemon JsonObjects to Pokemon
      * @param objects A list of Pokemon JsonObjects to convert.
-     * @return A list of BattlePokemon from the JsonObjects.
+     * @return A list of Pokemon from the JsonObjects.
      */
-    private List<BattlePokemon> convertJsonObjects(List<JsonObject> objects) {
-        List<BattlePokemon> battlePokemon = new ArrayList<>();
+    private List<Pokemon> convertJsonObjects(List<JsonObject> objects) {
+        List<Pokemon> pokemon = new ArrayList<>();
 
         for (JsonObject object : objects) {
-            Pokemon pokemon = new Pokemon().loadFromJSON(object).initialize();
+            pokemon.add(new Pokemon().loadFromJSON(object).initialize());
+        }
 
-            battlePokemon.add(BattlePokemon.Companion.safeCopyOf(pokemon));
+        return pokemon;
+    }
+
+    /**
+     * Converts a list of Pokemon to BattlePokemon.
+     * @param pokemon The list of Pokemon to convert.
+     * @return The converted list as a list of BattlePokemon.
+     */
+    private List<BattlePokemon> convertToBattlePokemon(List<Pokemon> pokemon) {
+        List<BattlePokemon> battlePokemon = new ArrayList<>();
+
+        for (Pokemon mon : pokemon) {
+            battlePokemon.add(BattlePokemon.Companion.safeCopyOf(mon));
         }
 
         return battlePokemon;

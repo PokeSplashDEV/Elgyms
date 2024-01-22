@@ -99,7 +99,7 @@ public class Leader {
 			return 1;
 		}
 
-		gym.addLeader(new org.pokesplash.elgyms.gym.Leader(player.getUuid(), player.getName()));
+		gym.addLeader(new org.pokesplash.elgyms.gym.Leader(player.getUuid()));
 		gym.write();
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(

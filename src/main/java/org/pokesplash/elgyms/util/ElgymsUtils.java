@@ -70,11 +70,10 @@ public abstract class ElgymsUtils {
 		return leaderTeam;
 	}
 
-	public static void checkLeaderRequirements(ArrayList<Pokemon> pokemon, GymConfig gym) throws Exception {
+	public static void checkLeaderRequirements(ServerPlayerEntity player, ArrayList<Pokemon> pokemon, GymConfig gym) throws Exception {
 
 		// Makes sure team limit isn't exceeded.
-		matchesPokemonSize(pokemon, gym);
-
+		matchesPokemonSize(player, pokemon, gym);
 
 
 		// Checks Pokemon match the gyms types.
@@ -87,46 +86,52 @@ public abstract class ElgymsUtils {
 		}
 
 		// Checks clauses aren't broken
-		checkClauses(pokemon, gym);
+		checkClauses(player, pokemon, gym);
 
 		// Checks that Modded Pokemon are valid.
 		checkModded(pokemon, gym);
 
 		// Checks for banned aspects in leader restrictions.
-		checkBannedAspects(pokemon, gym.getRequirements().getLeaderRestrictions());
+		checkBannedAspects(player, pokemon, gym.getRequirements().getLeaderRestrictions());
 
 		// If leaders inherit challenger restrictions, check for challenger banned aspects too.
 		if (gym.getRequirements().isLeadersInheritPlayerRestrictions()) {
-			checkBannedAspects(pokemon, gym.getRequirements().getChallengerRestrictions());
+			checkBannedAspects(player, pokemon, gym.getRequirements().getChallengerRestrictions());
 		}
 
 	}
 
-	public static void checkChallengerRequirements(List<Pokemon> pokemon, GymConfig gym) throws GymException {
+	public static void checkChallengerRequirements(ServerPlayerEntity player, List<Pokemon> pokemon, GymConfig gym) throws GymException {
 
 		// Checks for level requirements.
 		if (!gym.getRequirements().isRaiseToCap()) {
 			for (Pokemon mon : pokemon) {
 				if (mon.getLevel() > gym.getRequirements().getPokemonLevel()) {
-					throw new GymException("All Pokemon must be under the level cap: Lvl " + gym.getRequirements().getPokemonLevel());
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getLevelCapClause(), player, mon,
+							gym.getRequirements().getPokemonLevel(), gym.getRequirements().getTeamSize(),
+							null, null, null));
 				}
 			}
 		}
 
 		// Makes sure team limit isn't exceeded.
-		matchesPokemonSize(pokemon, gym);
+		matchesPokemonSize(player, pokemon, gym);
 
 		// Checks clauses aren't broken
-		checkClauses(pokemon, gym);
+		checkClauses(player, pokemon, gym);
 
 		// Checks for banned aspects in challenger restrictions.
-		checkBannedAspects(pokemon, gym.getRequirements().getChallengerRestrictions());
+		checkBannedAspects(player, pokemon, gym.getRequirements().getChallengerRestrictions());
 
 	}
 
-	private static boolean matchesPokemonSize(List<Pokemon> pokemons, GymConfig gym) throws GymException {
+	private static boolean matchesPokemonSize(ServerPlayerEntity player, List<Pokemon> pokemons, GymConfig gym) throws GymException {
 		if (pokemons.size() > gym.getRequirements().getTeamSize()) {
-			throw new GymException("Only " + gym.getRequirements().getTeamSize() + " Pokemon are allowed in this gym.");
+			throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+							Elgyms.lang.getMaxTeamSizeClause(), player, null,
+					gym.getRequirements().getPokemonLevel(), gym.getRequirements().getTeamSize(),
+					null, null, null));
 		}
 		return true;
 	}
@@ -149,7 +154,7 @@ public abstract class ElgymsUtils {
 		return matchesType;
 	}
 
-	private static boolean checkClauses(List<Pokemon> pokemonList, GymConfig gymConfig) throws GymException {
+	private static boolean checkClauses(ServerPlayerEntity player, List<Pokemon> pokemonList, GymConfig gymConfig) throws GymException {
 
 		HashSet<Clause> clauses = gymConfig.getRequirements().getClauses();
 
@@ -165,7 +170,10 @@ public abstract class ElgymsUtils {
 
 			for (Species species : speciesCount.keySet()) {
 				if (speciesCount.get(species) > 1) {
-					throw new GymException("A player cannot have two Pokemon with the same National Pokédex number on a team.");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getSpeciesClause(), player, species.create(1),
+							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+							null, null, null));
 				}
 			}
 		}
@@ -183,7 +191,10 @@ public abstract class ElgymsUtils {
 			for (Pokemon mon : pokemonList) {
 				for (Move move : mon.getMoveSet().getMoves()) {
 					if (ohkoMoves.contains(move.getName())) {
-						throw new GymException("A Pokemon may not have the moves Fissure, Guillotine, Horn Drill, or Sheer Cold in its moveset.");
+						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+										Elgyms.lang.getOhkoClause(), player, mon,
+								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+								null, null, null));
 					}
 				}
 			}
@@ -201,7 +212,10 @@ public abstract class ElgymsUtils {
 
 			for (Item item : itemCount.keySet()) {
 				if (itemCount.get(item) > 1 && !item.equals(Items.AIR)) {
-					throw new GymException("A player cannot have two of the same items on a team.");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getItemClause(), player, null,
+							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+							null, item.getName().getString(), null));
 				}
 			}
 		}
@@ -215,7 +229,10 @@ public abstract class ElgymsUtils {
 			for (Pokemon mon : pokemonList) {
 				for (Move move : mon.getMoveSet().getMoves()) {
 					if (evasionMoves.contains(move.getName())) {
-						throw new GymException("A Pokemon may not have either Double Team or Minimize in its moveset.");
+						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+										Elgyms.lang.getEvasionClause(), player, mon,
+								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+								move.getName(), null, null));
 					}
 				}
 			}
@@ -227,7 +244,10 @@ public abstract class ElgymsUtils {
 
 			for (Pokemon mon : pokemonList) {
 				if (mon.getAbility().getTemplate().equals(ability)) {
-					throw new GymException("A team cannot have a Pokemon with the ability Moody.");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getMoodyClause(), player, mon,
+							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+							null, null, ability.getName()));
 				}
 			}
 		}
@@ -237,7 +257,10 @@ public abstract class ElgymsUtils {
 			for (Pokemon mon : pokemonList) {
 				for (Move move : mon.getMoveSet().getMoves()) {
 					if (move.getName().equalsIgnoreCase("swagger")) {
-						throw new GymException("Players cannot use the move Swagger.");
+						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+										Elgyms.lang.getSwaggerClause(), player, mon,
+								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+								move.getName(), null, null));
 					}
 				}
 			}
@@ -247,7 +270,10 @@ public abstract class ElgymsUtils {
 		if (clauses.contains(Clause.LEGENDARY)) {
 			for (Pokemon pokemon : pokemonList) {
 				if (pokemon.isLegendary()) {
-					throw new GymException("Players cannot use Legendary Pokemon");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getLegendaryClause(), player, pokemon,
+							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+							null, null, null));
 				}
 			}
 		}
@@ -256,7 +282,10 @@ public abstract class ElgymsUtils {
 		if (clauses.contains(Clause.ULTRABEAST)) {
 			for (Pokemon pokemon : pokemonList) {
 				if (pokemon.isUltraBeast()) {
-					throw new GymException("Players cannot use Ultra Beast Pokemon");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getUltraBeastClause(), player, pokemon,
+							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+							null, null, null));
 				}
 			}
 		}
@@ -284,7 +313,10 @@ public abstract class ElgymsUtils {
 					}
 
 					if (endlessBattle) {
-						throw new GymException("Players cannot intentionally prevent an opponent from being able to end the game without forfeiting.");
+						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+										Elgyms.lang.getSpeciesClause(), player, pokemon,
+								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
+								null, null, null));
 					}
 				}
 			}
@@ -317,7 +349,7 @@ public abstract class ElgymsUtils {
 			}
 
 			if (maxIVStats > gym.getRequirements().getMaxFullIVs()) {
-				throw new GymException(mon.getDisplayName().getString() + " has too many full IVs.");
+				throw new GymException("§c" + mon.getDisplayName().getString() + " has too many full IVs.");
 			}
 
 			if (maxIVStats > 0) {
@@ -326,14 +358,14 @@ public abstract class ElgymsUtils {
 		}
 
 		if (moddedAmount > gym.getRequirements().getMaxModdedPokemon()) {
-			throw new GymException("You are only allowed " + gym.getRequirements().getMaxModdedPokemon() + " modded " +
+			throw new GymException("§cYou are only allowed " + gym.getRequirements().getMaxModdedPokemon() + " modded " +
 					"Pokemon");
 		}
 
 		return true;
 	}
 
-	private static boolean checkBannedAspects(List<Pokemon> pokemons, Restriction restriction) throws GymException {
+	private static boolean checkBannedAspects(ServerPlayerEntity player, List<Pokemon> pokemons, Restriction restriction) throws GymException {
 		for (Pokemon mon : pokemons) {
 
 			// Checks for banned Pokemon
@@ -353,7 +385,10 @@ public abstract class ElgymsUtils {
 				boolean validAbility = bannedPokemon.getAbility().isEmpty() || matchesAbility;
 
 				if (validSpecies && validForm && validAbility) {
-					throw new GymException("Your " + mon.getSpecies().getName() + " is banned in this gym");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getBannedPokemon(), player, mon,
+							null, null,
+							null, null, null));
 				}
 			}
 
@@ -363,7 +398,10 @@ public abstract class ElgymsUtils {
 				Item bannedItem = Utils.parseItemId(itemString).getItem();
 
 				if (mon.heldItem().getItem().equals(bannedItem)) {
-					throw new GymException(bannedItem.getName().getString() + " is banned in this gym.");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getBannedItem(), player, mon,
+							null, null,
+							null, bannedItem.getName().getString(), null));
 				}
 			}
 
@@ -373,7 +411,10 @@ public abstract class ElgymsUtils {
 
 				for (Move move : mon.getMoveSet().getMoves()) {
 					if (move.getTemplate().equals(bannedMove)) {
-						throw new GymException(bannedMove.getName() + " is banned in this gym.");
+						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+										Elgyms.lang.getBannedMove(), player, mon,
+								null, null,
+								bannedMove.getName(), null, null));
 					}
 				}
 			}
@@ -382,7 +423,10 @@ public abstract class ElgymsUtils {
 			for (String abilityString : restriction.getBannedAbilities()) {
 				AbilityTemplate bannedAbility = Abilities.INSTANCE.get(abilityString);
 				if (mon.getAbility().getTemplate().equals(bannedAbility)) {
-					throw new GymException(bannedAbility.getName() + " is banned in this gym.");
+					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+									Elgyms.lang.getBannedAbility(), player, mon,
+							null, null,
+							null, null, bannedAbility.getName()));
 				}
 			}
 

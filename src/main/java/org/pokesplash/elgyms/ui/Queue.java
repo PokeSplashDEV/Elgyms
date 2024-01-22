@@ -9,16 +9,12 @@ import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
-import org.pokesplash.elgyms.badge.PlayerBadges;
-import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.exception.GymException;
-import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
@@ -52,20 +48,22 @@ public class Queue {
 									// If its team preview, open the preview window, else just start the battle.
 									if (gym.getRequirements().isTeamPreview()) {
 										try {
-											BattleProvider.giveLeaderPokemon(leader, gym);
-											TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(), f -> {
-												try {
-													BattleProvider.beginBattle(challenger, leader, gym, false);
-												} catch (Exception ex) {
-													// Sends error to leader. Tells challenger something went wrong.
-													leader.sendMessage(Text.literal("§c" + ex.getMessage()));
-													challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
+											ArrayList<Pokemon> leaderTeam = BattleProvider.getLeaderTeam(leader, gym);
+											TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(),
+													leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
+													f -> {
+														try {
+															BattleProvider.beginBattle(challenger, leader, gym, false);
+														} catch (Exception ex) {
+															// Sends error to leader. Tells challenger something went wrong.
+															leader.sendMessage(Text.literal("§c" + ex.getMessage()));
+															challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
 
-													if (!(ex instanceof GymException)) {
-														Elgyms.LOGGER.error(ex.getMessage());
-													}
-												}
-											});
+															if (!(ex instanceof GymException)) {
+																Elgyms.LOGGER.error(ex.getMessage());
+															}
+														}
+													});
 											TeamPreview.openPreview(leader.getUuid());
 											TeamPreview.openPreview(challenger.getUuid());
 										} catch (Exception ex) {

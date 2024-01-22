@@ -2,19 +2,14 @@ package org.pokesplash.elgyms.provider;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
-import com.cobblemon.mod.common.api.storage.party.PartyStore;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.pc.PCStore;
 import com.cobblemon.mod.common.battles.*;
-import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
-import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.world.World;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
@@ -41,17 +36,17 @@ public class BattleProvider {
 
         // Checks the challenger team is valid.
         try {
-            ElgymsUtils.checkChallengerRequirements(
+            ElgymsUtils.checkChallengerRequirements(challenger,
                     toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)), gym);
 
             // Creates the battle teams needed for the battle.
             BattleTeam challengerTeam = new BattleTeam(challenger, gym);
-            BattleTeam leaderTeam = new BattleTeam(leader, gym);
+            BattleTeam leaderTeam = new BattleTeam(leader, gym.getLeader(leader.getUuid()).getTeam());
 
 
             if (giveLeaderPokemon) {
                 // Gives the leader their Pokemon.
-                giveLeaderPokemon(leader, gym);
+                getLeaderTeam(leader, gym);
             }
 
 
@@ -109,36 +104,25 @@ public class BattleProvider {
         }
     }
 
-    public static void giveLeaderPokemon(ServerPlayerEntity player, GymConfig gym) throws Exception {
-        PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-        PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player.getUuid());
+    public static ArrayList<Pokemon> getLeaderTeam(ServerPlayerEntity player, GymConfig gym) throws Exception {
 
-        ArrayList<JsonObject> leaderTeam = gym.getLeader(pcStore.getUuid()).getTeam();
+        ArrayList<JsonObject> leaderTeam = gym.getLeader(player.getUuid()).getTeam();
 
         // If they don't have a team, throw an error.
         if (leaderTeam.isEmpty()) {
             throw new GymException("You have no team.");
         }
 
-        // Move the leaders Pokemon to their PC.
-        for (int x = 0; x < 6; x++) {
-            Pokemon pokemon = party.get(x);
-
-            if (pokemon == null) {
-                continue;
-            }
-
-            party.remove(new PartyPosition(x));
-
-            pcStore.add(pokemon);
-        }
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
 
         // Add the leaders gym Pokemon to their party.
         for (JsonObject pokemonObject : leaderTeam) {
             Pokemon leaderPokemon = new Pokemon().loadFromJSON(pokemonObject).initialize();
 
-            party.add(leaderPokemon);
+            pokemons.add(leaderPokemon);
         }
+
+        return pokemons;
     }
 
     public static boolean isGymBattle(UUID battleId) {
@@ -148,49 +132,7 @@ public class BattleProvider {
     public static BattleData endGymBattle(UUID battleId) {
 
         // Get the leaders UUID and remove the battle from active battles.
-        BattleData battleData = activeBattles.remove(battleId);
-
-        if (battleData == null) {
-            return null;
-        }
-
-        // get rid of the leaders Pokemon.
-        try {
-            PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(battleData.getLeaderId());
-
-            ArrayList<Species> expectedLeaderTeam = new ArrayList<>();
-            // Gets the expected Pokemon Species for the leaders team.
-            for (JsonObject pokemonObject : battleData.getGym().getLeader(battleData.getLeaderId()).getTeam()) {
-                expectedLeaderTeam.add(new Pokemon().loadFromJSON(pokemonObject).initialize().getSpecies());
-            }
-
-            // Checks each pokemon in the leaders party is from their gym team.
-            for (int x=0; x < 6; x++) {
-                Pokemon pokemon = party.get(x);
-
-                if (pokemon == null) {
-                    continue;
-                }
-
-                // If the pokemon in their party matches their gym team, remove it.
-                if (expectedLeaderTeam.contains(pokemon.getSpecies())) {
-                    party.remove(new PartyPosition(x));
-                    expectedLeaderTeam.remove(pokemon.getSpecies());
-                }
-            }
-
-            // logs that not all Pokemon have been returned.
-            if (!expectedLeaderTeam.isEmpty()) {
-                // TODO Log not all Pokemon have been returned.
-            }
-
-            // Returns the leaders UUID.
-            return battleData;
-
-        } catch (Exception e) {
-            Elgyms.LOGGER.error(e.getMessage());
-            return null;
-        }
+        return activeBattles.remove(battleId);
     }
 
     /**
@@ -218,7 +160,7 @@ public class BattleProvider {
      * @param party The party to convert.
      * @return A list of pokemon from the party given.
      */
-    private static List<Pokemon> toList(PlayerPartyStore party) {
+    public static List<Pokemon> toList(PlayerPartyStore party) {
 
         List<Pokemon> pokemon = new ArrayList<>();
 

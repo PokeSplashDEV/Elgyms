@@ -99,7 +99,7 @@ public class SetTeam {
 		}
 
 		try {
-			ElgymsUtils.checkLeaderRequirements(pokemons, gymConfig);
+			ElgymsUtils.checkLeaderRequirements(context.getSource().getPlayer(), pokemons, gymConfig);
 
 			ArrayList<Pokemon> leaderPokemon = ElgymsUtils.setLevelAndPp(pokemons,
 					gymConfig.getRequirements().getPokemonLevel());

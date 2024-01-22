@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.util;
 
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.CommandDispatcher;
@@ -362,6 +363,43 @@ public abstract class Utils {
 
 		if (cooldown != null) {
 			output = output.replaceAll("\\{cooldown}", parseLongDate(cooldown - new Date().getTime()).trim());
+		}
+
+		return output;
+	}
+
+
+	public static String formatClauses(String message, ServerPlayerEntity player, Pokemon pokemon, Integer levelCap,
+									   Integer teamSize, String move, String item, String ability) {
+
+		String output = message;
+
+		if (player != null) {
+			output = output.replaceAll("\\{player\\}", player.getName().getString());
+		}
+
+		if (pokemon != null) {
+			output = output.replaceAll("\\{pokemon\\}", pokemon.getDisplayName().getString());
+		}
+
+		if (levelCap != null) {
+			output = output.replaceAll("\\{level\\}", String.valueOf(levelCap));
+		}
+
+		if (teamSize != null) {
+			output = output.replaceAll("\\{teamSize\\}", String.valueOf(teamSize));
+		}
+
+		if (move != null) {
+			output = output.replaceAll("\\{move\\}", move);
+		}
+
+		if (item != null) {
+			output = output.replaceAll("\\{item\\}", item);
+		}
+
+		if (ability != null) {
+			output = output.replaceAll("\\{ability\\}", ability);
 		}
 
 		return output;
