@@ -12,6 +12,7 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
@@ -58,8 +59,19 @@ public class GymSelect {
 				if (hasRequirements) {
 					lore.add(Elgyms.menu.getIncompleted());
 				} else {
+
+					ArrayList<Badge> requiredBadges = new ArrayList<>();
+
+					for (UUID id : gym.getRequirements().getRequiredBadgeIDs()) {
+						GymConfig requiredGym = GymProvider.getGymFromBadge(id);
+
+						if (requiredGym != null) {
+							requiredBadges.add(requiredGym.getBadge());
+						}
+					}
+
 					lore.add(Utils.formatPlaceholders(Elgyms.menu.getRequirements(),
-							null, gym.getBadge(), player, category, gym,
+							requiredBadges, gym.getBadge(), player, category, gym,
 							BadgeProvider.getBadges(player).getCooldown(gym)));
 				}
 			}

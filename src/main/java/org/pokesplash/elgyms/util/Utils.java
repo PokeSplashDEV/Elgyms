@@ -341,10 +341,10 @@ public abstract class Utils {
 			String badgeString = "";
 
 			for (int x=0; x < badges.size() - 1; x++) {
-				badgeString += badges.get(x) + ", ";
+				badgeString += badges.get(x).getName() + ", ";
 			}
 
-			badgeString += badges.get(badges.size() - 1);
+			badgeString += badges.get(badges.size() - 1).getName();
 
 			output = output.replaceAll("\\{badges\\}", badgeString);
 		}
