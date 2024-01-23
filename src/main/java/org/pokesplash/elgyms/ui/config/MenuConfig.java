@@ -51,7 +51,7 @@ public class MenuConfig {
 		challengeButtonTitle = "§6Challenge";
 		cancelChallengeButtonTitle = "§6Cancel";
 		cancelChallengeButtonMaterial = "minecraft:orange_stained_glass_pane";
-		requirements = "§cBadges Required: {badges}";
+		requirements = "§cBadge Required: {badge}";
 		badgeTitle = "§3Badges";
 		cooldownTitle = "§cYou have a {cooldown} cooldown";
 		cooldownMaterial = "minecraft:red_stained_glass_pane";

@@ -337,11 +337,16 @@ public abstract class Utils {
 		String output = message;
 
 		if (badges != null) {
-			ArrayList<String> strings = new ArrayList<>();
-			for (Badge badge1 : badges) {
-				strings.add(badge1.getName());
+
+			String badgeString = "";
+
+			for (int x=0; x < badges.size() - 1; x++) {
+				badgeString += badges.get(x) + ", ";
 			}
-			output = output.replaceAll("\\{badges\\}", createListString(strings, "§f, "));
+
+			badgeString += badges.get(badges.size() - 1);
+
+			output = output.replaceAll("\\{badges\\}", badgeString);
 		}
 
 		if (badges != null) {
