@@ -15,10 +15,9 @@ import java.util.ArrayList;
 public class PlayerJoinEvent implements ServerPlayConnectionEvents.Join {
 	@Override
 	public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-		// TODO test name change on badges
 		BadgeProvider.getBadges(handler.getPlayer());
 
-		BadgeProvider.updateName(handler.getPlayer().getUuid(), handler.getPlayer().getDisplayName().getString());
+		BadgeProvider.updateName(handler.getPlayer().getUuid(), handler.getPlayer().getName().getString());
 
 		// Opens all the players gyms.
 		GymProvider.openAllGyms(handler.getPlayer());

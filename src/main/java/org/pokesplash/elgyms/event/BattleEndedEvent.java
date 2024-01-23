@@ -126,7 +126,6 @@ public class BattleEndedEvent {
 
                     String challengerName = challenger != null ? challenger.getName().getString() : "";
 
-                    // TODO fix name here.
                     if (badges == null) {
                         BadgeProvider.addBadge(new PlayerBadges(loser, challengerName));
                     }
