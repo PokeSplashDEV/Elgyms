@@ -6,6 +6,7 @@ import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.util.ArrayList;
@@ -139,5 +140,13 @@ public class PlayerBadges {
 		write();
 	}
 
+	public boolean hasE4Badges() {
 
+		for (GymConfig gymConfig : GymProvider.getE4Gyms()) {
+			if (containsBadge(gymConfig.getBadge().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

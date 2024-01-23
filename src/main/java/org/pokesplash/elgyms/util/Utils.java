@@ -370,7 +370,8 @@ public abstract class Utils {
 
 
 	public static String formatClauses(String message, ServerPlayerEntity player, Pokemon pokemon, Integer levelCap,
-									   Integer teamSize, String move, String item, String ability) {
+									   Integer teamSize, String move, String item, String ability,
+									   ArrayList<String> species) {
 
 		String output = message;
 
@@ -400,6 +401,19 @@ public abstract class Utils {
 
 		if (ability != null) {
 			output = output.replaceAll("\\{ability\\}", ability);
+		}
+
+		if (species != null) {
+
+			String speciesString = "";
+
+			for (int x=0; x < species.size() - 1; x++) {
+				speciesString += species.get(x) + ", ";
+			}
+
+			speciesString += species.get(species.size() - 1);
+
+			output = output.replaceAll("\\{e4\\}", speciesString);
 		}
 
 		return output;

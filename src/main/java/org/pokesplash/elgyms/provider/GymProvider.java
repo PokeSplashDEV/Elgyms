@@ -289,4 +289,17 @@ public abstract class GymProvider {
 			));
 		}
 	}
+
+	public static ArrayList<GymConfig> getE4Gyms() {
+
+		ArrayList<GymConfig> e4Gyms = new ArrayList<>();
+
+		for (GymConfig gym : gyms.values()) {
+			if (gym.isE4()) {
+				e4Gyms.add(gym);
+			}
+		}
+
+		return e4Gyms;
+	}
 }

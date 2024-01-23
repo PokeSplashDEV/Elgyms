@@ -1,13 +1,16 @@
 package org.pokesplash.elgyms.event;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import kotlin.Unit;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.config.E4Team;
 import org.pokesplash.elgyms.config.Reward;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.GymRewards;
@@ -15,6 +18,7 @@ import org.pokesplash.elgyms.gym.Record;
 import org.pokesplash.elgyms.log.BattleLog;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.BattleProvider;
+import org.pokesplash.elgyms.provider.E4Provider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -73,6 +77,14 @@ public class BattleEndedEvent {
 
                     if (badges == null) {
                         BadgeProvider.addBadge(new PlayerBadges(winner, challengerName));
+                    }
+
+                    // If the gym is E4 and the challenger doesn't have a team, set their E4 team to their current team.
+                    if (gym.isE4() && E4Provider.getTeam(challenger.getUuid()) == null) {
+
+                        PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(challenger);
+
+                        E4Provider.addTeam(new E4Team(challenger.getUuid(), party));
                     }
 
                     // Adds the badge

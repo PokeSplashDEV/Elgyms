@@ -11,8 +11,12 @@ import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.config.E4Team;
+import org.pokesplash.elgyms.config.Reward;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.GymRewards;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.E4Provider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -104,6 +108,27 @@ public class RemoveBadge {
 		}
 
 		badges.removeBadge(categoryConfig, gym.getBadge());
+
+		// Gets the player entity
+		ServerPlayerEntity player = Elgyms.server.getPlayerManager().getPlayer(badges.getUuid());
+
+		// Gets the rewards of the gym.
+		GymRewards rewards = gym.getRewards();
+
+		// Gets the gyms category.
+		CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+		// Gets the correct reward.
+		Reward reward = badges.isPrestiged(categoryConfig)
+				? rewards.getPrestige() : rewards.getFirstTime();
+
+		// Run commands
+		Utils.runCommands(reward.getCommands(), player, gym.getBadge(), category, gym);
+
+		// If the player has no more E4 badges, remove their E4 team.
+		if (gym.isE4() && !badges.hasE4Badges()) {
+			E4Provider.deleteTeam(E4Provider.getTeam(badges.getUuid()));
+		}
 
 		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
 				"§2Removed " + gym.getBadge().getName() + " badge from " + badges.getName() + "."));

@@ -15,6 +15,7 @@ import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.battle.BattleTeam;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.config.E4Team;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Position;

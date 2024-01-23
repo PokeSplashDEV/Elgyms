@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.command.gyms.leader.badge;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -11,10 +12,14 @@ import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.config.E4Team;
+import org.pokesplash.elgyms.config.Reward;
 import org.pokesplash.elgyms.gym.Badge;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.GymRewards;
 import org.pokesplash.elgyms.gym.Queue;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.E4Provider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 import org.pokesplash.elgyms.util.Utils;
@@ -103,14 +108,38 @@ public class GiveBadge {
 
 		if (categoryConfig == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + " doesn't have a valid category."));
+					"§c" + gym.getName() + "§c doesn't have a valid category."));
 			return 1;
 		}
 
 		badges.addBadge(categoryConfig, gym.getBadge());
 
+		// Gets the player entity
+		ServerPlayerEntity player = Elgyms.server.getPlayerManager().getPlayer(badges.getUuid());
+
+		// Gets the rewards of the gym.
+		GymRewards rewards = gym.getRewards();
+
+		// Gets the gyms category.
+		CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+		// Gets the correct reward.
+		Reward reward = badges.isPrestiged(categoryConfig)
+				? rewards.getPrestige() : rewards.getFirstTime();
+
+		// Run commands
+		Utils.runCommands(reward.getCommands(), player, gym.getBadge(), category, gym);
+
+		// If the gym is E4 and the player has no E4 team, set their party to be their E4 team.
+		if (gym.isE4() && E4Provider.getTeam(badges.getUuid()) == null) {
+
+			if (player != null) {
+				E4Provider.addTeam(new E4Team(badges.getUuid(), Cobblemon.INSTANCE.getStorage().getParty(player)));
+			}
+		}
+
 		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Added " + gym.getBadge().getName() + " badge to " + badges.getName() + "."));
+				"§2Added " + gym.getBadge().getName() + "§2 badge to " + badges.getName() + "."));
 
 		return 1;
 	}

@@ -19,6 +19,7 @@ public class GymConfig {
 	private String name; // The name of the gym.
 	private String displayItem; // The item to display in the menu;
 	private ArrayList<Type> types; // The Pokemon types of the gym.
+	private boolean isE4; // Is this gym an E4?
 	private int weight; // Weight relative to the other gyms.
 	private String categoryName; // Category the gym is in.
 	private double cooldown; // Cooldown in minutes.
@@ -49,6 +50,7 @@ public class GymConfig {
 		types = new ArrayList<>();
 		types.add(Type.BUG);
 		types.add(Type.DARK);
+		isE4 = false;
 		weight = 1;
 		categoryName = "Normal";
 		badge = new Badge();
@@ -65,6 +67,7 @@ public class GymConfig {
 		this.name = name;
 		displayItem = "cobblemon:poke_ball";
 		types = new ArrayList<>();
+		isE4 = false;
 		weight = 1;
 		this.categoryName = categoryName;
 		badge = new Badge();
@@ -214,5 +217,9 @@ public class GymConfig {
 
 	public static String nameToId(String name) {
 		return Utils.formatMessage(name, false).replaceAll(" ", "").toLowerCase();
+	}
+
+	public boolean isE4() {
+		return isE4;
 	}
 }

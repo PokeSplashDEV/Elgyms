@@ -31,6 +31,7 @@ public class Lang {
 	private String bannedItem;
 	private String bannedMove;
 	private String bannedAbility;
+	private String illegalE4Team;
 
 	public Lang() {
 		prefix = "§b[§3Gyms§b]";
@@ -58,6 +59,7 @@ public class Lang {
 		bannedItem = "§c{player} - {item} is banned in this gym.";
 		bannedMove = "§c{player} - {move} is banned in this gym.";
 		bannedAbility = "§c{player} - {ability} is banned in this gym.";
+		illegalE4Team = "§c{player} - Illegal E4 team! Should have {e4}";
 	}
 
 
@@ -93,6 +95,7 @@ public class Lang {
 					bannedItem = lang.getBannedItem();
 					bannedMove = lang.getBannedMove();
 					bannedAbility = lang.getBannedAbility();
+					illegalE4Team = lang.getIllegalE4Team();
 				});
 
 		if (!futureRead.join()) {
@@ -205,5 +208,9 @@ public class Lang {
 
 	public String getBannedAbility() {
 		return bannedAbility;
+	}
+
+	public String getIllegalE4Team() {
+		return illegalE4Team;
 	}
 }

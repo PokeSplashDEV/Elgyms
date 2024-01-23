@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
+import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.util.Utils;
 
 import java.io.File;
@@ -74,7 +76,7 @@ public abstract class BadgeProvider {
 		badges.put(playerBadges.getUuid(), playerBadges);
 	}
 
-	public static void  updateName(UUID uuid, String name) {
+	public static void updateName(UUID uuid, String name) {
 		for (PlayerBadges playerBadges : badges.values()) {
 			if (playerBadges.getUuid().equals(uuid) &&
 			!playerBadges.getName().equalsIgnoreCase(name)) {

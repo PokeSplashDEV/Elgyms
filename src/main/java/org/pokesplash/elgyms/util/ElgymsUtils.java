@@ -25,8 +25,10 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.world.World;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.config.E4Team;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.*;
+import org.pokesplash.elgyms.provider.E4Provider;
 import org.pokesplash.elgyms.type.Clause;
 import org.pokesplash.elgyms.type.Type;
 
@@ -110,7 +112,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getLevelCapClause(), player, mon,
 							gym.getRequirements().getPokemonLevel(), gym.getRequirements().getTeamSize(),
-							null, null, null));
+							null, null, null, null));
 				}
 			}
 		}
@@ -124,6 +126,11 @@ public abstract class ElgymsUtils {
 		// Checks for banned aspects in challenger restrictions.
 		checkBannedAspects(player, pokemon, gym.getRequirements().getChallengerRestrictions());
 
+		// If the gym is E4, compare the players team.
+		if (gym.isE4()) {
+			checkE4Team(player, pokemon);
+		}
+
 	}
 
 	private static boolean matchesPokemonSize(ServerPlayerEntity player, List<Pokemon> pokemons, GymConfig gym) throws GymException {
@@ -131,7 +138,7 @@ public abstract class ElgymsUtils {
 			throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 							Elgyms.lang.getMaxTeamSizeClause(), player, null,
 					gym.getRequirements().getPokemonLevel(), gym.getRequirements().getTeamSize(),
-					null, null, null));
+					null, null, null, null));
 		}
 		return true;
 	}
@@ -173,7 +180,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getSpeciesClause(), player, species.create(1),
 							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-							null, null, null));
+							null, null, null, null));
 				}
 			}
 		}
@@ -194,7 +201,7 @@ public abstract class ElgymsUtils {
 						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 										Elgyms.lang.getOhkoClause(), player, mon,
 								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-								null, null, null));
+								null, null, null, null));
 					}
 				}
 			}
@@ -215,7 +222,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getItemClause(), player, null,
 							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-							null, item.getName().getString(), null));
+							null, item.getName().getString(), null, null));
 				}
 			}
 		}
@@ -232,7 +239,7 @@ public abstract class ElgymsUtils {
 						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 										Elgyms.lang.getEvasionClause(), player, mon,
 								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-								move.getName(), null, null));
+								move.getName(), null, null, null));
 					}
 				}
 			}
@@ -247,7 +254,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getMoodyClause(), player, mon,
 							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-							null, null, ability.getName()));
+							null, null, ability.getName(), null));
 				}
 			}
 		}
@@ -260,7 +267,7 @@ public abstract class ElgymsUtils {
 						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 										Elgyms.lang.getSwaggerClause(), player, mon,
 								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-								move.getName(), null, null));
+								move.getName(), null, null, null));
 					}
 				}
 			}
@@ -273,7 +280,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getLegendaryClause(), player, pokemon,
 							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-							null, null, null));
+							null, null, null, null));
 				}
 			}
 		}
@@ -285,7 +292,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getUltraBeastClause(), player, pokemon,
 							gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-							null, null, null));
+							null, null, null, null));
 				}
 			}
 		}
@@ -316,7 +323,7 @@ public abstract class ElgymsUtils {
 						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 										Elgyms.lang.getSpeciesClause(), player, pokemon,
 								gymConfig.getRequirements().getPokemonLevel(), gymConfig.getRequirements().getTeamSize(),
-								null, null, null));
+								null, null, null, null));
 					}
 				}
 			}
@@ -388,7 +395,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getBannedPokemon(), player, mon,
 							null, null,
-							null, null, null));
+							null, null, null, null));
 				}
 			}
 
@@ -401,7 +408,7 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getBannedItem(), player, mon,
 							null, null,
-							null, bannedItem.getName().getString(), null));
+							null, bannedItem.getName().getString(), null, null));
 				}
 			}
 
@@ -414,7 +421,7 @@ public abstract class ElgymsUtils {
 						throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 										Elgyms.lang.getBannedMove(), player, mon,
 								null, null,
-								bannedMove.getName(), null, null));
+								bannedMove.getName(), null, null, null));
 					}
 				}
 			}
@@ -426,11 +433,34 @@ public abstract class ElgymsUtils {
 					throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
 									Elgyms.lang.getBannedAbility(), player, mon,
 							null, null,
-							null, null, bannedAbility.getName()));
+							null, null, bannedAbility.getName(), null));
 				}
 			}
 
 		}
+		return true;
+	}
+
+	private static boolean checkE4Team(ServerPlayerEntity player, List<Pokemon> pokemon) throws GymException {
+		E4Team team = E4Provider.getTeam(player.getUuid());
+
+		if (team == null) {
+			return true;
+		}
+
+		ArrayList<String> partySpecies = new ArrayList<>();
+
+		for (Pokemon mon : pokemon) {
+			partySpecies.add(mon.getSpecies().getName());
+		}
+
+		if (!team.getSpecies().containsAll(partySpecies)) {
+			throw new GymException(Utils.formatClauses(Elgyms.lang.getPrefix() +
+							Elgyms.lang.getIllegalE4Team(), player, null,
+					null, null,
+					null, null, null, team.getSpecies()));
+		}
+
 		return true;
 	}
 
