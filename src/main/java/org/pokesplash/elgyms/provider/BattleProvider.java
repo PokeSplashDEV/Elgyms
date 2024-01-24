@@ -118,7 +118,7 @@ public class BattleProvider {
 
         // Add the leaders gym Pokemon to their party.
         for (JsonObject pokemonObject : leaderTeam) {
-            Pokemon leaderPokemon = new Pokemon().loadFromJSON(pokemonObject).initialize();
+            Pokemon leaderPokemon = new Pokemon().loadFromJSON(pokemonObject);
 
             pokemons.add(leaderPokemon);
         }

@@ -139,7 +139,7 @@ public class GiveBadge {
 		}
 
 		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Added " + gym.getBadge().getName() + "§2 badge to " + badges.getName() + "."));
+				"§2Added " + gym.getBadge().getName() + "§2 to " + badges.getName() + "."));
 
 		return 1;
 	}

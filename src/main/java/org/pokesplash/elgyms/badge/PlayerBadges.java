@@ -45,6 +45,7 @@ public class PlayerBadges {
 		badgeIDs = new HashMap<>();
 		prestige = new HashMap<>();
 		cooldown = new HashMap<>();
+		performChecks();
 		write();
 	}
 
@@ -117,7 +118,12 @@ public class PlayerBadges {
 
 		ArrayList<Badge> values = badgeIDs.get(categoryConfig.getName());
 
-		values.remove(badge);
+		for (Badge currentBadge : values) {
+			if (badge.getId().equals(currentBadge.getId())) {
+				System.out.println("Badge Removed: " + values.remove(currentBadge));
+				break;
+			}
+		}
 
 		badgeIDs.put(categoryConfig.getName(), values);
 		write();
@@ -148,5 +154,18 @@ public class PlayerBadges {
 			}
 		}
 		return false;
+	}
+
+	public void performChecks() {
+		for (CategoryConfig categoryConfig : Elgyms.config.getCategories()) {
+
+			if (badgeIDs.get(categoryConfig.getName()) == null) {
+				badgeIDs.put(categoryConfig.getName(), new ArrayList<>());
+			}
+
+			if (prestige.get(categoryConfig.getName()) == null) {
+				prestige.put(categoryConfig.getName(), false);
+			}
+		}
 	}
 }

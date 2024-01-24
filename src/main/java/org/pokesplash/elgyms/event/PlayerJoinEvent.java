@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class PlayerJoinEvent implements ServerPlayConnectionEvents.Join {
 	@Override
 	public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+		// Generates a file if one is missing.
 		BadgeProvider.getBadges(handler.getPlayer());
 
 		BadgeProvider.updateName(handler.getPlayer().getUuid(), handler.getPlayer().getName().getString());

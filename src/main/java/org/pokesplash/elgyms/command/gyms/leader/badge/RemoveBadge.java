@@ -107,7 +107,13 @@ public class RemoveBadge {
 			return 1;
 		}
 
-		badges.removeBadge(categoryConfig, gym.getBadge());
+		try {
+			badges.removeBadge(categoryConfig, gym.getBadge());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
 
 		// If the player has no more E4 badges, remove their E4 team.
 		if (gym.isE4() && !badges.hasE4Badges()) {
@@ -115,7 +121,7 @@ public class RemoveBadge {
 		}
 
 		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Removed " + gym.getBadge().getName() + " badge from " + badges.getName() + "."));
+				"§2Removed " + gym.getBadge().getName() + "§2 from " + badges.getName() + "."));
 
 		return 1;
 	}

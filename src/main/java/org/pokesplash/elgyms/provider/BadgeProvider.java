@@ -37,6 +37,7 @@ public abstract class BadgeProvider {
 						file, el -> {
 							Gson gson = Utils.newGson();
 							PlayerBadges badge = gson.fromJson(el, PlayerBadges.class);
+							badge.performChecks();
 							badges.put(badge.getUuid(), badge);
 						});
 			}

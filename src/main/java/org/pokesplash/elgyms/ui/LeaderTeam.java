@@ -25,7 +25,7 @@ public class LeaderTeam {
     public Page getPage(ServerPlayerEntity leader, GymConfig gym) {
         ArrayList<Button> pokemon = new ArrayList<>();
         for (JsonObject object : gym.getLeader(leader.getUuid()).getTeam()) {
-            Pokemon pokemonObject = new Pokemon().loadFromJSON(object).initialize();
+            Pokemon pokemonObject = new Pokemon().loadFromJSON(object);
 
             pokemon.add(GooeyButton.builder()
                     .title(pokemonObject.getDisplayName().getString())
