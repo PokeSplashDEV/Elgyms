@@ -120,7 +120,7 @@ public class PlayerBadges {
 
 		for (Badge currentBadge : values) {
 			if (badge.getId().equals(currentBadge.getId())) {
-				System.out.println("Badge Removed: " + values.remove(currentBadge));
+				values.remove(currentBadge);
 				break;
 			}
 		}
