@@ -65,7 +65,7 @@ public class EditGym {
 		gym.setName(newName);
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aSuccessfully changed the name from " + name + " to " + newName,
+				"§aSuccessfully changed the name from " + name + "§a to " + newName,
 				context.getSource().isExecutedByPlayer()
 		)));
 
@@ -83,14 +83,14 @@ public class EditGym {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + name + " doesn't exists.", context.getSource().isExecutedByPlayer()
+					"§cGym " + name + "§c doesn't exists.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
 
 		if (item.getItem().equals(Items.AIR)) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§c" + itemArgument + " is not an item.", context.getSource().isExecutedByPlayer()
+					"§c" + itemArgument + "§c is not an item.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}

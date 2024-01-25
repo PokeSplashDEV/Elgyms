@@ -62,7 +62,7 @@ public class CreateGym {
 
 		if (GymProvider.getGymById(GymConfig.nameToId(name)) != null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + name + " already exists.", context.getSource().isExecutedByPlayer()
+					"§cGym " + name + "§c already exists.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}

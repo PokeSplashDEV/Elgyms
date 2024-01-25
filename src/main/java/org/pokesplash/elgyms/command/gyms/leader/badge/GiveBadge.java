@@ -86,7 +86,7 @@ public class GiveBadge {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + " does not exist."));
+					"§cGym " + gymId + "§c does not exist."));
 			return 1;
 		}
 
@@ -100,7 +100,7 @@ public class GiveBadge {
 
 		if (badges.containsBadge(gym.getBadge().getId())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + " already has this badge."));
+					"§c" + badges.getName() + "§c already has this badge."));
 			return 1;
 		}
 

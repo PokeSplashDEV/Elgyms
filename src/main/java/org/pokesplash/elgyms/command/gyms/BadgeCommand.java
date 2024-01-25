@@ -53,10 +53,6 @@ public class BadgeCommand {
 			return 1;
 		}
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-		}
-
 		try {
 			UIManager.openUIForcefully(context.getSource().getPlayer(), new org.pokesplash.elgyms.ui.Badges()
 					.getPage(BadgeProvider.getBadges(context.getSource().getPlayer()), false));

@@ -76,7 +76,7 @@ public class Leader {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
@@ -86,14 +86,14 @@ public class Leader {
 
 		if (player == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cPlayer " + playerString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
 
 		if (gym.containsLeader(player.getUuid())) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§c" + player.getName() + " is already a leader of this gym.",
+					"§c" + player.getName() + "§c is already a leader of this gym.",
 					context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
@@ -103,7 +103,7 @@ public class Leader {
 		gym.write();
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aAdded " + player.getName() + " to " + gym.getName(), context.getSource().isExecutedByPlayer()
+				"§aAdded " + player.getName() + "§a to " + gym.getName(), context.getSource().isExecutedByPlayer()
 		)));
 
 		return 1;
@@ -117,7 +117,7 @@ public class Leader {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
@@ -127,14 +127,14 @@ public class Leader {
 
 		if (player == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cPlayer " + playerString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
 
 		if (!gym.containsLeader(player.getUuid())) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§c" + player.getName() + " is not a leader of this gym.",
+					"§c" + player.getName() + "§c is not a leader of this gym.",
 					context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
@@ -144,7 +144,7 @@ public class Leader {
 		gym.write();
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aRemoved " + player.getName() + " from " + gym.getName(), context.getSource().isExecutedByPlayer()
+				"§aRemoved " + player.getName() + "§a from " + gym.getName(), context.getSource().isExecutedByPlayer()
 		)));
 
 		return 1;

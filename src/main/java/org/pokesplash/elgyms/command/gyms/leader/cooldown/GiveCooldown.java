@@ -79,7 +79,7 @@ public class GiveCooldown {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + " does not exist."));
+					"§cGym " + gymId + "§c does not exist."));
 			return 1;
 		}
 
@@ -93,7 +93,7 @@ public class GiveCooldown {
 
 		if (badges.containsBadge(gym.getBadge().getId())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + " already has this badge."));
+					"§c" + badges.getName() + "§c already has this badge."));
 			return 1;
 		}
 
@@ -101,13 +101,13 @@ public class GiveCooldown {
 
 		if (categoryConfig == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + " doesn't have a valid category."));
+					"§c" + gym.getName() + "§c doesn't have a valid category."));
 			return 1;
 		}
 
 		if (badges.getCooldown(gym) != null && badges.getCooldown(gym) > new Date().getTime()) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + " already has a cooldown for " + gym.getName() + "."));
+					"§c" + badges.getName() + "§c already has a cooldown for " + gym.getName() + "."));
 			return 1;
 		}
 
@@ -116,7 +116,7 @@ public class GiveCooldown {
 		badges.setCooldown(gym, new Date().getTime() + duration);
 
 		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Added " + gym.getBadge().getName() + " cooldown to " + badges.getName() + "."));
+				"§2Added " + gym.getBadge().getName() + "§2 cooldown to " + badges.getName() + "§2."));
 
 		return 1;
 	}

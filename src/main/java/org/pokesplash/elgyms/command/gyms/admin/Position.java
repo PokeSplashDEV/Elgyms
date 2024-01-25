@@ -61,7 +61,7 @@ public class Position {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
@@ -96,7 +96,7 @@ public class Position {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
@@ -131,7 +131,7 @@ public class Position {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}

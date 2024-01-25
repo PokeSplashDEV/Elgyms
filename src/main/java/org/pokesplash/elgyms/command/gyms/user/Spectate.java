@@ -57,7 +57,7 @@ public class Spectate {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + " does not exist."));
+					"§cGym " + gymId + "§c does not exist."));
 			return 1;
 		}
 

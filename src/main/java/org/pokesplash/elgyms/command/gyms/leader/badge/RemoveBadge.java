@@ -81,7 +81,7 @@ public class RemoveBadge {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + " does not exist."));
+					"§cGym " + gymId + "§c does not exist."));
 			return 1;
 		}
 
@@ -95,7 +95,7 @@ public class RemoveBadge {
 
 		if (!badges.containsBadge(gym.getBadge().getId())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + " doesn't have this badge."));
+					"§c" + badges.getName() + "§c doesn't have this badge."));
 			return 1;
 		}
 
@@ -103,7 +103,7 @@ public class RemoveBadge {
 
 		if (categoryConfig == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + " doesn't have a valid category."));
+					"§c" + gym.getName() + "§c doesn't have a valid category."));
 			return 1;
 		}
 

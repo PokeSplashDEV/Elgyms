@@ -57,13 +57,13 @@ public class Challenge {
 
 		if (gym == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + " does not exist."));
+					"§cGym " + gymId + "§c does not exist."));
 			return 1;
 		}
 
 		if (!GymProvider.getOpenGyms().contains(gym)) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThe " + gym.getName() + " is currently closed."));
+					"§cThe " + gym.getName() + "§c is currently closed."));
 			return 1;
 		}
 

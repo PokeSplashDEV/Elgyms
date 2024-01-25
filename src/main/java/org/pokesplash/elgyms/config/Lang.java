@@ -35,15 +35,15 @@ public class Lang {
 
 	public Lang() {
 		prefix = "§b[§3Gyms§b]";
-		openGymMessage = "§bThe {gym} has been opened.";
-		closeGymMessage = "§3The {gym} has been closed.";
-		challengeMessageChallenger = "§3You have challenged the {gym} gym.";
-		challengeMessageLeader = "§3{player} has challenged the {gym} gym.";
-		rejectChallengePlayer = "§cYou were rejected for the {gym} challenge.";
-		rejectChallengeLeader = "§3You removed {player} from the queue.";
-		cancelChallenge = "§3You have been removed from the {gym} queue.";
-		cooldownMessage = "§cYou still have a {cooldown} cooldown";
-		levelCapClause = "§c{player} - {pokemon} must be under the level cap: Lvl {level}";
+		openGymMessage = "§bThe {gym}§b has been opened.";
+		closeGymMessage = "§3The {gym}§3 has been closed.";
+		challengeMessageChallenger = "§3You have challenged the {gym}§3 gym.";
+		challengeMessageLeader = "§3{player} has challenged the {gym}§3 gym.";
+		rejectChallengePlayer = "§cYou were rejected for the {gym}§c challenge.";
+		rejectChallengeLeader = "§3You removed {player}§3 from the queue.";
+		cancelChallenge = "§3You have been removed from the {gym}§3 queue.";
+		cooldownMessage = "§cYou still have a {cooldown}§c cooldown";
+		levelCapClause = "§c{player} - {pokemon}§c must be under the level cap: Lvl {level}";
 		maxTeamSizeClause = "§c{player} - Only {teamSize} Pokemon are allowed in this gym.";
 		speciesClause = "§c{player} - A player cannot have two Pokemon with the same National Pokédex number on a team.";
 		ohkoClause = "§c{player} - {pokemon} may not have the moves Fissure, Guillotine, Horn Drill, or Sheer Cold in its moveset.";

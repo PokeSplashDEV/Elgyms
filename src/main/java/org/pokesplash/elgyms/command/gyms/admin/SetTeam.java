@@ -68,7 +68,7 @@ public class SetTeam {
 
 		if (badges == null) {
 			context.getSource().sendMessage(Text.literal(
-					"§cPlayer " + player + " could not be found."
+					"§cPlayer " + player + "§c could not be found."
 			));
 			return 1;
 		}
@@ -77,7 +77,7 @@ public class SetTeam {
 
 		if (gymConfig == null) {
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gym + " could not be found.", context.getSource().isExecutedByPlayer()
+					"§cGym " + gym + "§c could not be found.", context.getSource().isExecutedByPlayer()
 			)));
 			return 1;
 		}
@@ -114,7 +114,7 @@ public class SetTeam {
 
 
 		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aAdded gym team for " + badges.getName() + " in " + gymConfig.getName(),
+				"§aAdded gym team for " + badges.getName() + "§a in " + gymConfig.getName(),
 				context.getSource().isExecutedByPlayer()
 		)));
 
