@@ -36,8 +36,8 @@ public class SetTeam {
 				.executes(this::usage)
 				.then(CommandManager.argument("player", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
-							for (ServerPlayerEntity player : Elgyms.server.getPlayerManager().getPlayerList()) {
-								builder.suggest(player.getName().getString());
+							for (PlayerBadges badges : BadgeProvider.getBadges().values()) {
+								builder.suggest(badges.getName());
 							}
 							return builder.buildFuture();
 						})
