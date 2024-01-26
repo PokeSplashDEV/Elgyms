@@ -90,6 +90,12 @@ public class Accept {
 
 		ServerPlayerEntity leader = context.getSource().getPlayer();
 
+		if (challenger.getUuid().equals(leader.getUuid())) {
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cYou can not battle yourself."));
+			return 1;
+		}
+
 		// If its team preview, open the preview window, else just start the battle.
 		if (gym.getRequirements().isTeamPreview()) {
 			try {

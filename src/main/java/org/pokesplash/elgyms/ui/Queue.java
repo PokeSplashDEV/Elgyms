@@ -45,6 +45,13 @@ public class Queue {
 							.onClick(e -> {
 								UIManager.closeUI(leader);
 								try {
+
+									if (challenger.getUuid().equals(leader.getUuid())) {
+										e.getPlayer().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+												"§cYou can not battle yourself."));
+										return;
+									}
+
 									// If its team preview, open the preview window, else just start the battle.
 									if (gym.getRequirements().isTeamPreview()) {
 										try {
