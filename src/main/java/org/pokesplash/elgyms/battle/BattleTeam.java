@@ -36,7 +36,7 @@ public class BattleTeam {
         if (gym.getRequirements().isRaiseToCap()) {
             battlePokemon = raiseToCap(BattleProvider.toList(party), gym.getRequirements().getPokemonLevel());
         } else { // Otherwise just convert the team.
-            battlePokemon = party.toBattleTeam(true, true, null);
+            battlePokemon = convertToBattlePokemon(getPokemonAsList(party));
         }
 
         battleActor = new PlayerBattleActor(player.getUuid(), battlePokemon);
@@ -78,6 +78,8 @@ public class BattleTeam {
 
             newPokemon.setLevel(level);
 
+            newPokemon.heal();
+
             battlePokemon.add(BattlePokemon.Companion.safeCopyOf(newPokemon));
         }
 
@@ -110,10 +112,32 @@ public class BattleTeam {
         List<BattlePokemon> battlePokemon = new ArrayList<>();
 
         for (Pokemon mon : pokemon) {
+            mon.heal();
             battlePokemon.add(BattlePokemon.Companion.safeCopyOf(mon));
         }
 
         return battlePokemon;
+    }
+
+    /**
+     * Converts a players party to a Pokemon list.
+     * @param party The party
+     * @return The list of pokemon.
+     */
+    private List<Pokemon> getPokemonAsList(PlayerPartyStore party) {
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
+
+        for (int x=0; x < 6; x++) {
+            Pokemon mon = party.get(x);
+
+            if (mon == null) {
+                continue;
+            }
+
+            pokemons.add(mon);
+        }
+
+        return pokemons;
     }
 
     /**
