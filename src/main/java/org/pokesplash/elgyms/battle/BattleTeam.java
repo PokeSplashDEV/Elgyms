@@ -93,7 +93,9 @@ public class BattleTeam {
         List<Pokemon> pokemon = new ArrayList<>();
 
         for (JsonObject object : objects) {
-            pokemon.add(new Pokemon().loadFromJSON(object));
+            Pokemon mon = new Pokemon().loadFromJSON(object);
+            mon.heal();
+            pokemon.add(mon);
         }
 
         return pokemon;
