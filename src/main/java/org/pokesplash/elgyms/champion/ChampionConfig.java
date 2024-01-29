@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ChampionConfig {
 	private boolean enable; // Enable Champion.
+	private Badge badge; // The badge for champion.
 	private UUID requiredBadge; // The badge required to challenge the champion;
 	private double inactivityDemotionTime; // Time of inactivity before the leader is demoted.
 	private boolean allowInactivityReports; // Allow players to report a champion for inactivity.
@@ -28,6 +29,7 @@ public class ChampionConfig {
 
 	public ChampionConfig() {
 		enable = true;
+		badge = new Badge();
 		inactivityDemotionTime = 168;
 		allowInactivityReports = true;
 		defendingGivesRewards = true;
@@ -41,7 +43,7 @@ public class ChampionConfig {
 		champion = new Leader();
 	}
 
-	private void write() {
+	public void write() {
 		Gson gson = Utils.newGson();
 		String data = gson.toJson(this);
 		CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(Elgyms.BASE_PATH,
@@ -58,6 +60,7 @@ public class ChampionConfig {
 					Gson gson = Utils.newGson();
 					ChampionConfig cfg = gson.fromJson(el, ChampionConfig.class);
 					enable = cfg.isEnable();
+					badge = cfg.getBadge();
 					inactivityDemotionTime = cfg.getInactivityDemotionTime();
 					allowInactivityReports = cfg.isAllowInactivityReports();
 					defendingGivesRewards = cfg.isDefendingGivesRewards();
@@ -83,6 +86,10 @@ public class ChampionConfig {
 
 	public boolean isEnable() {
 		return enable;
+	}
+
+	public Badge getBadge() {
+		return badge;
 	}
 
 	public double getInactivityDemotionTime() {

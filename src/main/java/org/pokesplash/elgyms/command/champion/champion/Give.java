@@ -12,6 +12,7 @@ import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.champion.ChampionHistoryItem;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.Utils;
 
 public class Give {
@@ -20,7 +21,7 @@ public class Give {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return Elgyms.championConfig.getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
 					} else {
 						return true;
 					}
@@ -53,7 +54,7 @@ public class Give {
 			return 1;
 		}
 
-		ChampionConfig championConfig = Elgyms.championConfig;
+		ChampionConfig championConfig = GymProvider.getChampion();
 
 		// Checks the challenger has the required badge to challenger the champion.
 		if (!BadgeProvider.getBadges(newChampion).containsBadge(championConfig.getRequiredBadge())) {

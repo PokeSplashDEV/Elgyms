@@ -25,7 +25,6 @@ public class Elgyms implements ModInitializer {
 	public static final String BASE_PATH = "/config/" + MOD_ID + "/";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final Config config = new Config();
-	public static final ChampionConfig championConfig = new ChampionConfig();
 	public static final ChampionHistory championHistory = new ChampionHistory();
 	public static final MenuConfig menu = new MenuConfig();
 	public static final Lang lang = new Lang();
@@ -48,7 +47,6 @@ public class Elgyms implements ModInitializer {
 	public static void load() {
 		GymProvider.init();
 		config.init();
-		championConfig.init();
 		championHistory.init();
 		lang.init();
 		menu.init();

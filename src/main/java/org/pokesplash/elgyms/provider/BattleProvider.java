@@ -215,10 +215,22 @@ public class BattleProvider {
         return activeBattles.containsKey(battleId);
     }
 
+    public static boolean isChampBattle(UUID battleId) {
+        return battleId.equals(champBattle.getBattleId());
+    }
+
     public static BattleData endGymBattle(UUID battleId) {
 
         // Get the leaders UUID and remove the battle from active battles.
         return activeBattles.remove(battleId);
+    }
+
+    public static ChampBattleData getChampBattle() {
+        return champBattle;
+    }
+
+    public static void endChampBattle() {
+        champBattle = null;
     }
 
     /**
