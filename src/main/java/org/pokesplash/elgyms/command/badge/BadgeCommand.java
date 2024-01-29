@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms;
+package org.pokesplash.elgyms.command.badge;
 
 import ca.landonjw.gooeylibs2.api.UIManager;
 import com.mojang.brigadier.CommandDispatcher;
@@ -9,9 +9,9 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.command.CommandHandler;
-import org.pokesplash.elgyms.command.gyms.leader.badge.GiveBadge;
-import org.pokesplash.elgyms.command.gyms.leader.badge.OtherBadge;
-import org.pokesplash.elgyms.command.gyms.leader.badge.RemoveBadge;
+import org.pokesplash.elgyms.command.badge.leader.GiveBadge;
+import org.pokesplash.elgyms.command.badge.leader.OtherBadge;
+import org.pokesplash.elgyms.command.badge.leader.RemoveBadge;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 

@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms.leader.badge;
+package org.pokesplash.elgyms.command.badge.leader;
 
 import ca.landonjw.gooeylibs2.api.UIManager;
 import com.mojang.brigadier.arguments.StringArgumentType;

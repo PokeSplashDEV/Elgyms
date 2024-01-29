@@ -39,6 +39,7 @@ public abstract class GymProvider {
 	private static HashMap<GymConfig, Queue> queues = new HashMap<>();
 	private static HashSet<GymConfig> openGyms = new HashSet<>();
 	private static ChampionConfig champion = new ChampionConfig();
+	private static Queue champQueue = new Queue();
 
 	/**
 	 * Method to fetch all gyms.
@@ -255,6 +256,53 @@ public abstract class GymProvider {
 					, badges.getCooldown(gymConfig))
 				));
 			}
+		}
+	}
+
+	public static void challengeChampion(ServerPlayerEntity player) {
+
+		if (champQueue.isInQueue(player.getUuid())) {
+			player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§6You are already in this queue."));
+			return;
+		}
+
+		if (getQueueFromPlayer(player.getUuid()) != null) {
+			player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§6You are already in another queue."));
+			return;
+		}
+
+		PlayerBadges badges = BadgeProvider.getBadges(player);
+
+		champQueue.addToQueue(player.getUuid());
+
+		// Sends message to the challenger.
+		player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§3You have challenged the Champion."));
+
+		// Send an announcements to the champion.
+		ServerPlayerEntity onlineLeader = Elgyms.server.getPlayerManager().getPlayer(champion.getChampion().getUuid());
+
+		if (onlineLeader != null) {
+			onlineLeader.sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§3" + player.getName().getString() + " has challenged you for Champion."));
+		}
+	}
+
+	public static void cancelChampionChallege(UUID challenger) {
+		champQueue.removeFromQueue(challenger);
+	}
+
+	public static void rejectChampionChallenge(UUID challenger, ServerPlayerEntity leader) {
+		champQueue.removeFromQueue(challenger);
+
+		ServerPlayerEntity challengerPlayer = Elgyms.server.getPlayerManager().getPlayer(challenger);
+
+		// Send messages to both challenger and leader.
+		if (challengerPlayer != null) {
+			challengerPlayer.sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cYou were reject for the Champion challenge."));
+
+			leader.sendMessage(Text.literal(Elgyms.lang.getPrefix() + "§3You rejected " +
+					challengerPlayer.getName().getString() + " for Champion."));
 		}
 	}
 

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.champion.ChampionHistory;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.config.Config;
@@ -24,6 +25,7 @@ public class Elgyms implements ModInitializer {
 	public static final String BASE_PATH = "/config/" + MOD_ID + "/";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final Config config = new Config();
+	public static final ChampionConfig championConfig = new ChampionConfig();
 	public static final ChampionHistory championHistory = new ChampionHistory();
 	public static final MenuConfig menu = new MenuConfig();
 	public static final Lang lang = new Lang();
@@ -46,6 +48,7 @@ public class Elgyms implements ModInitializer {
 	public static void load() {
 		GymProvider.init();
 		config.init();
+		championConfig.init();
 		championHistory.init();
 		lang.init();
 		menu.init();

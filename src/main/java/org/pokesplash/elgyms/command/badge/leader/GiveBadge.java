@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms.leader.badge;
+package org.pokesplash.elgyms.command.badge.leader;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
