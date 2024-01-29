@@ -89,6 +89,8 @@ public class SetTeam {
 
 		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(context.getSource().getPlayer());
 
+		party.heal();
+
 		ArrayList<Pokemon> pokemons = new ArrayList<>();
 		for (int x=0; x < 6; x++) {
 			if (party.get(x) == null) {

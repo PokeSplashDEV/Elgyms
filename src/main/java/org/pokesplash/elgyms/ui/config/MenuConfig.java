@@ -32,6 +32,7 @@ public class MenuConfig {
 	private String cooldownTitle;
 	private String cooldownMaterial;
 	private String leaderTitle;
+	private String prestigeMessage;
 
 	public MenuConfig() {
 		categoryRows = 3;

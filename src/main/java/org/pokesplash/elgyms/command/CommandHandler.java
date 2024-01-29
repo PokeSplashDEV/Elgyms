@@ -7,6 +7,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.pokesplash.elgyms.command.gyms.BadgeCommand;
 import org.pokesplash.elgyms.command.gyms.BaseCommand;
 import org.pokesplash.elgyms.command.gyms.user.EndBattle;
+import org.pokesplash.elgyms.command.gyms.user.Prestige;
 
 public abstract class CommandHandler {
 	public static final String basePermission = "elgyms";
@@ -14,6 +15,7 @@ public abstract class CommandHandler {
 		new BaseCommand().register(dispatcher);
 		new BadgeCommand().register(dispatcher);
 		new EndBattle().register(dispatcher);
+		new Prestige().register(dispatcher);
 	}
 
 	public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher,

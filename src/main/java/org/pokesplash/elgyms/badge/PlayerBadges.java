@@ -146,6 +146,15 @@ public class PlayerBadges {
 		write();
 	}
 
+	public void removeBadgesForCategory(CategoryConfig categoryConfig) {
+		if (!badgeIDs.containsKey(categoryConfig.getName())) {
+			return;
+		}
+
+		badgeIDs.put(categoryConfig.getName(), new ArrayList<>());
+		write();
+	}
+
 	public boolean hasE4Badges() {
 
 		for (GymConfig gymConfig : GymProvider.getE4Gyms()) {
