@@ -111,6 +111,10 @@ public abstract class GymProvider {
 		return champion;
 	}
 
+	public static Queue getChampQueue() {
+		return champQueue;
+	}
+
 	public static void addGym(GymConfig gymConfig) {
 		gyms.put(gymConfig.getId(), gymConfig);
 	}

@@ -1,12 +1,14 @@
-package org.pokesplash.elgyms.command.gyms.leader.challenge;
+package org.pokesplash.elgyms.command.champion.champion;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.gym.Queue;
@@ -21,23 +23,13 @@ public class Reject {
 		return CommandManager.literal("reject")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.reject");
+						// See's if the player executing the command is the champion.
+						return Elgyms.championConfig.getChampion().getUuid().equals(ctx.getPlayer().getUuid());
 					} else {
 						return true;
 					}
 				})
-				.executes(this::usage)
-				.then(CommandManager.argument("gym", StringArgumentType.string())
-						.suggests((ctx, builder) -> {
-							for (GymConfig gymConfig : GymProvider.getGyms().values()) {
-								if (gymConfig.containsLeader(ctx.getSource().getPlayer().getUuid())) {
-									builder.suggest(gymConfig.getId());
-								}
-							}
-							return builder.buildFuture();
-						})
-						.executes(this::run))
+				.executes(this::run)
 				.build();
 	}
 
@@ -48,39 +40,47 @@ public class Reject {
 			return 1;
 		}
 
-		String gymId = StringArgumentType.getString(context, "gym");
+		ChampionConfig championConfig = GymProvider.getChampion();
 
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
+		if (championConfig.getChampion() == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
+					"§cThere currently is no Champion."));
 			return 1;
 		}
 
-		if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
+		ServerPlayerEntity leader = context.getSource().getPlayer();
+
+		if (!championConfig.getChampion().getUuid().equals(leader.getUuid())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
+					"§cYou are not the Champion."));
 			return 1;
 		}
 
-		Queue queue = GymProvider.getQueueFromGym(gym);
+		Queue queue = GymProvider.getChampQueue();
 
 		if (queue.getQueue().isEmpty()) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThis gym has no challengers."));
+					"§cYou currently have no challenger for Champion."));
 			return 1;
 		}
 
 		UUID challengerUuid = queue.getQueue().get(0);
 
-		if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
+		ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
+
+		if (challenger == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cChallenger is no longer online."));
+					"§cThe Challenger is no longer online."));
 			return 1;
 		}
 
-		GymProvider.rejectChallenge(challengerUuid, context.getSource().getPlayer());
+		if (challenger.getUuid().equals(leader.getUuid())) {
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cYou can not battle yourself."));
+			return 1;
+		}
+
+		GymProvider.rejectChampionChallenge(challengerUuid, context.getSource().getPlayer());
 
 		return 1;
 	}
@@ -90,7 +90,7 @@ public class Reject {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym reject <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- champ reject", context.getSource().isExecutedByPlayer()
 				))
 		);
 

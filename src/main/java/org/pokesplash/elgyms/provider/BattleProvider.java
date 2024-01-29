@@ -14,6 +14,8 @@ import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.battle.BattleData;
 import org.pokesplash.elgyms.battle.BattleTeam;
+import org.pokesplash.elgyms.champion.ChampBattleData;
+import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.config.E4Team;
 import org.pokesplash.elgyms.exception.GymException;
@@ -30,6 +32,7 @@ import java.util.*;
 public class BattleProvider {
 
     private static final HashMap<UUID, BattleData> activeBattles = new HashMap<>(); // Battle Id / Leader UUID
+    private static ChampBattleData champBattle = null; // The BattleData of the current champion battle.
 
 
     public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym,
@@ -105,9 +108,91 @@ public class BattleProvider {
         }
     }
 
+    public static void beginChampionBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader) {
+
+        // Checks the challenger team is valid.
+        try {
+
+            ChampionConfig championConfig = GymProvider.getChampion();
+
+            ElgymsUtils.checkChampionRequirements(challenger,
+                    toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)));
+
+            // Creates the battle teams needed for the battle.
+            BattleTeam challengerTeam = new BattleTeam(challenger);
+            BattleTeam leaderTeam = new BattleTeam(leader, championConfig.getChampion().getTeam());
+
+            // Gets the gym positions for leaders and challengers.
+            Position leaderPosition = championConfig.getPositions().getLeader();
+            Position challengerPosition = championConfig.getPositions().getChallenger();
+
+            // Teleport the players to their positions.
+            ElgymsUtils.teleportToPosition(leader, leaderPosition);
+            ElgymsUtils.teleportToPosition(challenger, challengerPosition);
+
+            // Remove player from queue
+            GymProvider.getChampQueue().removeFromQueue(challenger.getUuid());
+
+            // Creates the rules.
+            Set<String> rules = new HashSet<>();
+            rules.add(BattleRules.OBTAINABLE);
+            rules.add(BattleRules.UNOBTAINABLE);
+            rules.add(BattleRules.PAST);
+
+            // Adds sleep clause if the gym requires it.
+            if (championConfig.getRequirements().getClauses().contains(Clause.SLEEP)) {
+                rules.add("Sleep Clause Mod");
+            }
+
+            BattleFormat format = new BattleFormat("cobblemon", BattleTypes.INSTANCE.getSINGLES(), rules, 9);
+
+            // Starts the battle.
+            BattleStartResult result = BattleRegistry.INSTANCE.startBattle(
+                    format,
+                    new BattleSide(leaderTeam.getBattleActor()),
+                    new BattleSide(challengerTeam.getBattleActor()),
+                    false
+            );
+
+            // Checks the battle started.
+            boolean success = result instanceof SuccessfulBattleStart;
+
+            // if the battle started, track the battle ID.
+            if (success) {
+                UUID battleId = ((SuccessfulBattleStart) result).getBattle().getBattleId();
+
+                champBattle = new ChampBattleData(battleId, leader.getUuid(), challenger.getName().getString(),
+                        ElgymsUtils.getPosition(leader), ElgymsUtils.getPosition(challenger));
+            }
+        } catch (Exception e) {
+            sendErrors(challenger, leader, e);
+        }
+    }
+
     public static ArrayList<Pokemon> getLeaderTeam(ServerPlayerEntity player, GymConfig gym) throws Exception {
 
         ArrayList<JsonObject> leaderTeam = gym.getLeader(player.getUuid()).getTeam();
+
+        // If they don't have a team, throw an error.
+        if (leaderTeam.isEmpty()) {
+            throw new GymException("You have no team.");
+        }
+
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
+
+        // Add the leaders gym Pokemon to their party.
+        for (JsonObject pokemonObject : leaderTeam) {
+            Pokemon leaderPokemon = new Pokemon().loadFromJSON(pokemonObject);
+
+            pokemons.add(leaderPokemon);
+        }
+
+        return pokemons;
+    }
+
+    public static ArrayList<Pokemon> getChampTeam() throws Exception {
+
+        ArrayList<JsonObject> leaderTeam = GymProvider.getChampion().getChampion().getTeam();
 
         // If they don't have a team, throw an error.
         if (leaderTeam.isEmpty()) {

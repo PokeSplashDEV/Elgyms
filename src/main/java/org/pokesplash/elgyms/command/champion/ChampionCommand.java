@@ -9,11 +9,11 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.command.CommandHandler;
+import org.pokesplash.elgyms.command.champion.champion.Accept;
 import org.pokesplash.elgyms.command.champion.champion.Give;
 import org.pokesplash.elgyms.command.champion.champion.Quit;
 import org.pokesplash.elgyms.command.champion.user.Challenge;
 import org.pokesplash.elgyms.command.gyms.admin.*;
-import org.pokesplash.elgyms.command.gyms.leader.challenge.Accept;
 import org.pokesplash.elgyms.command.gyms.leader.challenge.Reject;
 import org.pokesplash.elgyms.command.gyms.leader.cooldown.GiveCooldown;
 import org.pokesplash.elgyms.command.gyms.leader.cooldown.RemoveCooldown;
@@ -55,6 +55,8 @@ public class ChampionCommand {
 		registeredCommand.addChild(new Give().build());
 		registeredCommand.addChild(new Quit().build());
 		registeredCommand.addChild(new Challenge().build());
+		registeredCommand.addChild(new Accept().build());
+		registeredCommand.addChild(new Reject().build());
 	}
 
 	public int run(CommandContext<ServerCommandSource> context) {

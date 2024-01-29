@@ -37,17 +37,12 @@ public class GymSelect {
 			base.append("§7)");
 			lore.add(base.toString());
 
-			boolean hasBeaten = false;
+			boolean hasBeaten;
 
 			ArrayList<Badge> playerBadges = BadgeProvider.getBadges(player).getBadgeIDs(category);
 
 			// Checks the player has beaten the gym.
-			for (Badge badge : playerBadges) {
-                if (badge.getId().equals(gym.getBadge().getId())) {
-                    hasBeaten = true;
-                    break;
-                }
-			}
+            hasBeaten = playerBadges.stream().anyMatch(badge -> badge.getId().equals(gym.getBadge().getId()));
 
 			boolean hasRequirements = false;
 

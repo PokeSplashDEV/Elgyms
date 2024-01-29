@@ -1,4 +1,4 @@
-package org.pokesplash.elgyms.command.gyms.leader.challenge;
+package org.pokesplash.elgyms.command.champion.champion;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -10,6 +10,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
@@ -28,23 +29,13 @@ public class Accept {
 		return CommandManager.literal("accept")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.accept");
+						// See's if the player executing the command is the champion.
+						return Elgyms.championConfig.getChampion().getUuid().equals(ctx.getPlayer().getUuid());
 					} else {
 						return true;
 					}
 				})
-				.executes(this::usage)
-				.then(CommandManager.argument("gym", StringArgumentType.string())
-						.suggests((ctx, builder) -> {
-							for (GymConfig gymConfig : GymProvider.getGyms().values()) {
-								if (gymConfig.containsLeader(ctx.getSource().getPlayer().getUuid())) {
-									builder.suggest(gymConfig.getId());
-								}
-							}
-							return builder.buildFuture();
-						})
-						.executes(this::run))
+				.executes(this::run)
 				.build();
 	}
 
@@ -55,27 +46,27 @@ public class Accept {
 			return 1;
 		}
 
-		String gymId = StringArgumentType.getString(context, "gym");
+		ChampionConfig championConfig = GymProvider.getChampion();
 
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
+		if (championConfig.getChampion() == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
+					"§cThere currently is no Champion."));
 			return 1;
 		}
 
-		if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
+		ServerPlayerEntity leader = context.getSource().getPlayer();
+
+		if (!championConfig.getChampion().getUuid().equals(leader.getUuid())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
+					"§cYou are not the Champion."));
 			return 1;
 		}
 
-		Queue queue = GymProvider.getQueueFromGym(gym);
+		Queue queue = GymProvider.getChampQueue();
 
 		if (queue.getQueue().isEmpty()) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThis gym has no challengers."));
+					"§cYou currently have no challenger for Champion."));
 			return 1;
 		}
 
@@ -85,11 +76,9 @@ public class Accept {
 
 		if (challenger == null) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cChallenger is no longer online."));
+					"§cThe Challenger is no longer online."));
 			return 1;
 		}
-
-		ServerPlayerEntity leader = context.getSource().getPlayer();
 
 		if (challenger.getUuid().equals(leader.getUuid())) {
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
@@ -98,23 +87,21 @@ public class Accept {
 		}
 
 		// If its team preview, open the preview window, else just start the battle.
-		if (gym.getRequirements().isTeamPreview()) {
+		if (championConfig.getRequirements().isTeamPreview()) {
 			try {
-				ArrayList<Pokemon> leaderTeam = BattleProvider.getLeaderTeam(leader, gym);
+				ArrayList<Pokemon> leaderTeam = BattleProvider.getChampTeam();
 				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(),
 						leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
 						e -> {
 					try {
-						BattleProvider.beginBattle(challenger, leader, gym, false);
+						BattleProvider.beginChampionBattle(challenger, leader);
 					} catch (Exception ex) {
 						// Sends error to leader. Tells challenger something went wrong.
 						leader.sendMessage(Text.literal("§c" + ex.getMessage()));
 						challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
 
-						if (!(ex instanceof GymException)) {
-							Elgyms.LOGGER.error(ex.getMessage());
-						}
-					}
+                        Elgyms.LOGGER.error(ex.getMessage());
+                    }
 				});
 				TeamPreview.openPreview(leader.getUuid());
 				TeamPreview.openPreview(challenger.getUuid());
@@ -122,7 +109,7 @@ public class Accept {
 				e.printStackTrace();
 			}
 		} else {
-			BattleProvider.beginBattle(challenger, leader, gym, true);
+			BattleProvider.beginChampionBattle(challenger, leader);
 		}
 
 		return 1;
@@ -133,7 +120,7 @@ public class Accept {
 				Text.literal(
 						Elgyms.lang.getPrefix() +
 						Utils.formatMessage(
-						"§b§lUsage:\n§3- gym accept <gym>", context.getSource().isExecutedByPlayer()
+						"§b§lUsage:\n§3- champ accept", context.getSource().isExecutedByPlayer()
 				))
 		);
 

@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BattleProvider;
+import org.pokesplash.elgyms.provider.GymProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,21 @@ public class BattleTeam {
         } else { // Otherwise just convert the team.
             battlePokemon = convertToBattlePokemon(getPokemonAsList(party));
         }
+
+        battleActor = new PlayerBattleActor(player.getUuid(), battlePokemon);
+
+        checkErrors(player);
+    }
+
+    /**
+     * Constructor for Champion Challenger.
+     * @param player The player to start a battle with.
+     */
+    public BattleTeam(ServerPlayerEntity player) throws GymException {
+        // Gets the players party and creates a list of battle pokemon.
+        PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+
+        List<BattlePokemon> battlePokemon  = raiseToCap(BattleProvider.toList(party), 100);
 
         battleActor = new PlayerBattleActor(player.getUuid(), battlePokemon);
 

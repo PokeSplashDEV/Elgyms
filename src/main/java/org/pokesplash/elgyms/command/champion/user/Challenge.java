@@ -76,6 +76,14 @@ public class Challenge {
 			return 1;
 		}
 
+		// Makes sure the champion isn't challenging themselves.
+		if (challenger.getUuid().equals(challenger.getUuid())) {
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§cYou are already Champion."
+			));
+			return 1;
+		}
+
 		PlayerBadges championBadges = BadgeProvider.getBadges(champion.getUuid());
 
 		// If the champion isn't online, don't let them challenge.
