@@ -12,17 +12,9 @@ import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.command.champion.champion.Accept;
 import org.pokesplash.elgyms.command.champion.champion.Give;
 import org.pokesplash.elgyms.command.champion.champion.Quit;
+import org.pokesplash.elgyms.command.champion.champion.Reject;
 import org.pokesplash.elgyms.command.champion.user.Challenge;
-import org.pokesplash.elgyms.command.gyms.admin.*;
-import org.pokesplash.elgyms.command.gyms.leader.challenge.Reject;
-import org.pokesplash.elgyms.command.gyms.leader.cooldown.GiveCooldown;
-import org.pokesplash.elgyms.command.gyms.leader.cooldown.RemoveCooldown;
-import org.pokesplash.elgyms.command.gyms.leader.gym.Close;
-import org.pokesplash.elgyms.command.gyms.leader.gym.Open;
-import org.pokesplash.elgyms.command.gyms.leader.gym.Queue;
-import org.pokesplash.elgyms.command.gyms.leader.gym.Team;
-import org.pokesplash.elgyms.command.gyms.user.Spectate;
-import org.pokesplash.elgyms.ui.CategorySelect;
+import org.pokesplash.elgyms.ui.ChampionInfo;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
 
 public class ChampionCommand {
@@ -66,8 +58,8 @@ public class ChampionCommand {
 			return 1;
 		}
 
-		// TODO show usage
-		UIManager.openUIForcefully(context.getSource().getPlayer(), new CategorySelect().getPage());
+		UIManager.openUIForcefully(context.getSource().getPlayer(),
+				new ChampionInfo().getPage(context.getSource().getPlayer()));
 
 		return 1;
 	}

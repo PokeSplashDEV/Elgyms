@@ -24,7 +24,7 @@ public class Reject {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return Elgyms.championConfig.getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
 					} else {
 						return true;
 					}

@@ -12,6 +12,7 @@ import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.champion.ChampionHistoryItem;
 import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.Utils;
 
 public class Quit {
@@ -20,7 +21,7 @@ public class Quit {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return Elgyms.championConfig.getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
 					} else {
 						return true;
 					}
@@ -35,7 +36,7 @@ public class Quit {
 			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
 		}
 
-		ChampionConfig championConfig = Elgyms.championConfig;
+		ChampionConfig championConfig = GymProvider.getChampion();
 
 		// Adds the defeated champion to history.
 		Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));

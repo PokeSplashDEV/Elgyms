@@ -30,6 +30,7 @@ import org.pokesplash.elgyms.config.E4Team;
 import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.*;
 import org.pokesplash.elgyms.provider.E4Provider;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.type.Clause;
 import org.pokesplash.elgyms.type.Type;
 
@@ -136,7 +137,7 @@ public abstract class ElgymsUtils {
 
 	public static void checkChampionRequirements(ServerPlayerEntity player, List<Pokemon> pokemon) throws GymException {
 
-		ChampionConfig config = Elgyms.championConfig;
+		ChampionConfig config = GymProvider.getChampion();
 
 		// Checks clauses aren't broken
 		checkClauses(player, pokemon, config.getRequirements().getClauses());

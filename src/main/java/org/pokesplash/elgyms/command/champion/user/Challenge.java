@@ -53,7 +53,7 @@ public class Challenge {
 
 		PlayerBadges playerBadges = BadgeProvider.getBadges(challenger);
 
-		ChampionConfig championConfig = Elgyms.championConfig;
+		ChampionConfig championConfig = GymProvider.getChampion();
 
 		// If the player doesn't have the required badge, tell them.
 		if (!playerBadges.containsBadge(championConfig.getRequiredBadge())) {
@@ -67,7 +67,7 @@ public class Challenge {
 			return 1;
 		}
 
-		Leader champion = Elgyms.championConfig.getChampion();
+		Leader champion = championConfig.getChampion();
 
 		// If there is no champion, set the challenger to champion.
 		if (champion == null) {

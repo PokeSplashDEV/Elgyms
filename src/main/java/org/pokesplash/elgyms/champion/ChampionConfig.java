@@ -16,6 +16,7 @@ public class ChampionConfig {
 	private boolean enable; // Enable Champion.
 	private Badge badge; // The badge for champion.
 	private UUID requiredBadge; // The badge required to challenge the champion;
+	private int displaySlot; // The slot where the champion will be displayed.
 	private double inactivityDemotionTime; // Time of inactivity before the leader is demoted.
 	private boolean allowInactivityReports; // Allow players to report a champion for inactivity.
 	private boolean defendingGivesRewards; // Should the champion get rewards for defending their title.
@@ -33,6 +34,7 @@ public class ChampionConfig {
 		inactivityDemotionTime = 168;
 		allowInactivityReports = true;
 		defendingGivesRewards = true;
+		displaySlot = 16;
 		requiredBadge = UUID.randomUUID();
 		positions = new Positions();
 		requirements = new ChampionRequirements();
@@ -61,6 +63,7 @@ public class ChampionConfig {
 					ChampionConfig cfg = gson.fromJson(el, ChampionConfig.class);
 					enable = cfg.isEnable();
 					badge = cfg.getBadge();
+					displaySlot = cfg.getDisplaySlot();
 					inactivityDemotionTime = cfg.getInactivityDemotionTime();
 					allowInactivityReports = cfg.isAllowInactivityReports();
 					defendingGivesRewards = cfg.isDefendingGivesRewards();
@@ -90,6 +93,10 @@ public class ChampionConfig {
 
 	public Badge getBadge() {
 		return badge;
+	}
+
+	public int getDisplaySlot() {
+		return displaySlot;
 	}
 
 	public double getInactivityDemotionTime() {

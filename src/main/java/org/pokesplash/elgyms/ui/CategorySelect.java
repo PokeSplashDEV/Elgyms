@@ -6,8 +6,10 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
+import net.minecraft.text.Text;
 import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.config.CategoryConfig;
+import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.Utils;
 
 /**
@@ -30,6 +32,16 @@ public class CategorySelect {
 					})
 					.build());
 		}
+
+		// Champion button
+		template.set(GymProvider.getChampion().getDisplaySlot(), GooeyButton.builder()
+				.title(Text.literal("Champion"))
+				.display(Utils.parseItemId(GymProvider.getChampion().getBadge().getMaterial()))
+				.hideFlags(FlagType.All)
+				.onClick(e -> {
+					UIManager.openUIForcefully(e.getPlayer(), new ChampionInfo().getPage(e.getPlayer()));
+				})
+				.build());
 
 		return GooeyPage.builder()
 				.template(template.build())
