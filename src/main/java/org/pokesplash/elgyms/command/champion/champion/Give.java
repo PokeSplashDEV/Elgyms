@@ -1,5 +1,7 @@
 package org.pokesplash.elgyms.command.champion.champion;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -74,7 +76,8 @@ public class Give {
 			Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
 
 			// Sets the new champion to the player.
-			championConfig.setChampion(new Leader(newChampion.getUuid()));
+			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(newChampion);
+			championConfig.setChampion(new Leader(newChampion.getUuid(), party));
 
 			// Runs the rewards.
 			championConfig.runWinnerRewards(newChampion.getName().getString());

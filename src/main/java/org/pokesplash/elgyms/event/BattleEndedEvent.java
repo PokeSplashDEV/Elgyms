@@ -198,7 +198,9 @@ public class BattleEndedEvent {
                     Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
 
                     // Sets the new champion to the player.
-                    championConfig.setChampion(new Leader(winner.getUuid()));
+                    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(winner);
+                    championConfig.setChampion(new Leader(winner.getUuid(), party));
+                    championConfig.getChampion().getRecord().setWins(1);
                     championConfig.write();
 
                     // Runs the rewards.

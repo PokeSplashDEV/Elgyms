@@ -1,7 +1,11 @@
 package org.pokesplash.elgyms.gym;
 
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.JsonObject;
+import org.pokesplash.elgyms.Elgyms;
+import org.pokesplash.elgyms.provider.BattleProvider;
+import org.pokesplash.elgyms.util.ElgymsUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +32,16 @@ public class Leader {
 		record = new Record();
 		startDate = new Date().getTime();
 		team = new ArrayList<>();
+	}
+
+	public Leader(UUID uuid, PlayerPartyStore party) {
+		this.uuid = uuid;
+		record = new Record();
+		startDate = new Date().getTime();
+		team = new ArrayList<>();
+		for (Pokemon pokemon : ElgymsUtils.setLevelAndPp(BattleProvider.toList(party), 100)) {
+			team.add(pokemon.saveToJSON(new JsonObject()));
+		}
 	}
 
 	public UUID getUuid() {

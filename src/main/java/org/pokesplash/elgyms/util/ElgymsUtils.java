@@ -54,7 +54,7 @@ public abstract class ElgymsUtils {
 		return rules;
 	}
 
-	public static ArrayList<Pokemon> setLevelAndPp(ArrayList<Pokemon> pokemon, int level) {
+	public static ArrayList<Pokemon> setLevelAndPp(List<Pokemon> pokemon, int level) {
 
 		ArrayList<Pokemon> leaderTeam = new ArrayList<>();
 

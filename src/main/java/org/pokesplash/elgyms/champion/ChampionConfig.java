@@ -1,5 +1,6 @@
 package org.pokesplash.elgyms.champion;
 
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.google.gson.Gson;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.pokesplash.elgyms.Elgyms;
@@ -17,8 +18,6 @@ public class ChampionConfig {
 	private Badge badge; // The badge for champion.
 	private UUID requiredBadge; // The badge required to challenge the champion;
 	private int displaySlot; // The slot where the champion will be displayed.
-	private double inactivityDemotionTime; // Time of inactivity before the leader is demoted.
-	private boolean allowInactivityReports; // Allow players to report a champion for inactivity.
 	private boolean defendingGivesRewards; // Should the champion get rewards for defending their title.
 	private Positions positions; // The positions of the champion, challenger and spectators.
 	private ChampionRequirements requirements; // The requirements for the battle.
@@ -31,8 +30,6 @@ public class ChampionConfig {
 	public ChampionConfig() {
 		enable = true;
 		badge = new Badge();
-		inactivityDemotionTime = 168;
-		allowInactivityReports = true;
 		defendingGivesRewards = true;
 		displaySlot = 16;
 		requiredBadge = UUID.randomUUID();
@@ -64,8 +61,6 @@ public class ChampionConfig {
 					enable = cfg.isEnable();
 					badge = cfg.getBadge();
 					displaySlot = cfg.getDisplaySlot();
-					inactivityDemotionTime = cfg.getInactivityDemotionTime();
-					allowInactivityReports = cfg.isAllowInactivityReports();
 					defendingGivesRewards = cfg.isDefendingGivesRewards();
 					requiredBadge = cfg.getRequiredBadge();
 					positions = cfg.getPositions();
@@ -97,14 +92,6 @@ public class ChampionConfig {
 
 	public int getDisplaySlot() {
 		return displaySlot;
-	}
-
-	public double getInactivityDemotionTime() {
-		return inactivityDemotionTime;
-	}
-
-	public boolean isAllowInactivityReports() {
-		return allowInactivityReports;
 	}
 
 	public boolean isDefendingGivesRewards() {
@@ -191,7 +178,7 @@ public class ChampionConfig {
 	}
 
 	public void runDemoteBroadcast(ServerPlayerEntity champion) {
-		Utils.broadcastMessage(championLossBroadcast
+		Utils.broadcastMessage(championDemoteBroadcast
 				.replaceAll("\\{player\\}", champion.getName().getString()));
 	}
 }

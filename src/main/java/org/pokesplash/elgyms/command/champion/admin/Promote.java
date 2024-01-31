@@ -87,7 +87,9 @@ public class Promote {
 				return 1;
 			}
 
-			GymProvider.getChampion().setChampion(new Leader(badges.getUuid()));
+			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(badges.getUuid());
+
+			GymProvider.getChampion().setChampion(new Leader(badges.getUuid(), party));
 			GymProvider.getChampion().runWinnerRewards(badges.getName());
 
 			context.getSource().sendMessage(Text.literal("§2Successfully set Champion to " + badges.getName() + "."));

@@ -72,13 +72,14 @@ public class Challenge {
 
 			// If there is no champion, set the challenger to champion.
 			if (champion == null) {
-				championConfig.setChampion(new Leader(challenger.getUuid()));
+				PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(challenger);
+				championConfig.setChampion(new Leader(challenger.getUuid(), party));
 				championConfig.runWinnerRewards(challenger.getName().getString());
 				return 1;
 			}
 
 			// Makes sure the champion isn't challenging themselves.
-			if (challenger.getUuid().equals(challenger.getUuid())) {
+			if (challenger.getUuid().equals(champion.getUuid())) {
 				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
 						"§cYou are already Champion."
 				));

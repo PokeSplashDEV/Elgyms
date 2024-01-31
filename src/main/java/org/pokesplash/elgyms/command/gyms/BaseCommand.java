@@ -76,7 +76,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new Position().build());
 		registeredCommand.addChild(new Spectate().build());
 		registeredCommand.addChild(new Team().build());
-
+		registeredCommand.addChild(new GetTeam().build());
 	}
 
 	public int run(CommandContext<ServerCommandSource> context) {

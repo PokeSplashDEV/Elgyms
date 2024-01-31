@@ -21,21 +21,21 @@ import org.pokesplash.elgyms.util.Utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class PreviousChampions {
 	public Page getPage() {
 		ArrayList<Button> buttons = new ArrayList<>();
-		for (ChampionHistoryItem champ : Elgyms.championHistory.getHistory()) {
+		ArrayList<ChampionHistoryItem> historyReversed = new ArrayList<>(Elgyms.championHistory.getHistory());
+		Collections.reverse(historyReversed);
+		for (ChampionHistoryItem champ : historyReversed) {
 			ArrayList<String> lore = new ArrayList<>();
 			DateFormat format = new SimpleDateFormat("d MMM yyyy");
 			Date startDate = new Date(champ.getStartDate());
 			Date endDate = new Date(champ.getEndDate());
-			lore.add("§bFrom: " + format.format(startDate));
-			lore.add("§bTo: " + format.format(endDate));
+			lore.add("§bFrom: §e" + format.format(startDate));
+			lore.add("§bTo: §e" + format.format(endDate));
+			lore.add("§3Record: §2" + champ.getRecord().getWins() + "§3 - §c" + champ.getRecord().getLosses());
 
 			PlayerBadges champBadges = BadgeProvider.getBadges(champ.getUuid());
 

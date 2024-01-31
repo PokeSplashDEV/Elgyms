@@ -17,6 +17,7 @@ import org.pokesplash.elgyms.event.PlayerJoinEvent;
 import org.pokesplash.elgyms.event.PlayerLeaveEvent;
 import org.pokesplash.elgyms.log.BattleLogger;
 import org.pokesplash.elgyms.provider.BadgeProvider;
+import org.pokesplash.elgyms.provider.E4Provider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.ui.config.MenuConfig;
 
@@ -52,5 +53,6 @@ public class Elgyms implements ModInitializer {
 		menu.init();
 		BadgeProvider.init();
 		battleLogger.init();
+		E4Provider.init();
 	}
 }
