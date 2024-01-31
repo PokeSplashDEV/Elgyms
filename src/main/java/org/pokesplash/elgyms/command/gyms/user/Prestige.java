@@ -8,6 +8,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.ui.PrestigeCategorySelect;
 import org.pokesplash.elgyms.util.LuckPermsUtils;
@@ -31,12 +32,18 @@ public class Prestige {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player"));
-			return 1;
-		}
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player"));
+				return 1;
+			}
 
-		UIManager.openUIForcefully(context.getSource().getPlayer(), new PrestigeCategorySelect().getPage());
+			UIManager.openUIForcefully(context.getSource().getPlayer(), new PrestigeCategorySelect().getPage());
+		}
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
 
 		return 1;
 	}

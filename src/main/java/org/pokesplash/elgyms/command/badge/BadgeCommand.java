@@ -8,6 +8,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
 import org.pokesplash.elgyms.command.badge.leader.GiveBadge;
 import org.pokesplash.elgyms.command.badge.leader.OtherBadge;
@@ -57,7 +58,8 @@ public class BadgeCommand {
 			UIManager.openUIForcefully(context.getSource().getPlayer(), new org.pokesplash.elgyms.ui.Badges()
 					.getPage(BadgeProvider.getBadges(context.getSource().getPlayer()), false));
 		} catch (Exception e) {
-			e.printStackTrace();
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
 
 		return 1;

@@ -38,22 +38,28 @@ public class DeleteGym {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		String name = StringArgumentType.getString(context, "name");
+		try {
+			String name = StringArgumentType.getString(context, "name");
 
-		GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(name));
+			GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(name));
 
-		if (gym == null) {
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cGym " + name + " doesn't exists.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			GymProvider.deleteGym(gym);
+
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + name + " doesn't exists.", context.getSource().isExecutedByPlayer()
+					"§aDeleted gym: " + name, context.getSource().isExecutedByPlayer()
 			)));
-			return 1;
 		}
-
-		GymProvider.deleteGym(gym);
-
-		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aDeleted gym: " + name, context.getSource().isExecutedByPlayer()
-		)));
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
 
 		return 1;
 	}

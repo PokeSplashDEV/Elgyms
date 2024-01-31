@@ -64,82 +64,87 @@ public class GiveBadge {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-		}
-
-		ServerPlayerEntity sender = context.getSource().getPlayer();
-
-		String playerName = StringArgumentType.getString(context, "player");
-
-		PlayerBadges badges = BadgeProvider.getBadges(playerName);
-
-		if (badges == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cCould not find badges for player " + playerName));
-			return 1;
-		}
-
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
-		}
-
-		if (!gym.containsLeader(sender.getUuid()) &&
-				!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
-						".admin.badges")) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
-			return 1;
-		}
-
-		if (badges.containsBadge(gym.getBadge().getId())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + "§c already has this badge."));
-			return 1;
-		}
-
-		CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
-
-		if (categoryConfig == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + "§c doesn't have a valid category."));
-			return 1;
-		}
-
-		badges.addBadge(categoryConfig, gym.getBadge());
-
-		// Gets the player entity
-		ServerPlayerEntity player = Elgyms.server.getPlayerManager().getPlayer(badges.getUuid());
-
-		// Gets the rewards of the gym.
-		GymRewards rewards = gym.getRewards();
-
-		// Gets the gyms category.
-		CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
-
-		// Gets the correct reward.
-		Reward reward = badges.isPrestiged(categoryConfig)
-				? rewards.getPrestige() : rewards.getFirstTime();
-
-		// Run commands
-		Utils.runCommands(reward.getCommands(), player, gym.getBadge(), category, gym);
-
-		// If the gym is E4 and the player has no E4 team, set their party to be their E4 team.
-		if (gym.isE4() && E4Provider.getTeam(badges.getUuid()) == null) {
-
-			if (player != null) {
-				E4Provider.addTeam(new E4Team(badges.getUuid(), Cobblemon.INSTANCE.getStorage().getParty(player)));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
 			}
-		}
 
-		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Added " + gym.getBadge().getName() + "§2 to " + badges.getName() + "."));
+			ServerPlayerEntity sender = context.getSource().getPlayer();
+
+			String playerName = StringArgumentType.getString(context, "player");
+
+			PlayerBadges badges = BadgeProvider.getBadges(playerName);
+
+			if (badges == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cCould not find badges for player " + playerName));
+				return 1;
+			}
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			if (!gym.containsLeader(sender.getUuid()) &&
+					!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
+							".admin.badges")) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not a leader of this gym."));
+				return 1;
+			}
+
+			if (badges.containsBadge(gym.getBadge().getId())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + badges.getName() + "§c already has this badge."));
+				return 1;
+			}
+
+			CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+			if (categoryConfig == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + gym.getName() + "§c doesn't have a valid category."));
+				return 1;
+			}
+
+			badges.addBadge(categoryConfig, gym.getBadge());
+
+			// Gets the player entity
+			ServerPlayerEntity player = Elgyms.server.getPlayerManager().getPlayer(badges.getUuid());
+
+			// Gets the rewards of the gym.
+			GymRewards rewards = gym.getRewards();
+
+			// Gets the gyms category.
+			CategoryConfig category = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+			// Gets the correct reward.
+			Reward reward = badges.isPrestiged(categoryConfig)
+					? rewards.getPrestige() : rewards.getFirstTime();
+
+			// Run commands
+			Utils.runCommands(reward.getCommands(), badges.getName(), gym.getBadge(), category, gym);
+
+			// If the gym is E4 and the player has no E4 team, set their party to be their E4 team.
+			if (gym.isE4() && E4Provider.getTeam(badges.getUuid()) == null) {
+
+				if (player != null) {
+					E4Provider.addTeam(new E4Team(badges.getUuid(), Cobblemon.INSTANCE.getStorage().getParty(player)));
+				}
+			}
+
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§2Added " + gym.getBadge().getName() + "§2 to " + badges.getName() + "."));
+		} catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
 
 		return 1;
 	}

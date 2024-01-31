@@ -76,7 +76,7 @@ public class GymSelect {
 					}
 
 					lore.add(Utils.formatPlaceholders(Elgyms.menu.getRequirements(),
-							requiredBadges, gym.getBadge(), player, category, gym,
+							requiredBadges, gym.getBadge(), player.getName().getString(), category, gym,
 							BadgeProvider.getBadges(player).getCooldown(gym)));
 				}
 			}

@@ -24,7 +24,11 @@ public class Reject {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						if (GymProvider.getChampion().getChampion() == null) {
+							return false;
+						} else {
+							return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						}
 					} else {
 						return true;
 					}
@@ -35,52 +39,59 @@ public class Reject {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-			return 1;
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
+			}
+
+			ChampionConfig championConfig = GymProvider.getChampion();
+
+			if (championConfig.getChampion() == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cThere currently is no Champion."));
+				return 1;
+			}
+
+			ServerPlayerEntity leader = context.getSource().getPlayer();
+
+			if (!championConfig.getChampion().getUuid().equals(leader.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not the Champion."));
+				return 1;
+			}
+
+			Queue queue = GymProvider.getChampQueue();
+
+			if (queue.getQueue().isEmpty()) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou currently have no challenger for Champion."));
+				return 1;
+			}
+
+			UUID challengerUuid = queue.getQueue().get(0);
+
+			ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
+
+			if (challenger == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cThe Challenger is no longer online."));
+				return 1;
+			}
+
+			if (challenger.getUuid().equals(leader.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou can not battle yourself."));
+				return 1;
+			}
+
+			GymProvider.rejectChampionChallenge(challengerUuid, context.getSource().getPlayer());
 		}
 
-		ChampionConfig championConfig = GymProvider.getChampion();
-
-		if (championConfig.getChampion() == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThere currently is no Champion."));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		ServerPlayerEntity leader = context.getSource().getPlayer();
-
-		if (!championConfig.getChampion().getUuid().equals(leader.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not the Champion."));
-			return 1;
-		}
-
-		Queue queue = GymProvider.getChampQueue();
-
-		if (queue.getQueue().isEmpty()) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou currently have no challenger for Champion."));
-			return 1;
-		}
-
-		UUID challengerUuid = queue.getQueue().get(0);
-
-		ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
-
-		if (challenger == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThe Challenger is no longer online."));
-			return 1;
-		}
-
-		if (challenger.getUuid().equals(leader.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou can not battle yourself."));
-			return 1;
-		}
-
-		GymProvider.rejectChampionChallenge(challengerUuid, context.getSource().getPlayer());
 
 		return 1;
 	}

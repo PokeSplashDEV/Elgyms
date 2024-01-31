@@ -331,7 +331,7 @@ public abstract class Utils {
 	 * @return Amended string.
 	 */
 	public static String formatPlaceholders(String message, ArrayList<Badge> badges, Badge badge,
-	                                        ServerPlayerEntity player, CategoryConfig category,
+	                                        String player, CategoryConfig category,
 	                                        GymConfig gym, Long cooldown) {
 
 		String output = message;
@@ -354,8 +354,8 @@ public abstract class Utils {
 		}
 
 		if (player != null) {
-			output = output.replaceAll("\\{player\\}", player.getName().getString());
-			output = output.replaceAll("\\{uuid\\}", player.getUuid().toString());
+			output = output.replaceAll("\\{player\\}", player);
+			output = output.replaceAll("\\{uuid\\}", player);
 		}
 
 		if (category != null) {
@@ -480,7 +480,7 @@ public abstract class Utils {
 	 * @param categoryConfig Category placeholder
 	 * @param gymConfig Gym placeholder
 	 */
-	public static void runCommands(ArrayList<String> commands, ServerPlayerEntity player, Badge badge,
+	public static void runCommands(ArrayList<String> commands, String player, Badge badge,
 								   CategoryConfig categoryConfig, GymConfig gymConfig) {
 		// Run commands
 		CommandDispatcher<ServerCommandSource> dispatcher =

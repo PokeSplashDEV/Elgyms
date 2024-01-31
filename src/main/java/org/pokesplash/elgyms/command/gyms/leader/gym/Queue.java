@@ -31,12 +31,19 @@ public class Queue {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
+
+			UIManager.openUIForcefully(context.getSource().getPlayer(),
+					new org.pokesplash.elgyms.ui.Queue().getPage(context.getSource().getPlayer()));
 		}
 
-		UIManager.openUIForcefully(context.getSource().getPlayer(),
-				new org.pokesplash.elgyms.ui.Queue().getPage(context.getSource().getPlayer()));
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
 
 		return 1;
 	}

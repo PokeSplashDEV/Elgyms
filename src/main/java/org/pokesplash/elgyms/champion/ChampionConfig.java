@@ -42,7 +42,7 @@ public class ChampionConfig {
 		championSuccessBroadcast = "§2{winner} defended their title against {loser} to stay Champion!";
 		championLossBroadcast = "§2{winner} beat {loser} to become the new Champion!";
 		championDemoteBroadcast = "§2{player} was demoted from Champion. The spot is now open!";
-		champion = new Leader();
+		champion = null;
 	}
 
 	public void write() {
@@ -148,7 +148,7 @@ public class ChampionConfig {
 		return championDemoteBroadcast;
 	}
 
-	public void runLoserRewards(ServerPlayerEntity loser) {
+	public void runLoserRewards(String loser) {
 
 		if (rewards.getLoser().isEnableBroadcast()) {
 			Utils.broadcastMessage(Utils.formatPlaceholders(rewards.getLoser().getBroadcastMessage(),
@@ -158,7 +158,7 @@ public class ChampionConfig {
 		Utils.runCommands(rewards.getLoser().getCommands(), loser, null, null, null);
 	}
 
-	public void runWinnerRewards(ServerPlayerEntity winner) {
+	public void runWinnerRewards(String winner) {
 
 		if (rewards.getWinner().isEnableBroadcast()) {
 			Utils.broadcastMessage(Utils.formatPlaceholders(rewards.getWinner().getBroadcastMessage(),
@@ -168,7 +168,7 @@ public class ChampionConfig {
 		Utils.runCommands(rewards.getWinner().getCommands(), winner, null, null, null);
 	}
 
-	public void runDemotionRewards(ServerPlayerEntity demoted) {
+	public void runDemotionRewards(String demoted) {
 
 		if (rewards.getDemotion().isEnableBroadcast()) {
 			Utils.broadcastMessage(Utils.formatPlaceholders(rewards.getDemotion().getBroadcastMessage(),

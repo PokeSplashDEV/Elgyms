@@ -59,69 +59,75 @@ public class RemoveBadge {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-		}
-
-		ServerPlayerEntity sender = context.getSource().getPlayer();
-
-		String playerName = StringArgumentType.getString(context, "player");
-
-		PlayerBadges badges = BadgeProvider.getBadges(playerName);
-
-		if (badges == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cCould not find badges for player " + playerName));
-			return 1;
-		}
-
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
-		}
-
-		if (!gym.containsLeader(sender.getUuid()) &&
-				!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
-						".admin.badges")) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
-			return 1;
-		}
-
-		if (!badges.containsBadge(gym.getBadge().getId())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + "§c doesn't have this badge."));
-			return 1;
-		}
-
-		CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
-
-		if (categoryConfig == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + "§c doesn't have a valid category."));
-			return 1;
-		}
-
 		try {
-			badges.removeBadge(categoryConfig, gym.getBadge());
-		} catch (Exception e) {
-			e.printStackTrace();
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
+
+			ServerPlayerEntity sender = context.getSource().getPlayer();
+
+			String playerName = StringArgumentType.getString(context, "player");
+
+			PlayerBadges badges = BadgeProvider.getBadges(playerName);
+
+			if (badges == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cCould not find badges for player " + playerName));
+				return 1;
+			}
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			if (!gym.containsLeader(sender.getUuid()) &&
+					!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
+							".admin.badges")) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not a leader of this gym."));
+				return 1;
+			}
+
+			if (!badges.containsBadge(gym.getBadge().getId())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + badges.getName() + "§c doesn't have this badge."));
+				return 1;
+			}
+
+			CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+			if (categoryConfig == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + gym.getName() + "§c doesn't have a valid category."));
+				return 1;
+			}
+
+			try {
+				badges.removeBadge(categoryConfig, gym.getBadge());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+
+
+			// If the player has no more E4 badges, remove their E4 team.
+			if (gym.isE4() && !badges.hasE4Badges()) {
+				E4Provider.deleteTeam(E4Provider.getTeam(badges.getUuid()));
+			}
+
+			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+					"§2Removed " + gym.getBadge().getName() + "§2 from " + badges.getName() + "."));
 		}
-
-
-
-		// If the player has no more E4 badges, remove their E4 team.
-		if (gym.isE4() && !badges.hasE4Badges()) {
-			E4Provider.deleteTeam(E4Provider.getTeam(badges.getUuid()));
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Removed " + gym.getBadge().getName() + "§2 from " + badges.getName() + "."));
 
 		return 1;
 	}

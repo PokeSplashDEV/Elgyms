@@ -47,21 +47,27 @@ public class Spectate {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			ElgymsUtils.teleportToPosition(context.getSource().getPlayer(), gym.getPositions().getSpectator());
 		}
-
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		ElgymsUtils.teleportToPosition(context.getSource().getPlayer(), gym.getPositions().getSpectator());
 
 		return 1;
 	}

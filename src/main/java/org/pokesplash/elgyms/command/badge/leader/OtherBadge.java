@@ -40,23 +40,28 @@ public class OtherBadge {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
+
+			String playerName = StringArgumentType.getString(context, "player");
+
+			PlayerBadges badges = BadgeProvider.getBadges(playerName);
+
+			if (badges == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cCould not find player " + playerName, context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			UIManager.openUIForcefully(context.getSource().getPlayer(),
+					new org.pokesplash.elgyms.ui.Badges().getPage(badges, true));
+		} catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		String playerName = StringArgumentType.getString(context, "player");
-
-		PlayerBadges badges = BadgeProvider.getBadges(playerName);
-
-		if (badges == null) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cCould not find player " + playerName, context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
-		}
-
-		UIManager.openUIForcefully(context.getSource().getPlayer(),
-				new org.pokesplash.elgyms.ui.Badges().getPage(badges, true));
 
 		return 1;
 	}

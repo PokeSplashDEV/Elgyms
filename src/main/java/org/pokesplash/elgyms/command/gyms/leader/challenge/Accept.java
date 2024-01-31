@@ -50,79 +50,85 @@ public class Accept {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-			return 1;
-		}
-
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
-		}
-
-		if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
-			return 1;
-		}
-
-		Queue queue = GymProvider.getQueueFromGym(gym);
-
-		if (queue.getQueue().isEmpty()) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThis gym has no challengers."));
-			return 1;
-		}
-
-		UUID challengerUuid = queue.getQueue().get(0);
-
-		ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
-
-		if (challenger == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cChallenger is no longer online."));
-			return 1;
-		}
-
-		ServerPlayerEntity leader = context.getSource().getPlayer();
-
-		if (challenger.getUuid().equals(leader.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou can not battle yourself."));
-			return 1;
-		}
-
-		// If its team preview, open the preview window, else just start the battle.
-		if (gym.getRequirements().isTeamPreview()) {
-			try {
-				ArrayList<Pokemon> leaderTeam = BattleProvider.getLeaderTeam(leader, gym);
-				TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(),
-						leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
-						e -> {
-					try {
-						BattleProvider.beginBattle(challenger, leader, gym, false);
-					} catch (Exception ex) {
-						// Sends error to leader. Tells challenger something went wrong.
-						leader.sendMessage(Text.literal("§c" + ex.getMessage()));
-						challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
-
-						if (!(ex instanceof GymException)) {
-							Elgyms.LOGGER.error(ex.getMessage());
-						}
-					}
-				});
-				TeamPreview.openPreview(leader.getUuid());
-				TeamPreview.openPreview(challenger.getUuid());
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
 			}
-		} else {
-			BattleProvider.beginBattle(challenger, leader, gym, true);
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not a leader of this gym."));
+				return 1;
+			}
+
+			Queue queue = GymProvider.getQueueFromGym(gym);
+
+			if (queue.getQueue().isEmpty()) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cThis gym has no challengers."));
+				return 1;
+			}
+
+			UUID challengerUuid = queue.getQueue().get(0);
+
+			ServerPlayerEntity challenger = Elgyms.server.getPlayerManager().getPlayer(challengerUuid);
+
+			if (challenger == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cChallenger is no longer online."));
+				return 1;
+			}
+
+			ServerPlayerEntity leader = context.getSource().getPlayer();
+
+			if (challenger.getUuid().equals(leader.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou can not battle yourself."));
+				return 1;
+			}
+
+			// If its team preview, open the preview window, else just start the battle.
+			if (gym.getRequirements().isTeamPreview()) {
+				try {
+					ArrayList<Pokemon> leaderTeam = BattleProvider.getLeaderTeam(leader, gym);
+					TeamPreview.createPreview(leader.getUuid(), challenger.getUuid(),
+							leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
+							e -> {
+								try {
+									BattleProvider.beginBattle(challenger, leader, gym, false);
+								} catch (Exception ex) {
+									// Sends error to leader. Tells challenger something went wrong.
+									leader.sendMessage(Text.literal("§c" + ex.getMessage()));
+									challenger.sendMessage(Text.literal("§c" + "Something went wrong, the leader has more info."));
+
+									if (!(ex instanceof GymException)) {
+										Elgyms.LOGGER.error(ex.getMessage());
+									}
+								}
+							});
+					TeamPreview.openPreview(leader.getUuid());
+					TeamPreview.openPreview(challenger.getUuid());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				BattleProvider.beginBattle(challenger, leader, gym, true);
+			}
+		}
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
 
 		return 1;

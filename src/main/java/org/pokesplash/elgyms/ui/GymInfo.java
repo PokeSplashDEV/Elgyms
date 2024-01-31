@@ -64,7 +64,7 @@ public class GymInfo {
 
 					e.getPlayer().sendMessage(Text.literal(Utils.formatPlaceholders(
 							Elgyms.lang.getPrefix() + Elgyms.lang.getCancelChallenge(),
-							null, gym.getBadge(), e.getPlayer(), categoryConfig, gym, null
+							null, gym.getBadge(), e.getPlayer().getName().getString(), categoryConfig, gym, null
 					)));
 
 					UIManager.openUIForcefully(e.getPlayer(), new GymInfo().getPage(gym, categoryConfig,
@@ -80,7 +80,7 @@ public class GymInfo {
 
 		Button cooldown = GooeyButton.builder()
 				.title(Utils.formatPlaceholders(Elgyms.menu.getCooldownTitle(),
-						null, gym.getBadge(), challenger, categoryConfig, gym,
+						null, gym.getBadge(), challenger.getName().getString(), categoryConfig, gym,
 						BadgeProvider.getBadges(challenger).getCooldown(gym)))
 				.display(Utils.parseItemId(Elgyms.menu.getCooldownMaterial()))
 				.hideFlags(FlagType.All)

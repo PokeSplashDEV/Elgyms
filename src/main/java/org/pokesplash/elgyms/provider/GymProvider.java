@@ -159,7 +159,7 @@ public abstract class GymProvider {
 		openGyms.add(gym);
 			Utils.broadcastMessage(Utils.formatPlaceholders(
 					Elgyms.lang.getPrefix() +
-							Elgyms.lang.getOpenGymMessage(), null, null, player,
+							Elgyms.lang.getOpenGymMessage(), null, null, player.getName().getString(),
 					null, gym, null
 			));
 	}
@@ -177,7 +177,7 @@ public abstract class GymProvider {
 		openGyms.remove(gym);
 			Utils.broadcastMessage(Utils.formatPlaceholders(
 					Elgyms.lang.getPrefix() +
-							Elgyms.lang.getCloseGymMessage(), null, null, player,
+							Elgyms.lang.getCloseGymMessage(), null, null, player.getName().getString(),
 					null, gym, null
 			));
 	}
@@ -232,7 +232,7 @@ public abstract class GymProvider {
 
 		if (badges.getCooldown(gymConfig) != null && badges.getCooldown(gymConfig) > new Date().getTime()) {
 			player.sendMessage(Text.literal(Elgyms.lang.getPrefix() + Utils.formatPlaceholders(
-					Elgyms.lang.getCooldownMessage(), null, null, player,
+					Elgyms.lang.getCooldownMessage(), null, null, player.getName().getString(),
 					Elgyms.config.getCategoryByName(gymConfig.getCategoryName()), gymConfig, badges.getCooldown(gymConfig)
 			)));
 			return;
@@ -245,7 +245,7 @@ public abstract class GymProvider {
 		// Sends message to the challenger.
 		player.sendMessage(Text.literal(
 				Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getChallengeMessageChallenger(),
-		null, gymConfig.getBadge(), player, null, gymConfig, badges.getCooldown(gymConfig))
+		null, gymConfig.getBadge(), player.getName().getString(), null, gymConfig, badges.getCooldown(gymConfig))
 		));
 
 		// Send an announcements to the leaders.
@@ -256,7 +256,8 @@ public abstract class GymProvider {
 				onlineLeader.sendMessage(Text.literal(
 					Utils.formatPlaceholders(
 							Elgyms.lang.getPrefix() +
-							Elgyms.lang.getChallengeMessageLeader(), null, gymConfig.getBadge(), player, null, gymConfig
+							Elgyms.lang.getChallengeMessageLeader(), null, gymConfig.getBadge(),
+							player.getName().getString(), null, gymConfig
 					, badges.getCooldown(gymConfig))
 				));
 			}
@@ -332,12 +333,12 @@ public abstract class GymProvider {
 			challengerPlayer.sendMessage(Text.literal(
 					Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getRejectChallengePlayer(), null,
 							null,
-							challengerPlayer, null, gym, null)
+							challengerPlayer.getName().getString(), null, gym, null)
 			));
 
 			leader.sendMessage(Text.literal(
 					Utils.formatPlaceholders(Elgyms.lang.getPrefix() + Elgyms.lang.getRejectChallengeLeader(), null, null,
-							challengerPlayer, null, gym, null)
+							challengerPlayer.getName().getString(), null, gym, null)
 			));
 		}
 	}

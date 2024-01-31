@@ -96,12 +96,12 @@ public class BattleEndedEvent {
                         // Broadcasts the message
                         if (reward.isEnableBroadcast()) {
                             Utils.broadcastMessage(Utils.formatPlaceholders(reward.getBroadcastMessage(), null,
-                                    gym.getBadge(), challenger, category, gym, null));
+                                    gym.getBadge(), challenger.getName().getString(), category, gym, null));
                         }
 
 
                         // Run commands
-                        Utils.runCommands(reward.getCommands(), challenger, gym.getBadge(), category, gym);
+                        Utils.runCommands(reward.getCommands(), challenger.getName().getString(), gym.getBadge(), category, gym);
                     }
 
                     Elgyms.battleLogger.addLog(
@@ -139,12 +139,12 @@ public class BattleEndedEvent {
                         // Broadcasts the message
                         if (reward.isEnableBroadcast()) {
                             Utils.broadcastMessage(Utils.formatPlaceholders(reward.getBroadcastMessage(), null,
-                                    gym.getBadge(), challenger, category, gym, null));
+                                    gym.getBadge(), challenger.getName().getString(), category, gym, null));
                         }
 
 
                         // Run commands
-                        Utils.runCommands(reward.getCommands(), challenger, gym.getBadge(), category, gym);
+                        Utils.runCommands(reward.getCommands(), challenger.getName().getString(), gym.getBadge(), category, gym);
 
                     }
 
@@ -202,8 +202,8 @@ public class BattleEndedEvent {
                     championConfig.write();
 
                     // Runs the rewards.
-                    championConfig.runWinnerRewards(winner);
-                    championConfig.runLoserRewards(champion);
+                    championConfig.runWinnerRewards(winner.getName().getString());
+                    championConfig.runLoserRewards(champion.getName().getString());
 
                     // Runs a broadcast the say the champion lost.
                     championConfig.runLossBroadcast(winner, champion);
@@ -229,8 +229,8 @@ public class BattleEndedEvent {
                     championConfig.write();
 
                     // Runs the rewards.
-                    championConfig.runWinnerRewards(champion);
-                    championConfig.runLoserRewards(loser);
+                    championConfig.runWinnerRewards(champion.getName().getString());
+                    championConfig.runLoserRewards(loser.getName().getString());
 
                     // Runs a broadcast the say the champion won.
                     championConfig.runWinBroadcast(champion, loser);

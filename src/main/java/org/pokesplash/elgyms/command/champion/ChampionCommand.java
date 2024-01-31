@@ -8,7 +8,10 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import org.pokesplash.elgyms.Elgyms;
 import org.pokesplash.elgyms.command.CommandHandler;
+import org.pokesplash.elgyms.command.champion.admin.Demote;
+import org.pokesplash.elgyms.command.champion.admin.Promote;
 import org.pokesplash.elgyms.command.champion.champion.Accept;
 import org.pokesplash.elgyms.command.champion.champion.Give;
 import org.pokesplash.elgyms.command.champion.champion.Quit;
@@ -49,6 +52,8 @@ public class ChampionCommand {
 		registeredCommand.addChild(new Challenge().build());
 		registeredCommand.addChild(new Accept().build());
 		registeredCommand.addChild(new Reject().build());
+		registeredCommand.addChild(new Promote().build());
+		registeredCommand.addChild(new Demote().build());
 	}
 
 	public int run(CommandContext<ServerCommandSource> context) {
@@ -58,8 +63,16 @@ public class ChampionCommand {
 			return 1;
 		}
 
-		UIManager.openUIForcefully(context.getSource().getPlayer(),
-				new ChampionInfo().getPage(context.getSource().getPlayer()));
+		try {
+			UIManager.openUIForcefully(context.getSource().getPlayer(),
+					new ChampionInfo().getPage(context.getSource().getPlayer()));
+
+		}
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
+
 
 		return 1;
 	}

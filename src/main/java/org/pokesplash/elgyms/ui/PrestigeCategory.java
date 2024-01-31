@@ -55,11 +55,12 @@ public class PrestigeCategory {
                         // Broadcasts the message
                         if (reward.isEnableBroadcast()) {
                             Utils.broadcastMessage(Utils.formatPlaceholders(reward.getBroadcastMessage(), null,
-                                    null, e.getPlayer(), category, null, null));
+                                    null, e.getPlayer().getName().getString(), category, null, null));
                         }
 
                         // Run commands
-                        Utils.runCommands(reward.getCommands(), e.getPlayer(), null, category, null);
+                        Utils.runCommands(reward.getCommands(), e.getPlayer().getName().getString(),
+                                null, category, null);
 
                         UIManager.closeUI(e.getPlayer());
                     })

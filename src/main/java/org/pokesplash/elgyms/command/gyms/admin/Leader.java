@@ -70,82 +70,94 @@ public class Leader {
 
 	public int add(CommandContext<ServerCommandSource> context) {
 
-		String gymString = StringArgumentType.getString(context, "gym");
+		try {
+			String gymString = StringArgumentType.getString(context, "gym");
 
-		GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
+			GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
 
-		if (gym == null) {
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			String playerString = StringArgumentType.getString(context, "player");
+			PlayerBadges player = BadgeProvider.getBadges(playerString);
+
+			if (player == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			if (gym.containsLeader(player.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§c" + player.getName() + "§c is already a leader of this gym.",
+						context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			gym.addLeader(new org.pokesplash.elgyms.gym.Leader(player.getUuid()));
+			gym.write();
+
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+					"§aAdded " + player.getName() + "§a to " + gym.getName(), context.getSource().isExecutedByPlayer()
 			)));
-			return 1;
 		}
-
-		String playerString = StringArgumentType.getString(context, "player");
-		PlayerBadges player = BadgeProvider.getBadges(playerString);
-
-		if (player == null) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		if (gym.containsLeader(player.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§c" + player.getName() + "§c is already a leader of this gym.",
-					context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
-		}
-
-		gym.addLeader(new org.pokesplash.elgyms.gym.Leader(player.getUuid()));
-		gym.write();
-
-		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aAdded " + player.getName() + "§a to " + gym.getName(), context.getSource().isExecutedByPlayer()
-		)));
 
 		return 1;
 	}
 
 	public int remove(CommandContext<ServerCommandSource> context) {
 
-		String gymString = StringArgumentType.getString(context, "gym");
+		try {
+			String gymString = StringArgumentType.getString(context, "gym");
 
-		GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
+			GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
 
-		if (gym == null) {
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			String playerString = StringArgumentType.getString(context, "player");
+			PlayerBadges player = BadgeProvider.getBadges(playerString);
+
+			if (player == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			if (!gym.containsLeader(player.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§c" + player.getName() + "§c is not a leader of this gym.",
+						context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			gym.removeLeader(player.getUuid());
+			gym.write();
+
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+					"§aRemoved " + player.getName() + "§a from " + gym.getName(), context.getSource().isExecutedByPlayer()
 			)));
-			return 1;
 		}
-
-		String playerString = StringArgumentType.getString(context, "player");
-		PlayerBadges player = BadgeProvider.getBadges(playerString);
-
-		if (player == null) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cPlayer " + playerString + "§c could not be found.", context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		if (!gym.containsLeader(player.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§c" + player.getName() + "§c is not a leader of this gym.",
-					context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
-		}
-
-		gym.removeLeader(player.getUuid());
-		gym.write();
-
-		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aRemoved " + player.getName() + "§a from " + gym.getName(), context.getSource().isExecutedByPlayer()
-		)));
 
 		return 1;
 	}

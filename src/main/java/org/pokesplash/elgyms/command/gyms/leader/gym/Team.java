@@ -67,7 +67,7 @@ public class Team {
 					new LeaderTeam().getPage(context.getSource().getPlayer(), gym));
 		} catch (Exception e) {
 			context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
-			e.printStackTrace();
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
 
 		return 1;

@@ -44,76 +44,82 @@ public class Challenge {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-			return 1;
-		}
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
+			}
 
-		ServerPlayerEntity challenger = context.getSource().getPlayer();
+			ServerPlayerEntity challenger = context.getSource().getPlayer();
 
-		PlayerBadges playerBadges = BadgeProvider.getBadges(challenger);
+			PlayerBadges playerBadges = BadgeProvider.getBadges(challenger);
 
-		ChampionConfig championConfig = GymProvider.getChampion();
+			ChampionConfig championConfig = GymProvider.getChampion();
 
-		// If the player doesn't have the required badge, tell them.
-		if (!playerBadges.containsBadge(championConfig.getRequiredBadge())) {
-			GymConfig requiredGym = GymProvider.getGymFromBadge(championConfig.getRequiredBadge());
+			// If the player doesn't have the required badge, tell them.
+			if (!playerBadges.containsBadge(championConfig.getRequiredBadge())) {
+				GymConfig requiredGym = GymProvider.getGymFromBadge(championConfig.getRequiredBadge());
 
-			String output = requiredGym != null ?
-					"§cYou need to have " + requiredGym.getBadge().getName() + " §cto challenge the champion." :
-					"§cYou do not have the correct requirements to challenge the champion.";
+				String output = requiredGym != null ?
+						"§cYou need to have " + requiredGym.getBadge().getName() + " §cto challenge the champion." :
+						"§cYou do not have the correct requirements to challenge the champion.";
 
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() + output));
-			return 1;
-		}
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() + output));
+				return 1;
+			}
 
-		Leader champion = championConfig.getChampion();
+			Leader champion = championConfig.getChampion();
 
-		// If there is no champion, set the challenger to champion.
-		if (champion == null) {
-			championConfig.setChampion(new Leader(challenger.getUuid()));
-			championConfig.runWinnerRewards(challenger);
-			return 1;
-		}
+			// If there is no champion, set the challenger to champion.
+			if (champion == null) {
+				championConfig.setChampion(new Leader(challenger.getUuid()));
+				championConfig.runWinnerRewards(challenger.getName().getString());
+				return 1;
+			}
 
-		// Makes sure the champion isn't challenging themselves.
-		if (challenger.getUuid().equals(challenger.getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are already Champion."
-			));
-			return 1;
-		}
+			// Makes sure the champion isn't challenging themselves.
+			if (challenger.getUuid().equals(challenger.getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are already Champion."
+				));
+				return 1;
+			}
 
-		PlayerBadges championBadges = BadgeProvider.getBadges(champion.getUuid());
+			PlayerBadges championBadges = BadgeProvider.getBadges(champion.getUuid());
 
-		// If the champion isn't online, don't let them challenge.
-		if (Elgyms.server.getPlayerManager().getPlayer(champion.getUuid()) == null) {
-			String output = championBadges != null ?
-					"§c" +  championBadges.getName() + " isn't currently online." :
-					"§cThe champion isn't currently online.";
+			// If the champion isn't online, don't let them challenge.
+			if (Elgyms.server.getPlayerManager().getPlayer(champion.getUuid()) == null) {
+				String output = championBadges != null ?
+						"§c" +  championBadges.getName() + " isn't currently online." :
+						"§cThe champion isn't currently online.";
 
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() + output
-					));
-			return 1;
-		}
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() + output
+				));
+				return 1;
+			}
 
-		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(context.getSource().getPlayer());
+			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(context.getSource().getPlayer());
 
-		ArrayList<Pokemon> pokemons = new ArrayList<>();
+			ArrayList<Pokemon> pokemons = new ArrayList<>();
 
-		for (int x=0; x < 6; x++) {
-			if (party.get(x) != null) {
-				pokemons.add(party.get(x));
+			for (int x=0; x < 6; x++) {
+				if (party.get(x) != null) {
+					pokemons.add(party.get(x));
+				}
+			}
+
+			try {
+				ElgymsUtils.checkChampionRequirements(context.getSource().getPlayer(), pokemons);
+
+				GymProvider.challengeChampion(context.getSource().getPlayer());
+			} catch (Exception e) {
+				context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
+				return 1;
 			}
 		}
-
-		try {
-			ElgymsUtils.checkChampionRequirements(context.getSource().getPlayer(), pokemons);
-
-			GymProvider.challengeChampion(context.getSource().getPlayer());
-		} catch (Exception e) {
-			context.getSource().sendMessage(Text.literal("§c" + e.getMessage()));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
 
 		return 1;

@@ -17,6 +17,7 @@ import org.pokesplash.elgyms.badge.PlayerBadges;
 import org.pokesplash.elgyms.champion.ChampionConfig;
 import org.pokesplash.elgyms.config.CategoryConfig;
 import org.pokesplash.elgyms.gym.GymConfig;
+import org.pokesplash.elgyms.gym.Leader;
 import org.pokesplash.elgyms.provider.BadgeProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
 import org.pokesplash.elgyms.util.ElgymsUtils;
@@ -104,8 +105,10 @@ public class ChampionInfo {
 				.hideFlags(FlagType.All)
 				.build();
 
+		Leader champion = config.getChampion();
+
 		Button dynamic;
-		if (Elgyms.server.getPlayerManager().getPlayer(config.getChampion().getUuid()) == null) {
+		if (champion == null || Elgyms.server.getPlayerManager().getPlayer(champion.getUuid()) == null) {
 			dynamic = closed;
 		} else if (GymProvider.getChampQueue().isInQueue(challenger.getUuid())) {
 			dynamic = cancel;

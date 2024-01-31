@@ -43,44 +43,51 @@ public class Reject {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-			return 1;
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
+			}
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not a leader of this gym."));
+				return 1;
+			}
+
+			Queue queue = GymProvider.getQueueFromGym(gym);
+
+			if (queue.getQueue().isEmpty()) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cThis gym has no challengers."));
+				return 1;
+			}
+
+			UUID challengerUuid = queue.getQueue().get(0);
+
+			if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cChallenger is no longer online."));
+				return 1;
+			}
+
+			GymProvider.rejectChallenge(challengerUuid, context.getSource().getPlayer());
+		}
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
 
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
-		}
-
-		if (!gym.containsLeader(context.getSource().getPlayer().getUuid())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
-			return 1;
-		}
-
-		Queue queue = GymProvider.getQueueFromGym(gym);
-
-		if (queue.getQueue().isEmpty()) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cThis gym has no challengers."));
-			return 1;
-		}
-
-		UUID challengerUuid = queue.getQueue().get(0);
-
-		if (Elgyms.server.getPlayerManager().getPlayer(challengerUuid) == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cChallenger is no longer online."));
-			return 1;
-		}
-
-		GymProvider.rejectChallenge(challengerUuid, context.getSource().getPlayer());
 
 		return 1;
 	}

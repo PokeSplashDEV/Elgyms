@@ -41,39 +41,45 @@ public class CreateGym {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		String name = StringArgumentType.getString(context, "name");
+		try {
+			String name = StringArgumentType.getString(context, "name");
 
-		String category = StringArgumentType.getString(context, "category");
+			String category = StringArgumentType.getString(context, "category");
 
-		boolean categoryExists = false;
-		for (CategoryConfig categoryConfig : Elgyms.config.getCategories()) {
-			if (categoryConfig.getName().equalsIgnoreCase(category)) {
-				categoryExists = true;
-				break;
+			boolean categoryExists = false;
+			for (CategoryConfig categoryConfig : Elgyms.config.getCategories()) {
+				if (categoryConfig.getName().equalsIgnoreCase(category)) {
+					categoryExists = true;
+					break;
+				}
 			}
-		}
 
-		if (!categoryExists) {
+			if (!categoryExists) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cCould not find category: " + category, context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			if (GymProvider.getGymById(GymConfig.nameToId(name)) != null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cGym " + name + "§c already exists.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			GymConfig newGym = new GymConfig(name, category);
+			newGym.write();
+			GymProvider.addGym(newGym);
+
 			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cCould not find category: " + category, context.getSource().isExecutedByPlayer()
+					"§aCreated gym: " + name, context.getSource().isExecutedByPlayer()
 			)));
-			return 1;
 		}
-
-		if (GymProvider.getGymById(GymConfig.nameToId(name)) != null) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + name + "§c already exists.", context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		GymConfig newGym = new GymConfig(name, category);
-		newGym.write();
-		GymProvider.addGym(newGym);
-
-		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-				"§aCreated gym: " + name, context.getSource().isExecutedByPlayer()
-		)));
 
 		return 1;
 	}

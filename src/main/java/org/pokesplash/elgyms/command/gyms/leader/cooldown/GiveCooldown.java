@@ -57,66 +57,72 @@ public class GiveCooldown {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-		}
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
 
-		ServerPlayerEntity sender = context.getSource().getPlayer();
+			ServerPlayerEntity sender = context.getSource().getPlayer();
 
-		String playerName = StringArgumentType.getString(context, "player");
+			String playerName = StringArgumentType.getString(context, "player");
 
-		PlayerBadges badges = BadgeProvider.getBadges(playerName);
+			PlayerBadges badges = BadgeProvider.getBadges(playerName);
 
-		if (badges == null) {
+			if (badges == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cCould not find player " + playerName));
+				return 1;
+			}
+
+			String gymId = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(gymId);
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cGym " + gymId + "§c does not exist."));
+				return 1;
+			}
+
+			if (!gym.containsLeader(sender.getUuid()) &&
+					!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
+							".admin.badges")) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§cYou are not a leader of this gym."));
+				return 1;
+			}
+
+			if (badges.containsBadge(gym.getBadge().getId())) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + badges.getName() + "§c already has this badge."));
+				return 1;
+			}
+
+			CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
+
+			if (categoryConfig == null) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + gym.getName() + "§c doesn't have a valid category."));
+				return 1;
+			}
+
+			if (badges.getCooldown(gym) != null && badges.getCooldown(gym) > new Date().getTime()) {
+				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
+						"§c" + badges.getName() + "§c already has a cooldown for " + gym.getName() + "."));
+				return 1;
+			}
+
+			long duration = (long) (gym.getCooldown() * 60 * 1000);
+
+			badges.setCooldown(gym, new Date().getTime() + duration);
+
 			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cCould not find player " + playerName));
-			return 1;
+					"§2Added " + gym.getBadge().getName() + "§2 cooldown to " + badges.getName() + "§2."));
 		}
-
-		String gymId = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(gymId);
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cGym " + gymId + "§c does not exist."));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		if (!gym.containsLeader(sender.getUuid()) &&
-				!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
-						".admin.badges")) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§cYou are not a leader of this gym."));
-			return 1;
-		}
-
-		if (badges.containsBadge(gym.getBadge().getId())) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + "§c already has this badge."));
-			return 1;
-		}
-
-		CategoryConfig categoryConfig = Elgyms.config.getCategoryByName(gym.getCategoryName());
-
-		if (categoryConfig == null) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + gym.getName() + "§c doesn't have a valid category."));
-			return 1;
-		}
-
-		if (badges.getCooldown(gym) != null && badges.getCooldown(gym) > new Date().getTime()) {
-			context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-					"§c" + badges.getName() + "§c already has a cooldown for " + gym.getName() + "."));
-			return 1;
-		}
-
-		long duration = (long) (gym.getCooldown() * 60 * 1000);
-
-		badges.setCooldown(gym, new Date().getTime() + duration);
-
-		context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
-				"§2Added " + gym.getBadge().getName() + "§2 cooldown to " + badges.getName() + "§2."));
 
 		return 1;
 	}

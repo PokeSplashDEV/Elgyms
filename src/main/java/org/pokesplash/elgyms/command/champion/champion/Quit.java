@@ -21,7 +21,11 @@ public class Quit {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						if (GymProvider.getChampion().getChampion() == null) {
+							return false;
+						} else {
+							return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						}
 					} else {
 						return true;
 					}
@@ -32,23 +36,30 @@ public class Quit {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
+			}
+
+			ChampionConfig championConfig = GymProvider.getChampion();
+
+			// Adds the defeated champion to history.
+			Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
+
+			// Sets the new champion to the player.
+			championConfig.setChampion(null);
+
+			// Runs the rewards.
+			championConfig.runDemotionRewards(context.getSource().getPlayer().getName().getString());
+
+			// Runs the demotion broadcast
+			championConfig.runDemoteBroadcast(context.getSource().getPlayer());
 		}
-
-		ChampionConfig championConfig = GymProvider.getChampion();
-
-		// Adds the defeated champion to history.
-		Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
-
-		// Sets the new champion to the player.
-		championConfig.setChampion(null);
-
-		// Runs the rewards.
-		championConfig.runDemotionRewards(context.getSource().getPlayer());
-
-		// Runs the demotion broadcast
-		championConfig.runDemoteBroadcast(context.getSource().getPlayer());
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
+		}
 
 		return 1;
 	}

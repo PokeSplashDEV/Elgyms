@@ -49,35 +49,41 @@ public class Position {
 
 	public int leader(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+			}
+
+			ServerPlayerEntity player = context.getSource().getPlayer();
+
+			String gymString = StringArgumentType.getString(context, "gym");
+
+			GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
+
+			if (gym == null) {
+				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+						"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
+				)));
+				return 1;
+			}
+
+			Positions positions = gym.getPositions();
+
+			positions.getLeader().setPitch(player.getPitch());
+			positions.getLeader().setYaw(player.getYaw());
+			positions.getLeader().setX(player.getX());
+			positions.getLeader().setY(player.getY());
+			positions.getLeader().setZ(player.getZ());
+			positions.getLeader().setWorld(player.getWorld().getRegistryKey().getValue());
+
+			gym.setPositions(positions);
+
+			context.getSource().sendMessage(Text.literal("§2Set leader to position for " + gym.getName()));
 		}
-
-		ServerPlayerEntity player = context.getSource().getPlayer();
-
-		String gymString = StringArgumentType.getString(context, "gym");
-
-		GymConfig gym = GymProvider.getGymById(GymConfig.nameToId(gymString));
-
-		if (gym == null) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-					"§cGym " + gymString + "§c could not be found.", context.getSource().isExecutedByPlayer()
-			)));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		Positions positions = gym.getPositions();
-
-		positions.getLeader().setPitch(player.getPitch());
-		positions.getLeader().setYaw(player.getYaw());
-		positions.getLeader().setX(player.getX());
-		positions.getLeader().setY(player.getY());
-		positions.getLeader().setZ(player.getZ());
-		positions.getLeader().setWorld(player.getWorld().getRegistryKey().getValue());
-
-		gym.setPositions(positions);
-
-		context.getSource().sendMessage(Text.literal("§2Set leader to position for " + gym.getName()));
 
 		return 1;
 	}

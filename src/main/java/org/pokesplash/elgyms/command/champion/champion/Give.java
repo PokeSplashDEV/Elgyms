@@ -21,7 +21,11 @@ public class Give {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						// See's if the player executing the command is the champion.
-						return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						if (GymProvider.getChampion().getChampion() == null) {
+							return false;
+						} else {
+							return GymProvider.getChampion().getChampion().getUuid().equals(ctx.getPlayer().getUuid());
+						}
 					} else {
 						return true;
 					}
@@ -40,42 +44,49 @@ public class Give {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+		try {
+			if (!context.getSource().isExecutedByPlayer()) {
+				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
+				return 1;
+			}
+
+			String challengerName = StringArgumentType.getString(context, "player");
+
+			ServerPlayerEntity newChampion = Elgyms.server.getPlayerManager().getPlayer(challengerName);
+
+			// Checks the new champion is a player.
+			if (newChampion == null) {
+				context.getSource().sendMessage(Text.literal("§cPlayer " + challengerName + " could not be found."));
+				return 1;
+			}
+
+			ChampionConfig championConfig = GymProvider.getChampion();
+
+			// Checks the challenger has the required badge to challenger the champion.
+			if (!BadgeProvider.getBadges(newChampion).containsBadge(championConfig.getRequiredBadge())) {
+				context.getSource().sendMessage(Text.literal( Elgyms.lang.getPrefix() + "§c"
+						+ newChampion.getName().getString() +
+						" does not have the required badge to be champion."));
+				return 1;
+			}
+
+			// Adds the defeated champion to history.
+			Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
+
+			// Sets the new champion to the player.
+			championConfig.setChampion(new Leader(newChampion.getUuid()));
+
+			// Runs the rewards.
+			championConfig.runWinnerRewards(newChampion.getName().getString());
+			championConfig.runLoserRewards(context.getSource().getPlayer().getName().getString());
+
+			// Runs a broadcast the say the champion lost.
+			championConfig.runLossBroadcast(newChampion, context.getSource().getPlayer());
 		}
-
-		String challengerName = StringArgumentType.getString(context, "player");
-
-		ServerPlayerEntity newChampion = Elgyms.server.getPlayerManager().getPlayer(challengerName);
-
-		// Checks the new champion is a player.
-		if (newChampion == null) {
-			context.getSource().sendMessage(Text.literal("§cPlayer " + challengerName + " could not be found."));
-			return 1;
+		catch (Exception e) {
+			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
+			Elgyms.LOGGER.error(e.getStackTrace());
 		}
-
-		ChampionConfig championConfig = GymProvider.getChampion();
-
-		// Checks the challenger has the required badge to challenger the champion.
-		if (!BadgeProvider.getBadges(newChampion).containsBadge(championConfig.getRequiredBadge())) {
-			context.getSource().sendMessage(Text.literal( Elgyms.lang.getPrefix() + "§c"
-					+ newChampion.getName().getString() +
-					" does not have the required badge to be champion."));
-			return 1;
-		}
-
-		// Adds the defeated champion to history.
-		Elgyms.championHistory.addHistory(new ChampionHistoryItem(championConfig.getChampion()));
-
-		// Sets the new champion to the player.
-		championConfig.setChampion(new Leader(newChampion.getUuid()));
-
-		// Runs the rewards.
-		championConfig.runWinnerRewards(newChampion);
-		championConfig.runLoserRewards(context.getSource().getPlayer());
-
-		// Runs a broadcast the say the champion lost.
-		championConfig.runLossBroadcast(newChampion, context.getSource().getPlayer());
 
 		return 1;
 	}
