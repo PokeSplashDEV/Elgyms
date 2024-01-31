@@ -60,10 +60,6 @@ public class RemoveBadge {
 	public int run(CommandContext<ServerCommandSource> context) {
 
 		try {
-			if (!context.getSource().isExecutedByPlayer()) {
-				context.getSource().sendMessage(Text.literal("This command must be ran by a player."));
-			}
-
 			ServerPlayerEntity sender = context.getSource().getPlayer();
 
 			String playerName = StringArgumentType.getString(context, "player");
@@ -86,7 +82,7 @@ public class RemoveBadge {
 				return 1;
 			}
 
-			if (!gym.containsLeader(sender.getUuid()) &&
+			if (sender != null && !gym.containsLeader(sender.getUuid()) &&
 					!LuckPermsUtils.hasPermission(sender, CommandHandler.basePermission +
 							".admin.badges")) {
 				context.getSource().sendMessage(Text.literal(Elgyms.lang.getPrefix() +
@@ -126,7 +122,7 @@ public class RemoveBadge {
 		}
 		catch (Exception e) {
 			context.getSource().sendMessage(Text.literal("§cSomething went wrong."));
-			Elgyms.LOGGER.error(e.getStackTrace());
+			e.printStackTrace();
 		}
 
 		return 1;
