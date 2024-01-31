@@ -21,7 +21,7 @@ public class Team {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.team");
+								".leader.gym.team");
 					} else {
 						return true;
 					}

@@ -22,7 +22,7 @@ public class BadgeCommand {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".badges.base");
+								".user.badges");
 					} else {
 						return true;
 					}
@@ -35,7 +35,7 @@ public class BadgeCommand {
 				ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".badges.base");
+								".user.badges");
 					} else {
 						return true;
 					}

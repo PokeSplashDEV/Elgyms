@@ -28,7 +28,7 @@ public class Challenge {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".user.challenge");
+								".user.gym.challenge");
 					} else {
 						return true;
 					}

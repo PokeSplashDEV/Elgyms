@@ -22,7 +22,7 @@ public class Open {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.open");
+								".leader.gym.open");
 					} else {
 						return true;
 					}

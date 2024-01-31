@@ -21,7 +21,7 @@ public class EditGym {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".admin.edit");
+								".admin.gym.edit");
 					} else {
 						return true;
 					}

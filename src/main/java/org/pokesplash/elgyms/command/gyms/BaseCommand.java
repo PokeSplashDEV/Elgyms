@@ -29,7 +29,7 @@ public class BaseCommand {
 				.literal("elgyms")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".base");
+						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".user");
 					} else {
 						return true;
 					}
@@ -41,7 +41,7 @@ public class BaseCommand {
 		dispatcher.register(CommandManager.literal("gyms").requires(
 				ctx -> {
 					if (ctx.isExecutedByPlayer()) {
-						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".base");
+						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission + ".user");
 					} else {
 						return true;
 					}

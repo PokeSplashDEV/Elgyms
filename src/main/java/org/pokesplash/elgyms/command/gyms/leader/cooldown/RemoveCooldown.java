@@ -25,7 +25,7 @@ public class RemoveCooldown {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.cooldown.remove");
+								".leader.gym.cooldown.remove");
 					} else {
 						return true;
 					}

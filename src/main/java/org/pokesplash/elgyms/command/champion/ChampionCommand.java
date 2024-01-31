@@ -24,7 +24,7 @@ public class ChampionCommand {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(),
-								CommandHandler.basePermission + ".champion");
+								CommandHandler.basePermission + ".user.champion");
 					} else {
 						return true;
 					}
@@ -37,7 +37,7 @@ public class ChampionCommand {
 				ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(),
-								CommandHandler.basePermission + ".champion");
+								CommandHandler.basePermission + ".user.champion");
 					} else {
 						return true;
 					}

@@ -23,7 +23,7 @@ public class Position {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".admin.position");
+								".admin.gym.position");
 					} else {
 						return true;
 					}

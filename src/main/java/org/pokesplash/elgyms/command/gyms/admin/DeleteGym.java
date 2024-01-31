@@ -19,7 +19,7 @@ public class DeleteGym {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".admin.delete");
+								".admin.gym.delete");
 					} else {
 						return true;
 					}

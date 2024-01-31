@@ -21,7 +21,7 @@ public class Leader {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".admin.leader");
+								".admin.gym.leader");
 					} else {
 						return true;
 					}

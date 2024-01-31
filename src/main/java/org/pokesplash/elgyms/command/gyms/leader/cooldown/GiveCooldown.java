@@ -25,7 +25,7 @@ public class GiveCooldown {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.cooldown.give");
+								".leader.gym.cooldown.give");
 					} else {
 						return true;
 					}

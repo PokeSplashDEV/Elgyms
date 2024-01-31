@@ -36,7 +36,7 @@ public class EndBattle {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".endbattle");
+								".user.endbattle");
 					} else {
 						return true;
 					}

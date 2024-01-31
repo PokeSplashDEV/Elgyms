@@ -19,7 +19,7 @@ public class Prestige {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(),
-								CommandHandler.basePermission + ".prestige.base");
+								CommandHandler.basePermission + ".user.gym.prestige");
 					} else {
 						return true;
 					}

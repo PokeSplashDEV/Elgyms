@@ -20,7 +20,7 @@ public class Queue {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.queue");
+								".leader.gym.queue");
 					} else {
 						return true;
 					}

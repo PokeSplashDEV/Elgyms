@@ -29,7 +29,7 @@ public class Accept {
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(), CommandHandler.basePermission +
-								".leader.accept");
+								".leader.gym.accept");
 					} else {
 						return true;
 					}
