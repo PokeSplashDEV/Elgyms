@@ -216,6 +216,9 @@ public class BattleProvider {
     }
 
     public static boolean isChampBattle(UUID battleId) {
+        if (champBattle == null) {
+            return false;
+        }
         return battleId.equals(champBattle.getBattleId());
     }
 
