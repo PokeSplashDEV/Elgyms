@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -604,5 +605,34 @@ public abstract class ElgymsUtils {
 		}
 
 		return lore;
+	}
+
+	/**
+	 * Converts Pokemon JsonObjects to Pokemon
+	 * @param objects A list of Pokemon JsonObjects to convert.
+	 * @return A list of Pokemon from the JsonObjects.
+	 */
+	public static List<Pokemon> fromJson(List<JsonObject> objects) {
+		List<Pokemon> pokemon = new ArrayList<>();
+
+		for (JsonObject object : objects) {
+			Pokemon mon = new Pokemon().loadFromJSON(object);
+			mon.heal();
+			pokemon.add(mon);
+		}
+
+		return pokemon;
+	}
+
+	public static List<JsonObject> toJson(List<Pokemon> pokemons) {
+		List<JsonObject> objects = new ArrayList<>();
+
+		for (Pokemon pokemon : pokemons) {
+			if (pokemon != null) {
+				objects.add(pokemon.saveToJSON(new JsonObject()));
+			}
+		}
+
+		return objects;
 	}
 }

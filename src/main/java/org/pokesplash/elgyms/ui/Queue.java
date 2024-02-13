@@ -18,10 +18,12 @@ import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
+import org.pokesplash.elgyms.util.ElgymsUtils;
 import org.pokesplash.elgyms.util.Utils;
 import org.pokesplash.teampreview.TeamPreview;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Queue {
@@ -60,7 +62,20 @@ public class Queue {
 													leaderTeam, BattleProvider.toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)),
 													f -> {
 														try {
-															BattleProvider.beginBattle(challenger, leader, gym, false);
+															// Moves the Pokemon at the lead index to the beginning of the list.
+															List<Pokemon> leaderPokemon = f.getPlayer1().getPokemon();
+															Pokemon leaderLead = leaderPokemon.get(f.getPlayer1().getLead());
+															leaderPokemon.remove(f.getPlayer1().getLead());
+															leaderPokemon.add(0, leaderLead);
+
+															// Moves the Pokemon at the lead index to the beginning of the list.
+															List<Pokemon> challengerPokemon = f.getPlayer2().getPokemon();
+															Pokemon challengerLead = challengerPokemon.get(f.getPlayer2().getLead());
+															challengerPokemon.remove(f.getPlayer2().getLead());
+															challengerPokemon.add(0, challengerLead);
+
+															BattleProvider.beginBattle(challenger, leader, gym,
+																	ElgymsUtils.toJson(leaderPokemon), ElgymsUtils.toJson(challengerPokemon));
 														} catch (Exception ex) {
 															// Sends error to leader. Tells challenger something went wrong.
 															leader.sendMessage(Text.literal("§c" + ex.getMessage()));
@@ -77,7 +92,7 @@ public class Queue {
 											ex.printStackTrace();
 										}
 									} else {
-										BattleProvider.beginBattle(challenger, leader, gym, true);
+										BattleProvider.beginBattle(challenger, leader, gym);
 									}
 								} catch (Exception ex) {
 									e.getPlayer().sendMessage(Text.literal("§c" + ex.getMessage()));

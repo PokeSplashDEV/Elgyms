@@ -12,6 +12,7 @@ import org.pokesplash.elgyms.exception.GymException;
 import org.pokesplash.elgyms.gym.GymConfig;
 import org.pokesplash.elgyms.provider.BattleProvider;
 import org.pokesplash.elgyms.provider.GymProvider;
+import org.pokesplash.elgyms.util.ElgymsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +66,13 @@ public class BattleTeam {
      * @param player The leader of the gym.
      * @param pokemonObjects A list of JsonObjects that represent the leaders team.
      */
-    public BattleTeam(ServerPlayerEntity player, List<JsonObject> pokemonObjects) throws GymException {
+    public BattleTeam(ServerPlayerEntity player, List<JsonObject> pokemonObjects, int level) throws GymException {
 
         // Creates battle pokemon from the json objects.
         List<BattlePokemon> battlePokemon;
 
         // If its raise to cap, make the battle pokemon the correct level.
-        battlePokemon = convertToBattlePokemon(convertJsonObjects(pokemonObjects));
+        battlePokemon = raiseToCap(ElgymsUtils.fromJson(pokemonObjects), level);
 
         battleActor = new PlayerBattleActor(player.getUuid(), battlePokemon);
 
@@ -102,22 +103,7 @@ public class BattleTeam {
         return battlePokemon;
     }
 
-    /**
-     * Converts Pokemon JsonObjects to Pokemon
-     * @param objects A list of Pokemon JsonObjects to convert.
-     * @return A list of Pokemon from the JsonObjects.
-     */
-    private List<Pokemon> convertJsonObjects(List<JsonObject> objects) {
-        List<Pokemon> pokemon = new ArrayList<>();
 
-        for (JsonObject object : objects) {
-            Pokemon mon = new Pokemon().loadFromJSON(object);
-            mon.heal();
-            pokemon.add(mon);
-        }
-
-        return pokemon;
-    }
 
     /**
      * Converts a list of Pokemon to BattlePokemon.

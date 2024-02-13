@@ -34,9 +34,25 @@ public class BattleProvider {
     private static final HashMap<UUID, BattleData> activeBattles = new HashMap<>(); // Battle Id / Leader UUID
     private static ChampBattleData champBattle = null; // The BattleData of the current champion battle.
 
+    public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym) {
+
+        // Converts the challengers party to an array of json objects.
+        PlayerPartyStore challengerParty = Cobblemon.INSTANCE.getStorage().getParty(challenger);
+
+        ArrayList<JsonObject> challengerMons = new ArrayList<>();
+        for (int x = 0; x < 6; x ++) {
+            if (challengerParty.get(x) != null) {
+                challengerMons.add(challengerParty.get(x).saveToJSON(new JsonObject()));
+            }
+        }
+
+
+        beginBattle(challenger, leader, gym, gym.getLeader(leader.getUuid()).getTeam(), challengerMons);
+    }
+
 
     public static void beginBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader, GymConfig gym,
-                                   boolean giveLeaderPokemon) {
+                                   List<JsonObject> leaderPokemon, List<JsonObject> challengerPokemon) {
 
         // Checks the challenger team is valid.
         try {
@@ -44,14 +60,10 @@ public class BattleProvider {
                     toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)), gym);
 
             // Creates the battle teams needed for the battle.
-            BattleTeam challengerTeam = new BattleTeam(challenger, gym);
-            BattleTeam leaderTeam = new BattleTeam(leader, gym.getLeader(leader.getUuid()).getTeam());
-
-
-            if (giveLeaderPokemon) {
-                // Gives the leader their Pokemon.
-                getLeaderTeam(leader, gym);
-            }
+            BattleTeam challengerTeam = new BattleTeam(challenger, challengerPokemon,
+                    gym.getRequirements().getPokemonLevel());
+            BattleTeam leaderTeam = new BattleTeam(leader, leaderPokemon,
+                    gym.getRequirements().getPokemonLevel());
 
 
             // Gets the gym positions for leaders and challengers.
@@ -110,6 +122,23 @@ public class BattleProvider {
 
     public static void beginChampionBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader) {
 
+        // Converts the challengers party to an array of json objects.
+        PlayerPartyStore challengerParty = Cobblemon.INSTANCE.getStorage().getParty(challenger);
+
+        ArrayList<JsonObject> challengerMons = new ArrayList<>();
+        for (int x = 0; x < 6; x ++) {
+            if (challengerParty.get(x) != null) {
+                challengerMons.add(challengerParty.get(x).saveToJSON(new JsonObject()));
+            }
+        }
+
+        beginChampionBattle(challenger, leader,
+                challengerMons, GymProvider.getChampion().getChampion().getTeam());
+    }
+
+    public static void beginChampionBattle(ServerPlayerEntity challenger, ServerPlayerEntity leader,
+                                            List<JsonObject> challengerPokemon, List<JsonObject> leaderPokemon) {
+
         // Checks the challenger team is valid.
         try {
 
@@ -119,8 +148,8 @@ public class BattleProvider {
                     toList(Cobblemon.INSTANCE.getStorage().getParty(challenger)));
 
             // Creates the battle teams needed for the battle.
-            BattleTeam challengerTeam = new BattleTeam(challenger);
-            BattleTeam leaderTeam = new BattleTeam(leader, championConfig.getChampion().getTeam());
+            BattleTeam challengerTeam = new BattleTeam(challenger, challengerPokemon, 100);
+            BattleTeam leaderTeam = new BattleTeam(leader, leaderPokemon, 100);
 
             // Gets the gym positions for leaders and challengers.
             Position leaderPosition = championConfig.getPositions().getLeader();
